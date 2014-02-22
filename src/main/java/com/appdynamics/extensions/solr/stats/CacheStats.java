@@ -16,21 +16,19 @@
 
 package com.appdynamics.extensions.solr.stats;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.singularity.ee.util.httpclient.IHttpClientWrapper;
 
 public class CacheStats extends Stats {
 
-	private static Logger logger = Logger.getLogger(CacheStats.class.getName());
+	private static final Logger LOG = Logger.getLogger(CacheStats.class.getName());
+
+	private static final String URI_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=CACHE&wt=json";
 
 	private Number queryResultCacheHitRatio;
 
@@ -56,42 +54,31 @@ public class CacheStats extends Stats {
 
 	private Number filterCacheSize;
 
-	public CacheStats(String host, String port) {
-		super(host, port);
-		logger.setLevel(Level.INFO);
+	public CacheStats(final String host, final String port, IHttpClientWrapper httpClient) {
+		super(host, port, httpClient);
+		LOG.setLevel(Level.INFO);
 	}
 
-	public void populateStats() {
-		String jsonString = getJsonResponseString(getUrl() + getResourceAppender() + getQueryString());
+	@Override
+	public void populateStats() throws Exception {
 
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode solrMBeansNode = null;
-		try {
-			solrMBeansNode = mapper.readValue(jsonString.getBytes(), JsonNode.class).path("solr-mbeans");
-		} catch (JsonParseException e) {
-			logger.error("JsonParseException in " + e.getClass());
-			throw new RuntimeException("JsonParseException in " + e.getClass());
-		} catch (JsonMappingException e) {
-			logger.error("JsonMappingException in " + e.getClass());
-			throw new RuntimeException("JsonMappingException in " + e.getClass());
-		} catch (IOException e) {
-			logger.error("IOException in " + e.getClass());
-			throw new RuntimeException("IOException in " + e.getClass());
-		}
-		Map<String, JsonNode> solrStatsMap = new HashMap<String, JsonNode>();
-		for (int i = 1; i <= solrMBeansNode.size(); i += 2) {
-			solrStatsMap.put(solrMBeansNode.get(i - 1).asText(), solrMBeansNode.get(i));
+		Map<String, JsonNode> solrMBeansHandlersMap = getSolrMBeansHandlersMap(constructURL());
 
-		}
-		JsonNode cacheNode = solrStatsMap.get("CACHE");
+		JsonNode cacheNode = solrMBeansHandlersMap.get("CACHE");
 		JsonNode queryResultCacheStats = cacheNode.path("queryResultCache").path("stats");
 
 		if (!queryResultCacheStats.isMissingNode()) {
 			this.setQueryResultCacheHitRatio(queryResultCacheStats.path("hitratio").asInt());
 			this.setQueryResultCacheHitRatioCumulative(queryResultCacheStats.path("cumulative_hitratio").asInt());
 			this.setQueryResultCacheSize(queryResultCacheStats.path("size").asInt());
+
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("hitratio = " + getQueryResultCacheHitRatio());
+				LOG.debug("cumulative_hitratio = " + getQueryResultCacheHitRatioCumulative());
+				LOG.debug("size= " + getQueryResultCacheSize());
+			}
 		} else {
-			logger.error("Error in query result cache stats");
+			LOG.error("Error in query result cache stats");
 		}
 
 		JsonNode documentCacheStats = cacheNode.path("documentCache").path("stats");
@@ -101,7 +88,7 @@ public class CacheStats extends Stats {
 			this.setDocumentCacheHitRatioCumulative(documentCacheStats.path("cumulative_hitratio").asInt());
 			this.setDocumentCacheSize(documentCacheStats.path("size").asInt());
 		} else {
-			logger.error("Error in document cache stats");
+			LOG.error("Error in document cache stats");
 		}
 
 		JsonNode fieldValueCacheStats = cacheNode.path("fieldValueCache").path("stats");
@@ -111,7 +98,7 @@ public class CacheStats extends Stats {
 			this.setFieldValueCacheHitRatioCumulative(fieldValueCacheStats.path("cumulative_hitratio").asInt());
 			this.setFieldValueCacheSize(fieldValueCacheStats.path("size").asInt());
 		} else {
-			logger.error("Error in field value cache stats");
+			LOG.error("Error in field value cache stats");
 		}
 
 		JsonNode filterCacheStats = cacheNode.path("filterCache").path("stats");
@@ -121,7 +108,7 @@ public class CacheStats extends Stats {
 			this.setFilterCacheHitRatioCumulative(filterCacheStats.path("cumulative_hitratio").asInt());
 			this.setFilterCacheSize(filterCacheStats.path("size").asInt());
 		} else {
-			logger.error("Error in filter cache stats");
+			LOG.error("Error in filter cache stats");
 		}
 	}
 
@@ -220,4 +207,10 @@ public class CacheStats extends Stats {
 	public void setFilterCacheSize(Number filterCacheSize) {
 		this.filterCacheSize = filterCacheSize;
 	}
+
+	@Override
+	public String constructURL() {
+		return "http://" + getHost() + ":" + getPort() + URI_QUERY_STRING;
+	}
+
 }

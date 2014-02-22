@@ -25,7 +25,6 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.singularity.ee.util.httpclient.HttpClientWrapper;
 import com.singularity.ee.util.httpclient.HttpExecutionRequest;
 import com.singularity.ee.util.httpclient.HttpExecutionResponse;
 import com.singularity.ee.util.httpclient.HttpOperation;
@@ -34,15 +33,15 @@ import com.singularity.ee.util.log4j.Log4JLogger;
 
 public class MemoryStats extends Stats {
 
-	private static Logger logger = Logger.getLogger(MemoryStats.class.getName());
+	private static final Logger LOG = Logger.getLogger(MemoryStats.class.getName());
 
-	private String memoryresource = "/solr/admin/system";
+	private static final String URI_QUERY_STRING = "/solr/admin/system?stats=true&wt=json";
 
-	private Number jvmMemoryUsed;
+	private Double jvmMemoryUsed;
 
-	private Number jvmMemoryFree;
+	private Double jvmMemoryFree;
 
-	private Number jvmMemoryTotal;
+	private Double jvmMemoryTotal;
 
 	private Number freePhysicalMemorySize;
 
@@ -50,13 +49,22 @@ public class MemoryStats extends Stats {
 
 	private Number committedVirtualMemorySize;
 
-	public MemoryStats(String host, String port) {
-		super(host, port);
-		logger.setLevel(Level.INFO);
+	private Number freeSwapSpaceSize;
+
+	private Number totalSwapSpaceSize;
+
+	private Number openFileDescriptorCount;
+
+	private Number maxFileDescriptorCount;
+
+	public MemoryStats(String host, String port, IHttpClientWrapper httpClient) {
+		super(host, port, httpClient);
+		LOG.setLevel(Level.INFO);
 	}
 
+	@Override
 	public void populateStats() {
-		String jsonString = getJsonResponseString(getUrl() + memoryresource + getQueryString());
+		String jsonString = getJsonResponseString(constructURL());
 
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jvmMBeansNode = null;
@@ -65,59 +73,60 @@ public class MemoryStats extends Stats {
 			jvmMBeansNode = mapper.readValue(jsonString.getBytes(), JsonNode.class).path("jvm").path("memory");
 			memoryMBeansNode = mapper.readValue(jsonString.getBytes(), JsonNode.class).path("system");
 		} catch (JsonParseException e) {
-			logger.error("JsonParseException in " + e.getClass());
-			throw new RuntimeException("JsonParseException in " + e.getClass());
+			LOG.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage());
 		} catch (JsonMappingException e) {
-			logger.error("JsonMappingException in " + e.getClass());
-			throw new RuntimeException("JsonMappingException in " + e.getClass());
+			LOG.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage());
 		} catch (IOException e) {
-			logger.error("IOException in " + e.getClass());
-			throw new RuntimeException("IOException in " + e.getClass());
+			LOG.error(e.getMessage(), e);
+			throw new RuntimeException(e.getMessage());
 		}
 
 		if (!jvmMBeansNode.isMissingNode()) {
-			this.setJvmMemoryUsed(jvmMBeansNode.path("used").asDouble());
-			this.setJvmMemoryFree(jvmMBeansNode.path("free").asDouble());
-			this.setJvmMemoryTotal(jvmMBeansNode.path("total").asDouble());
+			this.setJvmMemoryUsed(convertMemoryStringToDouble(jvmMBeansNode.path("used").asText()));
+			this.setJvmMemoryFree(convertMemoryStringToDouble(jvmMBeansNode.path("free").asText()));
+			this.setJvmMemoryTotal(convertMemoryStringToDouble(jvmMBeansNode.path("total").asText()));
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("used=" + getJvmMemoryUsed());
+				LOG.debug("free=" + getJvmMemoryFree());
+			}
 		} else {
-			logger.error("Error in retrieving jvm memory stats");
+			LOG.error("Error in retrieving jvm memory stats");
 		}
 
 		if (!memoryMBeansNode.isMissingNode()) {
 			this.setFreePhysicalMemorySize(memoryMBeansNode.path("freePhysicalMemorySize").asDouble());
 			this.setTotalPhysicalMemorySize(memoryMBeansNode.path("totalPhysicalMemorySize").asDouble());
 			this.setCommittedVirtualMemorySize(memoryMBeansNode.path("committedVirtualMemorySize").asDouble());
+			this.setFreeSwapSpaceSize(memoryMBeansNode.path("freeSwapSpaceSize").asDouble());
+			this.setTotalSwapSpaceSize(memoryMBeansNode.path("totalSwapSpaceSize").asDouble());
+			this.setOpenFileDescriptorCount(memoryMBeansNode.path("openFileDescriptorCount").asDouble());
+			this.setMaxFileDescriptorCount(memoryMBeansNode.path("maxFileDescriptorCount").asDouble());
 		} else {
-			logger.error("Error in retrieving system memory stats");
+			LOG.error("Error in retrieving system memory stats");
 		}
-
 	}
 
+	/**
+	 * Returns JsonResponse as String for Memory stats. Overrides super class
+	 * method as the structure of Json is different from other stats
+	 */
 	@Override
 	public String getJsonResponseString(String resource) {
-		IHttpClientWrapper httpClient = HttpClientWrapper.getInstance();
 		HttpExecutionRequest request = new HttpExecutionRequest(resource, "", HttpOperation.GET);
-		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(logger));
-		if (response.isExceptionHappened() || response.getStatusCode() == 400) {
-			logger.error("Solr instance down OR URL " + resource + " not supported");
-			throw new RuntimeException("Solr instance down OR URL " + resource + " not supported");
+		HttpExecutionResponse response = getHttpClient().executeHttpOperation(request, new Log4JLogger(LOG));
+		if (response.getStatusCode() == 404) {
+			LOG.error("Specified URL " + resource + " not supported");
 		}
 		return response.getResponseBody();
-	}
-
-	public String getResourceAppender() {
-		return memoryresource;
-	}
-
-	public void setResourceAppender(String resourceAppender) {
-		this.memoryresource = resourceAppender;
 	}
 
 	public Number getJvmMemoryUsed() {
 		return jvmMemoryUsed;
 	}
 
-	public void setJvmMemoryUsed(Number jvmMemoryUsed) {
+	public void setJvmMemoryUsed(Double jvmMemoryUsed) {
 		this.jvmMemoryUsed = jvmMemoryUsed;
 	}
 
@@ -125,7 +134,7 @@ public class MemoryStats extends Stats {
 		return jvmMemoryFree;
 	}
 
-	public void setJvmMemoryFree(Number jvmMemoryFree) {
+	public void setJvmMemoryFree(Double jvmMemoryFree) {
 		this.jvmMemoryFree = jvmMemoryFree;
 	}
 
@@ -133,7 +142,7 @@ public class MemoryStats extends Stats {
 		return jvmMemoryTotal;
 	}
 
-	public void setJvmMemoryTotal(Number jvmMemoryTotal) {
+	public void setJvmMemoryTotal(Double jvmMemoryTotal) {
 		this.jvmMemoryTotal = jvmMemoryTotal;
 	}
 
@@ -161,8 +170,61 @@ public class MemoryStats extends Stats {
 		this.committedVirtualMemorySize = convertBytesToMB(committedVirtualMemorySize);
 	}
 
+	public Number getFreeSwapSpaceSize() {
+		return freeSwapSpaceSize;
+	}
+
+	public void setFreeSwapSpaceSize(Number freeSwapSpaceSize) {
+		this.freeSwapSpaceSize = convertBytesToMB(freeSwapSpaceSize);
+	}
+
+	public Number getTotalSwapSpaceSize() {
+		return totalSwapSpaceSize;
+	}
+
+	public void setTotalSwapSpaceSize(Number totalSwapSpaceSize) {
+		this.totalSwapSpaceSize = convertBytesToMB(totalSwapSpaceSize);
+	}
+
+	public Number getOpenFileDescriptorCount() {
+		return openFileDescriptorCount;
+	}
+
+	public void setOpenFileDescriptorCount(Number openFileDescriptorCount) {
+		this.openFileDescriptorCount = openFileDescriptorCount;
+	}
+
+	public Number getMaxFileDescriptorCount() {
+		return maxFileDescriptorCount;
+	}
+
+	public void setMaxFileDescriptorCount(Number maxFileDescriptorCount) {
+		this.maxFileDescriptorCount = maxFileDescriptorCount;
+	}
+
+	/**
+	 * Converts Bytes to MegaBytes
+	 * 
+	 * @param d
+	 * @return
+	 */
 	private double convertBytesToMB(Number d) {
 		return (double) Math.round(d.doubleValue() / (1024.0 * 1024.0));
+	}
+
+	/**
+	 * Converts from String form with Units("224 MB") to a number(224)
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private Double convertMemoryStringToDouble(String value) {
+		return Double.valueOf(value.split("MB")[0].trim());
+	}
+
+	@Override
+	public String constructURL() {
+		return "http://" + getHost() + ":" + getPort() + URI_QUERY_STRING;
 	}
 
 }

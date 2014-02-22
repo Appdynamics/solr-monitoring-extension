@@ -1,11 +1,12 @@
-# AppDynamics Elasticsearch Monitoring Extension
+# AppDynamics Solr Monitoring Extension
 
 This extension works only with the standalone machine agent.
 
 ##Use Case
 
-Solr is the popular open source enterprise search platform from the Apache Lucene project.
+Solr is a popular open source enterprise search platform from the Apache Lucene project.
 Its major features include powerful full-text search, hit highlighting, faceted search, near real-time indexing, dynamic clustering, database integration, rich document (e.g., Word, PDF) handling, and geospatial search.
+This extension collects metrics from Solr search engine and uploads them to AppDynamics Metric Broswer.
 
 ##Installation
 
@@ -25,52 +26,64 @@ In the AppDynamics Metric Browser, look for: Application Infrastructure Performa
 ## Metrics
 
 Core Metrics
-
-| Metric Name 			| Description |
-|-------------------------------|-------------|
-|Number of Docs			| |
-|Max Docs			| |
+The following metrics are reported under | Core |
+| Metric Name 			|
+|-------------------------------|
+|Number of Docs			|
+|Max Docs			|
+|Deleted Docs			|
 
 
 Query Statistics
-The following metrics are reported under |QueryStats|
-
-| Metric Name 			| Description |
-|-------------------------------|-------------|
-|Average Rate (requests per second)| 	|
-|5 Minute Rate (requests per second)		| |
-|15 Minute Rate (requests per second)		| |
-|Average Timer Per Request (milliseconds)	| |
-|Median Request Time (milliseconds)		| |
-|95th Percentile Request Time (milliseconds)	||
+The following metrics are reported under | Query |
+| Metric Name 			|
+|-------------------------------|
+|Average Rate (requests per second)		|
+|5 Minute Rate (requests per second)		|
+|15 Minute Rate (requests per second)		|
+|Average Timer Per Request (milliseconds)	|
+|Median Request Time (milliseconds)		|
+|95th Percentile Request Time (milliseconds)	|
 
 Memory Statistics
-The following metrics are reported under SystemMemoryStats
 
-| Metric Name 			| Description |
-|-------------------------------|-------------|
-|Free Physical Memory Size (Bytes)		| 	|
-|sizeTotal Physical Memory Size (Bytes)			| |
-|Committed Virtual Memory Size (Bytes)		| |
+The following metrics are reported under | Memory | JVMMemory
+| Metric Name 			|
+|-------------------------------|
+|Used (MB)			|
+|Free (MB)			|
+|Total (MB)			|
+The following metrics are reported under | Memory | SystemMemory
+| Metric Name 			|
+|-------------------------------|
+|Free Physical Memory (MB)	|
+|Total Physical Memory (MB)	|
+|Committed Virtual Memory (MB)	|
+|Free Swap Size (MB)		|
+|Total Swap Size (MB)		|
+|Open File Descriptor Count	|
+|Max File Descriptor Count	|
 
 Cache Statistics
-The following metrics are reported under |Cache|
 
-| Metric Name 			| Description |
-|-------------------------------|-------------|
-|queryResultCacheHitRatio| 	|
-|queryResultCacheHitRatioCumulative		| |
-|queryResultCacheSize		| |
-|documentCacheHitRatio	| |
-|documentCacheHitRatioCumulative		| |
-|documentCacheSize	||
-|fieldValueCacheHitRatio| 	|
-|fieldValueCacheHitRatioCumulative		| |
-|fieldValueCacheSize		| |
-|filterCacheHitRatio	| |
-|filterCacheHitRatioCumulative		| |
-|filterCacheSize	||
-
+The following metrics are reported under | Cache | QueryResultCache |
+| Metric Name 			|
+|-------------------------------|
+|HitRatio			|
+|HitRatioCumulative		|
+|CacheSize (Bytes)		|
+The following metrics are reported under | Cache | DocumentCache |
+|HitRatio			|
+|HitRatioCumulative		| 
+|CacheSize (Bytes)		|
+The following metrics are reported under | Cache | FieldValueCache |
+|HitRatio			| 
+|HitRatioCumulative		| 
+|CacheSize (Bytes)		|
+The following metrics are reported under | Cache | FilterCache |
+|HitRatio			| 
+|HitRatioCumulative		| 
+|CacheSize (Bytes)		|
 ## Custom Dashboard
 ![]()
 

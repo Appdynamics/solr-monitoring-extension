@@ -16,27 +16,21 @@
 
 package com.appdynamics.extensions.solr.stats;
 
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.singularity.ee.util.httpclient.IHttpClientWrapper;
 
 public class QueryStats extends Stats {
 
-	private static Logger logger = Logger.getLogger(QueryStats.class.getName());
+	private static Logger LOG = Logger.getLogger(QueryStats.class.getName());
+
+	private static final String URL_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=QUERYHANDLER&wt=json";
 
 	private String handler = "/select";
-
-	private Number numDocs;
-
-	private Number maxDocs;
 
 	private Number avgRate;
 
@@ -50,38 +44,16 @@ public class QueryStats extends Stats {
 
 	private Number pcRequestTime95th;
 
-	public QueryStats(String host, String port) {
-		super(host, port);
-		logger.setLevel(Level.INFO);
+	public QueryStats(String host, String port, IHttpClientWrapper httpClient) {
+		super(host, port, httpClient);
+		LOG.setLevel(Level.INFO);
 	}
 
-	public void populateStats() {
-		String jsonString = getJsonResponseString(getUrl() + getResourceAppender() + getQueryString());
+	@Override
+	public void populateStats() throws Exception {
+		Map<String, JsonNode> solrMBeansHandlersMap = getSolrMBeansHandlersMap(constructURL());
 
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode solrMBeansNode = null;
-		try {
-			solrMBeansNode = mapper.readValue(jsonString.getBytes(), JsonNode.class).path("solr-mbeans");
-		} catch (JsonParseException e) {
-			logger.error("JsonParseException in " + e.getClass());
-			throw new RuntimeException("JsonParseException in " + e.getClass());
-		} catch (JsonMappingException e) {
-			logger.error("JsonMappingException in " + e.getClass());
-			throw new RuntimeException("JsonMappingException in " + e.getClass());
-		} catch (IOException e) {
-			logger.error("IOException in " + e.getClass());
-			throw new RuntimeException("IOException in " + e.getClass());
-		}
-		Map<String, JsonNode> solrStatsMap = new HashMap<String, JsonNode>();
-		for (int i = 1; i <= solrMBeansNode.size(); i += 2) {
-			solrStatsMap.put(solrMBeansNode.get(i - 1).asText(), solrMBeansNode.get(i));
-
-		}
-		JsonNode coreNode = solrStatsMap.get("CORE");
-		this.setNumDocs(coreNode.path("searcher").path("stats").path("numDocs").asInt());
-		this.setMaxDocs(coreNode.path("searcher").path("stats").path("maxDoc").asInt());
-
-		JsonNode hstats = solrStatsMap.get("QUERYHANDLER").path(handler).path("stats");
+		JsonNode hstats = solrMBeansHandlersMap.get("QUERYHANDLER").path(handler).path("stats");
 
 		if (!hstats.isMissingNode()) {
 			this.setAvgRate(hstats.path("avgRequestsPerSecond").asInt());
@@ -90,26 +62,14 @@ public class QueryStats extends Stats {
 			this.setAvgTimePerRequest(hstats.path("avgTimePerRequest").asInt());
 			this.setMedianRequestTime(hstats.path("medianRequestTime").asInt());
 			this.setPcRequestTime95th(hstats.path("95thPcRequestTime").asInt());
-			logger.info("Number of Docs: " + getNumDocs());
+
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("avgRequestsPerSecond=" + getAvgRate());
+				LOG.debug("avgTimePerRequest=" + getAvgTimePerRequest());
+			}
 		} else {
-			logger.error("Handler " + handler + " is not supported in this version");
+			throw new RuntimeException("Handler " + handler + " is not supported in this version");
 		}
-	}
-
-	public Number getNumDocs() {
-		return numDocs;
-	}
-
-	public void setNumDocs(Number numDocs) {
-		this.numDocs = numDocs;
-	}
-
-	public Number getMaxDocs() {
-		return maxDocs;
-	}
-
-	public void setMaxDocs(Number maxDocs) {
-		this.maxDocs = maxDocs;
 	}
 
 	public Number getAvgRate() {
@@ -158,6 +118,11 @@ public class QueryStats extends Stats {
 
 	public void setPcRequestTime95th(Number pcRequestTime95th) {
 		this.pcRequestTime95th = pcRequestTime95th;
+	}
+
+	@Override
+	public String constructURL() {
+		return "http://" + getHost() + ":" + getPort() + URL_QUERY_STRING;
 	}
 
 }

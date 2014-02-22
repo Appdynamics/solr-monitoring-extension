@@ -22,6 +22,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.appdynamics.extensions.solr.stats.CacheStats;
+import com.appdynamics.extensions.solr.stats.CoreStats;
 import com.appdynamics.extensions.solr.stats.MemoryStats;
 import com.appdynamics.extensions.solr.stats.QueryStats;
 import com.singularity.ee.agent.systemagent.api.AManagedMonitor;
@@ -29,91 +30,173 @@ import com.singularity.ee.agent.systemagent.api.MetricWriter;
 import com.singularity.ee.agent.systemagent.api.TaskExecutionContext;
 import com.singularity.ee.agent.systemagent.api.TaskOutput;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
+import com.singularity.ee.util.httpclient.HttpClientWrapper;
+import com.singularity.ee.util.httpclient.HttpExecutionRequest;
+import com.singularity.ee.util.httpclient.HttpExecutionResponse;
+import com.singularity.ee.util.httpclient.HttpOperation;
+import com.singularity.ee.util.httpclient.IHttpClientWrapper;
+import com.singularity.ee.util.log4j.Log4JLogger;
 
 public class SolrMonitor extends AManagedMonitor {
 
-	private static Logger logger = Logger.getLogger(SolrMonitor.class.getName());
+	private static Logger LOG = Logger.getLogger(SolrMonitor.class.getName());
 
-	private static final String metricPathPrefix = "Custom Metrics|Solr|";
+	private static final String METRIC_PATH_PREFIX = "Custom Metrics|Solr|";
+
+	private static final String PING_URI = "/solr/admin/ping";
 
 	private String host;
 	private String port;
 
+	private IHttpClientWrapper httpClient;
+
 	public SolrMonitor() {
-		logger.setLevel(Level.INFO);
+		LOG.setLevel(Level.INFO);
 		String msg = "Using Monitor Version [" + getImplementationVersion() + "]";
-		logger.info(msg);
+		LOG.info(msg);
 		System.out.println(msg);
 	}
 
+	/*
+	 * Main execution method that uploads the metrics to AppDynamics Controller
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.singularity.ee.agent.systemagent.api.ITask#execute(java.util.Map,
+	 * com.singularity.ee.agent.systemagent.api.TaskExecutionContext)
+	 */
 	public TaskOutput execute(Map<String, String> taskArguments, TaskExecutionContext arg1) throws TaskExecutionException {
+
+		host = taskArguments.get("host");
+		port = taskArguments.get("port");
+
+		if (httpClient == null) {
+			httpClient = HttpClientWrapper.getInstance();
+		}
+
+		// Checks Solr health status. If up, fetches all metrics
 		try {
+			pingSolr();
+		} catch (Exception e) {
+			LOG.error(e.getMessage());
+			return new TaskOutput("Connection to Solr failed");
+		}
 
-			host = taskArguments.get("host");
-			port = taskArguments.get("port");
+		// Fetches and prints core metrics (number of docs, deleted docs) to
+		// Controller
+		try {
+			CoreStats coreStats = new CoreStats(host, port, httpClient);
+			coreStats.populateStats();
+			printMetrics(coreStats);
+		} catch (Exception e) {
+			LOG.error("Error Retrieving Core Stats");
+			LOG.error(e.getMessage());
+		}
 
-			QueryStats solrStats = new QueryStats(host, port);
-			solrStats.populateStats();
-			printMetrics(solrStats);
+		// Fetches query metrics
+		try {
+			QueryStats queryStats = new QueryStats(host, port, httpClient);
+			queryStats.populateStats();
+			printMetrics(queryStats);
+		} catch (Exception e) {
+			LOG.error("Error Retrieving Query Stats");
+			LOG.error(e.getMessage());
+		}
 
-			MemoryStats memoryStats = new MemoryStats(host, port);
+		// Fetches JVM Memory and System Memory Stats
+		try {
+			MemoryStats memoryStats = new MemoryStats(host, port, httpClient);
 			memoryStats.populateStats();
 			printMetrics(memoryStats);
+		} catch (Exception e) {
+			LOG.error("Error Retrieving Memory Stats");
+			LOG.error(e.getMessage());
+		}
 
-			CacheStats cacheStats = new CacheStats(host, port);
+		// Fetches Cache metrics
+		try {
+			CacheStats cacheStats = new CacheStats(host, port, httpClient);
 			cacheStats.populateStats();
 			printMetrics(cacheStats);
-
-			return new TaskOutput("Solr Metric Upload Complete");
 		} catch (Exception e) {
-			logger.error("Solr Metric upload failed");
-			return new TaskOutput("Solr Metric upload failed");
+			LOG.error("Error Retrieving Cache Stats");
+			LOG.error(e.getMessage());
 		}
+
+		return new TaskOutput("End of execute method");
+	}
+
+	/**
+	 * Checks Solr health status. If up proceeds further to fetch desired
+	 * metrics
+	 */
+	private void pingSolr() {
+		IHttpClientWrapper httpClient = HttpClientWrapper.getInstance();
+		HttpExecutionRequest request = new HttpExecutionRequest(pingURL(), "", HttpOperation.GET);
+		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(LOG));
+		if (response.getStatusCode() == 200) {
+			LOG.info("Connected to Solr successfully");
+		} else {
+			throw new RuntimeException("Solr instance down or host/port incorrect. Please check");
+		}
+	}
+
+	private void printMetrics(CoreStats stats) {
+		String metricPath = "Core|";
+		printMetric(metricPath, "Number of Docs", stats.getNumDocs());
+		printMetric(metricPath, "Max Docs", stats.getMaxDocs());
+		printMetric(metricPath, "Deleted Docs", stats.getDeletedDocs());
 	}
 
 	private void printMetrics(CacheStats cacheStats) {
 		String metricPath = "Cache|";
-		printMetric(metricPath + "QueryResultCache|", "queryResultCacheHitRatio", cacheStats.getQueryResultCacheHitRatio());
-		printMetric(metricPath + "QueryResultCache|", "queryResultCacheHitRatioCumulative", cacheStats.getQueryResultCacheHitRatioCumulative());
-		printMetric(metricPath + "QueryResultCache|", "queryResultCacheSize", cacheStats.getQueryResultCacheSize());
-		printMetric(metricPath + "DocumentCache|", "documentCacheHitRatio", cacheStats.getDocumentCacheHitRatio());
-		printMetric(metricPath + "DocumentCache|", "documentCacheHitRatioCumulative", cacheStats.getDocumentCacheHitRatioCumulative());
-		printMetric(metricPath + "DocumentCache|", "documentCacheSize", cacheStats.getDocumentCacheSize());
-		printMetric(metricPath + "FieldValueCache|", "fieldValueCacheHitRatio", cacheStats.getFieldValueCacheHitRatio());
-		printMetric(metricPath + "FieldValueCache|", "fieldValueCacheHitRatioCumulative", cacheStats.getFieldValueCacheHitRatioCumulative());
-		printMetric(metricPath + "FieldValueCache|", "fieldValueCacheSize", cacheStats.getFieldValueCacheSize());
-		printMetric(metricPath + "FilterCache|", "filterCacheHitRatio", cacheStats.getFilterCacheHitRatio());
-		printMetric(metricPath + "FilterCache|", "filterCacheHitRatioCumulative", cacheStats.getFilterCacheHitRatioCumulative());
-		printMetric(metricPath + "FilterCache|", "filterCacheSize", cacheStats.getFilterCacheSize());
+		printMetric(metricPath + "QueryResultCache|", "HitRatio", cacheStats.getQueryResultCacheHitRatio());
+		printMetric(metricPath + "QueryResultCache|", "HitRatioCumulative", cacheStats.getQueryResultCacheHitRatioCumulative());
+		printMetric(metricPath + "QueryResultCache|", "CacheSize (Bytes)", cacheStats.getQueryResultCacheSize());
+		printMetric(metricPath + "DocumentCache|", "HitRatio", cacheStats.getDocumentCacheHitRatio());
+		printMetric(metricPath + "DocumentCache|", "HitRatioCumulative", cacheStats.getDocumentCacheHitRatioCumulative());
+		printMetric(metricPath + "DocumentCache|", "CacheSize (Bytes)", cacheStats.getDocumentCacheSize());
+		printMetric(metricPath + "FieldValueCache|", "HitRatio", cacheStats.getFieldValueCacheHitRatio());
+		printMetric(metricPath + "FieldValueCache|", "HitRatioCumulative", cacheStats.getFieldValueCacheHitRatioCumulative());
+		printMetric(metricPath + "FieldValueCache|", "CacheSize (Bytes)", cacheStats.getFieldValueCacheSize());
+		printMetric(metricPath + "FilterCache|", "HitRatio", cacheStats.getFilterCacheHitRatio());
+		printMetric(metricPath + "FilterCache|", "HitRatioCumulative", cacheStats.getFilterCacheHitRatioCumulative());
+		printMetric(metricPath + "FilterCache|", "CacheSize (Bytes)", cacheStats.getFilterCacheSize());
 	}
 
 	private void printMetrics(MemoryStats memoryStats) {
-		// String metricPath = "JVMMemoryStats|";
-		// printMetric(metricPath, "JVM Memory Used (MB)",
-		// memoryStats.getJvmMemoryUsed());
-		// printMetric(metricPath, "JVM Memory Free (MB)",
-		// memoryStats.getJvmMemoryFree());
-		// printMetric(metricPath, "JVM Memory Total (MB)",
-		// memoryStats.getJvmMemoryTotal());
-		printMetric("SystemMemoryStats|", "Free Physical Memory Size (Bytes)", memoryStats.getFreePhysicalMemorySize());
-		printMetric("SystemMemoryStats|", "Total Physical Memory Size (Bytes)", memoryStats.getTotalPhysicalMemorySize());
-		printMetric("SystemMemoryStats|", "Committed Virtual Memory Size (Bytes)", memoryStats.getCommittedVirtualMemorySize());
+		String metricPath = "Memory|";
+		printMetric(metricPath + "JVMMemory|", "Used (MB)", memoryStats.getJvmMemoryUsed());
+		printMetric(metricPath + "JVMMemory|", "Free (MB)", memoryStats.getJvmMemoryFree());
+		printMetric(metricPath + "JVMMemory|", "Total (MB)", memoryStats.getJvmMemoryTotal());
+		printMetric(metricPath + "SystemMemory|", "Free Physical Memory(MB)", memoryStats.getFreePhysicalMemorySize());
+		printMetric(metricPath + "SystemMemory|", "Total Physical Memory(MB)", memoryStats.getTotalPhysicalMemorySize());
+		printMetric(metricPath + "SystemMemory|", "Committed Virtual Memory(MB)", memoryStats.getCommittedVirtualMemorySize());
+		printMetric(metricPath + "SystemMemory|", "Free Swap Size (MB)", memoryStats.getFreeSwapSpaceSize());
+		printMetric(metricPath + "SystemMemory|", "Total Swap Size (MB)", memoryStats.getTotalSwapSpaceSize());
+		printMetric(metricPath + "SystemMemory|", "Open File Descriptor Count", memoryStats.getOpenFileDescriptorCount());
+		printMetric(metricPath + "SystemMemory|", "Max File Descriptor Count", memoryStats.getMaxFileDescriptorCount());
 
 	}
 
 	private void printMetrics(QueryStats stats) {
-		String metricPath = "QueryStats|";
-		printMetric("", "Number of Docs", stats.getNumDocs());
-		printMetric("", "Max Docs", stats.getMaxDocs());
+		String metricPath = "Query|";
 		printMetric(metricPath, "Average Rate (requests per second)", stats.getAvgRate());
 		printMetric(metricPath, "5 Minute Rate (requests per second)", stats.getRate5min());
 		printMetric(metricPath, "15 Minute Rate (requests per second)", stats.getRate15min());
-		printMetric(metricPath, "Average Timer Per Request (milliseconds)", stats.getAvgTimePerRequest());
+		printMetric(metricPath, "Average Time Per Request (milliseconds)", stats.getAvgTimePerRequest());
 		printMetric(metricPath, "Median Request Time (milliseconds)", stats.getMedianRequestTime());
 		printMetric(metricPath, "95th Percentile Request Time (milliseconds)", stats.getPcRequestTime95th());
 
 	}
 
+	/**
+	 * Prints Metrics to AppDynamics Metric Browser
+	 * 
+	 * @param metricPath
+	 * @param metricName
+	 * @param metricValue
+	 */
 	private void printMetric(String metricPath, String metricName, Object metricValue) {
 		printMetric(getMetricPrefix() + metricPath, metricName, metricValue, MetricWriter.METRIC_AGGREGATION_TYPE_AVERAGE,
 				MetricWriter.METRIC_TIME_ROLLUP_TYPE_AVERAGE, MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_COLLECTIVE);
@@ -131,21 +214,15 @@ public class SolrMonitor extends AManagedMonitor {
 	}
 
 	private String getMetricPrefix() {
-		return metricPathPrefix;
+		return METRIC_PATH_PREFIX;
 	}
 
 	public static String getImplementationVersion() {
 		return SolrMonitor.class.getPackage().getImplementationTitle();
 	}
 
-	public static void main(String[] args) {
-		QueryStats solrStats = new QueryStats("localhost", "8983");
-		solrStats.populateStats();
-
-		MemoryStats memoryStats = new MemoryStats("localhost", "8983");
-		memoryStats.populateStats();
-
-		CacheStats cacheStats = new CacheStats("localhost", "8983");
-		cacheStats.populateStats();
+	public String pingURL() {
+		return "http://" + host + ":" + port + PING_URI;
 	}
+
 }
