@@ -26,7 +26,7 @@ In the AppDynamics Metric Browser, look for: Application Infrastructure Performa
 ## Metrics
 
 Core Metrics
-The following metrics are reported under | Core |
+The following metrics are reported under Core
 | Metric Name 			|
 |-------------------------------|
 |Number of Docs			|
@@ -35,7 +35,9 @@ The following metrics are reported under | Core |
 
 
 Query Statistics
-The following metrics are reported under | Query |
+
+The following metrics are reported under Query
+
 | Metric Name 			|
 |-------------------------------|
 |Average Rate (requests per second)		|
@@ -47,13 +49,16 @@ The following metrics are reported under | Query |
 
 Memory Statistics
 
-The following metrics are reported under | Memory | JVMMemory
+The following metrics are reported under Memory/JVMMemory
+
 | Metric Name 			|
 |-------------------------------|
 |Used (MB)			|
 |Free (MB)			|
 |Total (MB)			|
-The following metrics are reported under | Memory | SystemMemory
+
+The following metrics are reported under Memory/SystemMemory
+
 | Metric Name 			|
 |-------------------------------|
 |Free Physical Memory (MB)	|
@@ -66,24 +71,38 @@ The following metrics are reported under | Memory | SystemMemory
 
 Cache Statistics
 
-The following metrics are reported under | Cache | QueryResultCache |
+The following metrics are reported under Cache /QueryResultCache
+
 | Metric Name 			|
 |-------------------------------|
 |HitRatio			|
 |HitRatioCumulative		|
 |CacheSize (Bytes)		|
-The following metrics are reported under | Cache | DocumentCache |
+
+The following metrics are reported under Cache/DocumentCache
+
+| Metric Name 			|
+|-------------------------------|
 |HitRatio			|
 |HitRatioCumulative		| 
 |CacheSize (Bytes)		|
-The following metrics are reported under | Cache | FieldValueCache |
+
+The following metrics are reported under Cache/FieldValueCache
+
+| Metric Name 			|
+|-------------------------------|
 |HitRatio			| 
 |HitRatioCumulative		| 
 |CacheSize (Bytes)		|
-The following metrics are reported under | Cache | FilterCache |
+
+The following metrics are reported under Cache/FilterCache
+
+| Metric Name 			|
+|-------------------------------|
 |HitRatio			| 
 |HitRatioCumulative		| 
 |CacheSize (Bytes)		|
+
 ## Custom Dashboard
 ![]()
 
