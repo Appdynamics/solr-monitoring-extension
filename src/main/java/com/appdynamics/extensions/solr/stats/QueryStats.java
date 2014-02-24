@@ -28,7 +28,8 @@ public class QueryStats extends Stats {
 
 	private static Logger LOG = Logger.getLogger(QueryStats.class.getName());
 
-	private static final String URL_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=QUERYHANDLER&wt=json";
+	// https://cwiki.apache.org/confluence/display/solr/MBean+Request+Handler
+	private static final String URL_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=QUERYHANDLER&key=/select&wt=json";
 
 	private String handler = "/select";
 
@@ -56,12 +57,12 @@ public class QueryStats extends Stats {
 		JsonNode hstats = solrMBeansHandlersMap.get("QUERYHANDLER").path(handler).path("stats");
 
 		if (!hstats.isMissingNode()) {
-			this.setAvgRate(hstats.path("avgRequestsPerSecond").asInt());
-			this.setRate5min(hstats.path("5minRateReqsPerSecond").asInt());
-			this.setRate15min(hstats.path("15minRateReqsPerSecond").asInt());
-			this.setAvgTimePerRequest(hstats.path("avgTimePerRequest").asInt());
-			this.setMedianRequestTime(hstats.path("medianRequestTime").asInt());
-			this.setPcRequestTime95th(hstats.path("95thPcRequestTime").asInt());
+			this.setAvgRate(hstats.path("avgRequestsPerSecond").asDouble());
+			this.setRate5min(hstats.path("5minRateReqsPerSecond").asDouble());
+			this.setRate15min(hstats.path("15minRateReqsPerSecond").asDouble());
+			this.setAvgTimePerRequest(hstats.path("avgTimePerRequest").asDouble());
+			this.setMedianRequestTime(hstats.path("medianRequestTime").asDouble());
+			this.setPcRequestTime95th(hstats.path("95thPcRequestTime").asDouble());
 
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("avgRequestsPerSecond=" + getAvgRate());

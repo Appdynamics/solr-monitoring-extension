@@ -68,9 +68,9 @@ public class CacheStats extends Stats {
 		JsonNode queryResultCacheStats = cacheNode.path("queryResultCache").path("stats");
 
 		if (!queryResultCacheStats.isMissingNode()) {
-			this.setQueryResultCacheHitRatio(queryResultCacheStats.path("hitratio").asInt());
-			this.setQueryResultCacheHitRatioCumulative(queryResultCacheStats.path("cumulative_hitratio").asInt());
-			this.setQueryResultCacheSize(queryResultCacheStats.path("size").asInt());
+			this.setQueryResultCacheHitRatio(queryResultCacheStats.path("hitratio").asDouble());
+			this.setQueryResultCacheHitRatioCumulative(queryResultCacheStats.path("cumulative_hitratio").asDouble());
+			this.setQueryResultCacheSize(queryResultCacheStats.path("size").asDouble());
 
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("hitratio = " + getQueryResultCacheHitRatio());
@@ -84,9 +84,9 @@ public class CacheStats extends Stats {
 		JsonNode documentCacheStats = cacheNode.path("documentCache").path("stats");
 
 		if (!documentCacheStats.isMissingNode()) {
-			this.setDocumentCacheHitRatio(documentCacheStats.path("hitratio").asInt());
-			this.setDocumentCacheHitRatioCumulative(documentCacheStats.path("cumulative_hitratio").asInt());
-			this.setDocumentCacheSize(documentCacheStats.path("size").asInt());
+			this.setDocumentCacheHitRatio(documentCacheStats.path("hitratio").asDouble());
+			this.setDocumentCacheHitRatioCumulative(documentCacheStats.path("cumulative_hitratio").asDouble());
+			this.setDocumentCacheSize(documentCacheStats.path("size").asDouble());
 		} else {
 			LOG.error("Error in document cache stats");
 		}
@@ -94,9 +94,9 @@ public class CacheStats extends Stats {
 		JsonNode fieldValueCacheStats = cacheNode.path("fieldValueCache").path("stats");
 
 		if (!fieldValueCacheStats.isMissingNode()) {
-			this.setFieldValueCacheHitRatio(fieldValueCacheStats.path("hitratio").asInt());
-			this.setFieldValueCacheHitRatioCumulative(fieldValueCacheStats.path("cumulative_hitratio").asInt());
-			this.setFieldValueCacheSize(fieldValueCacheStats.path("size").asInt());
+			this.setFieldValueCacheHitRatio(fieldValueCacheStats.path("hitratio").asDouble());
+			this.setFieldValueCacheHitRatioCumulative(fieldValueCacheStats.path("cumulative_hitratio").asDouble());
+			this.setFieldValueCacheSize(fieldValueCacheStats.path("size").asDouble());
 		} else {
 			LOG.error("Error in field value cache stats");
 		}
@@ -104,9 +104,9 @@ public class CacheStats extends Stats {
 		JsonNode filterCacheStats = cacheNode.path("filterCache").path("stats");
 
 		if (!filterCacheStats.isMissingNode()) {
-			this.setFilterCacheHitRatio(filterCacheStats.path("hitratio").asInt());
-			this.setFilterCacheHitRatioCumulative(filterCacheStats.path("cumulative_hitratio").asInt());
-			this.setFilterCacheSize(filterCacheStats.path("size").asInt());
+			this.setFilterCacheHitRatio(filterCacheStats.path("hitratio").asDouble());
+			this.setFilterCacheHitRatioCumulative(filterCacheStats.path("cumulative_hitratio").asDouble());
+			this.setFilterCacheSize(filterCacheStats.path("size").asDouble());
 		} else {
 			LOG.error("Error in filter cache stats");
 		}

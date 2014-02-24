@@ -28,7 +28,7 @@ public class CoreStats extends Stats {
 
 	private static Logger LOG = Logger.getLogger(CoreStats.class.getName());
 
-	private static final String URI_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=CORE&wt=json";
+	private static final String URI_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=CORE&key=searcher&wt=json";
 
 	private Number numDocs;
 
@@ -42,7 +42,7 @@ public class CoreStats extends Stats {
 	}
 
 	@Override
-	public void populateStats() throws Exception {
+	public void populateStats() {
 		Map<String, JsonNode> solrMBeansHandlersMap = getSolrMBeansHandlersMap(constructURL());
 		JsonNode coreNode = solrMBeansHandlersMap.get("CORE");
 		if (!coreNode.isMissingNode()) {
