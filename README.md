@@ -26,7 +26,9 @@ In the AppDynamics Metric Browser, look for: Application Infrastructure Performa
 ## Metrics
 
 Core Metrics
+
 The following metrics are reported under Core
+
 | Metric Name 			|
 |-------------------------------|
 |Number of Docs			|
