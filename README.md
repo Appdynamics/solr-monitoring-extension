@@ -25,7 +25,7 @@ In the AppDynamics Metric Browser, look for: Application Infrastructure Performa
 
 ## Metrics
 
-Core Metrics
+###Core Metrics
 
 The following metrics are reported under Core
 
@@ -36,7 +36,7 @@ The following metrics are reported under Core
 |Deleted Docs			|
 
 
-Query Statistics
+###Query Statistics
 
 The following metrics are reported under Query
 
@@ -45,11 +45,11 @@ The following metrics are reported under Query
 |Average Rate (requests per second)		|
 |5 Minute Rate (requests per second)		|
 |15 Minute Rate (requests per second)		|
-|Average Timer Per Request (milliseconds)	|
+|Average Time Per Request (milliseconds)	|
 |Median Request Time (milliseconds)		|
 |95th Percentile Request Time (milliseconds)	|
 
-Memory Statistics
+###Memory Statistics
 
 The following metrics are reported under Memory/JVMMemory
 
@@ -71,7 +71,7 @@ The following metrics are reported under Memory/SystemMemory
 |Open File Descriptor Count	|
 |Max File Descriptor Count	|
 
-Cache Statistics
+###Cache Statistics
 
 The following metrics are reported under Cache /QueryResultCache
 
@@ -106,7 +106,7 @@ The following metrics are reported under Cache/FilterCache
 |CacheSize (Bytes)		|
 
 ## Custom Dashboard
-![]()
+![](https://github.com/Appdynamics/solr-monitoring-extension/raw/master/SolrDashboard.png)
 
 ##Contributing
 
