@@ -135,7 +135,9 @@ public class SolrMonitor extends AManagedMonitor {
 		HttpExecutionRequest request = new HttpExecutionRequest(pingURL(), "", HttpOperation.GET);
 		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(LOG));
 		if (response.getStatusCode() == 200) {
-			LOG.info("Connected to Solr successfully");
+			if(LOG.isDebugEnabled()) {
+				LOG.debug("Connected to Solr successfully");
+			}
 		} else {
 			throw new RuntimeException("Solr instance down or host/port incorrect. Please check");
 		}
