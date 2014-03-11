@@ -18,7 +18,6 @@ package com.appdynamics.extensions.solr;
 
 import java.util.Map;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.appdynamics.extensions.solr.stats.CacheStats;
@@ -39,10 +38,9 @@ import com.singularity.ee.util.log4j.Log4JLogger;
 
 public class SolrMonitor extends AManagedMonitor {
 
-	private static Logger LOG = Logger.getLogger(SolrMonitor.class.getName());
+	private static Logger LOG = Logger.getLogger("com.singularity.extensions.SolrMonitor");
 
 	private static final String METRIC_PATH_PREFIX = "Custom Metrics|Solr|";
-
 	private static final String PING_URI = "/solr/admin/ping";
 
 	private String host;
@@ -51,7 +49,6 @@ public class SolrMonitor extends AManagedMonitor {
 	private IHttpClientWrapper httpClient;
 
 	public SolrMonitor() {
-		LOG.setLevel(Level.INFO);
 		String msg = "Using Monitor Version [" + getImplementationVersion() + "]";
 		LOG.info(msg);
 		System.out.println(msg);
@@ -78,7 +75,7 @@ public class SolrMonitor extends AManagedMonitor {
 		try {
 			pingSolr();
 		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			LOG.error("Connection to Solr failed", e);
 			return new TaskOutput("Connection to Solr failed");
 		}
 
@@ -89,8 +86,7 @@ public class SolrMonitor extends AManagedMonitor {
 			coreStats.populateStats();
 			printMetrics(coreStats);
 		} catch (Exception e) {
-			LOG.error("Error Retrieving Core Stats");
-			LOG.error(e.getMessage());
+			LOG.error("Error Retrieving Core Stats", e);
 		}
 
 		// Fetches query metrics
@@ -99,8 +95,7 @@ public class SolrMonitor extends AManagedMonitor {
 			queryStats.populateStats();
 			printMetrics(queryStats);
 		} catch (Exception e) {
-			LOG.error("Error Retrieving Query Stats");
-			LOG.error(e.getMessage());
+			LOG.error("Error Retrieving Query Stats", e);
 		}
 
 		// Fetches JVM Memory and System Memory Stats
@@ -109,8 +104,7 @@ public class SolrMonitor extends AManagedMonitor {
 			memoryStats.populateStats();
 			printMetrics(memoryStats);
 		} catch (Exception e) {
-			LOG.error("Error Retrieving Memory Stats");
-			LOG.error(e.getMessage());
+			LOG.error("Error Retrieving Memory Stats", e);
 		}
 
 		// Fetches Cache metrics
@@ -119,8 +113,7 @@ public class SolrMonitor extends AManagedMonitor {
 			cacheStats.populateStats();
 			printMetrics(cacheStats);
 		} catch (Exception e) {
-			LOG.error("Error Retrieving Cache Stats");
-			LOG.error(e.getMessage());
+			LOG.error("Error Retrieving Cache Stats", e);
 		}
 
 		return new TaskOutput("End of execute method");
@@ -135,11 +128,11 @@ public class SolrMonitor extends AManagedMonitor {
 		HttpExecutionRequest request = new HttpExecutionRequest(pingURL(), "", HttpOperation.GET);
 		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(LOG));
 		if (response.getStatusCode() == 200) {
-			if(LOG.isDebugEnabled()) {
+			if (LOG.isDebugEnabled()) {
 				LOG.debug("Connected to Solr successfully");
 			}
 		} else {
-			throw new RuntimeException("Solr instance down or host/port incorrect. Please check");
+			throw new RuntimeException("Error in connecting to " + pingURL() + " with HTTP status code " + response.getStatusCode());
 		}
 	}
 
@@ -152,32 +145,40 @@ public class SolrMonitor extends AManagedMonitor {
 
 	private void printMetrics(CacheStats cacheStats) {
 		String metricPath = "Cache|";
-		printMetric(metricPath + "QueryResultCache|", "HitRatio", cacheStats.getQueryResultCacheHitRatio());
-		printMetric(metricPath + "QueryResultCache|", "HitRatioCumulative", cacheStats.getQueryResultCacheHitRatioCumulative());
-		printMetric(metricPath + "QueryResultCache|", "CacheSize (Bytes)", cacheStats.getQueryResultCacheSize());
-		printMetric(metricPath + "DocumentCache|", "HitRatio", cacheStats.getDocumentCacheHitRatio());
-		printMetric(metricPath + "DocumentCache|", "HitRatioCumulative", cacheStats.getDocumentCacheHitRatioCumulative());
-		printMetric(metricPath + "DocumentCache|", "CacheSize (Bytes)", cacheStats.getDocumentCacheSize());
-		printMetric(metricPath + "FieldValueCache|", "HitRatio", cacheStats.getFieldValueCacheHitRatio());
-		printMetric(metricPath + "FieldValueCache|", "HitRatioCumulative", cacheStats.getFieldValueCacheHitRatioCumulative());
-		printMetric(metricPath + "FieldValueCache|", "CacheSize (Bytes)", cacheStats.getFieldValueCacheSize());
-		printMetric(metricPath + "FilterCache|", "HitRatio", cacheStats.getFilterCacheHitRatio());
-		printMetric(metricPath + "FilterCache|", "HitRatioCumulative", cacheStats.getFilterCacheHitRatioCumulative());
-		printMetric(metricPath + "FilterCache|", "CacheSize (Bytes)", cacheStats.getFilterCacheSize());
+		String queryCachePath = metricPath + "QueryResultCache|";
+		String documentCachePath = metricPath + "DocumentCache|";
+		String fieldCachePath = metricPath + "FieldValueCache|";
+		String filterCachePath = metricPath + "FilterCache|";
+
+		printMetric(queryCachePath, "HitRatio", cacheStats.getQueryResultCacheHitRatio());
+		printMetric(queryCachePath, "HitRatioCumulative", cacheStats.getQueryResultCacheHitRatioCumulative());
+		printMetric(queryCachePath, "CacheSize (Bytes)", cacheStats.getQueryResultCacheSize());
+		printMetric(documentCachePath, "HitRatio", cacheStats.getDocumentCacheHitRatio());
+		printMetric(documentCachePath, "HitRatioCumulative", cacheStats.getDocumentCacheHitRatioCumulative());
+		printMetric(documentCachePath, "CacheSize (Bytes)", cacheStats.getDocumentCacheSize());
+		printMetric(fieldCachePath, "HitRatio", cacheStats.getFieldValueCacheHitRatio());
+		printMetric(fieldCachePath, "HitRatioCumulative", cacheStats.getFieldValueCacheHitRatioCumulative());
+		printMetric(fieldCachePath, "CacheSize (Bytes)", cacheStats.getFieldValueCacheSize());
+		printMetric(filterCachePath, "HitRatio", cacheStats.getFilterCacheHitRatio());
+		printMetric(filterCachePath, "HitRatioCumulative", cacheStats.getFilterCacheHitRatioCumulative());
+		printMetric(filterCachePath, "CacheSize (Bytes)", cacheStats.getFilterCacheSize());
 	}
 
 	private void printMetrics(MemoryStats memoryStats) {
 		String metricPath = "Memory|";
-		printMetric(metricPath + "JVMMemory|", "Used (MB)", memoryStats.getJvmMemoryUsed());
-		printMetric(metricPath + "JVMMemory|", "Free (MB)", memoryStats.getJvmMemoryFree());
-		printMetric(metricPath + "JVMMemory|", "Total (MB)", memoryStats.getJvmMemoryTotal());
-		printMetric(metricPath + "SystemMemory|", "Free Physical Memory(MB)", memoryStats.getFreePhysicalMemorySize());
-		printMetric(metricPath + "SystemMemory|", "Total Physical Memory(MB)", memoryStats.getTotalPhysicalMemorySize());
-		printMetric(metricPath + "SystemMemory|", "Committed Virtual Memory(MB)", memoryStats.getCommittedVirtualMemorySize());
-		printMetric(metricPath + "SystemMemory|", "Free Swap Size (MB)", memoryStats.getFreeSwapSpaceSize());
-		printMetric(metricPath + "SystemMemory|", "Total Swap Size (MB)", memoryStats.getTotalSwapSpaceSize());
-		printMetric(metricPath + "SystemMemory|", "Open File Descriptor Count", memoryStats.getOpenFileDescriptorCount());
-		printMetric(metricPath + "SystemMemory|", "Max File Descriptor Count", memoryStats.getMaxFileDescriptorCount());
+		String jvmPath = metricPath + "JVMMemory|";
+		String systemPath = metricPath + "SystemMemory|";
+
+		printMetric(jvmPath, "Used (MB)", memoryStats.getJvmMemoryUsed());
+		printMetric(jvmPath, "Free (MB)", memoryStats.getJvmMemoryFree());
+		printMetric(jvmPath, "Total (MB)", memoryStats.getJvmMemoryTotal());
+		printMetric(systemPath, "Free Physical Memory(MB)", memoryStats.getFreePhysicalMemorySize());
+		printMetric(systemPath, "Total Physical Memory(MB)", memoryStats.getTotalPhysicalMemorySize());
+		printMetric(systemPath, "Committed Virtual Memory(MB)", memoryStats.getCommittedVirtualMemorySize());
+		printMetric(systemPath, "Free Swap Size (MB)", memoryStats.getFreeSwapSpaceSize());
+		printMetric(systemPath, "Total Swap Size (MB)", memoryStats.getTotalSwapSpaceSize());
+		printMetric(systemPath, "Open File Descriptor Count", memoryStats.getOpenFileDescriptorCount());
+		printMetric(systemPath, "Max File Descriptor Count", memoryStats.getMaxFileDescriptorCount());
 
 	}
 

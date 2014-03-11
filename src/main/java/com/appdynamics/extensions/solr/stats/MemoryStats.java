@@ -18,7 +18,6 @@ package com.appdynamics.extensions.solr.stats;
 
 import java.io.IOException;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -59,7 +58,6 @@ public class MemoryStats extends Stats {
 
 	public MemoryStats(String host, String port, IHttpClientWrapper httpClient) {
 		super(host, port, httpClient);
-		LOG.setLevel(Level.INFO);
 	}
 
 	@Override

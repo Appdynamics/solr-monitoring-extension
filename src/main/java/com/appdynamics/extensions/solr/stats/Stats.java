@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -35,7 +34,7 @@ import com.singularity.ee.util.log4j.Log4JLogger;
 
 public abstract class Stats {
 
-	private static Logger logger = Logger.getLogger(Stats.class.getName());
+	private static Logger LOG = Logger.getLogger(Stats.class.getName());
 
 	private IHttpClientWrapper httpClient;
 
@@ -47,7 +46,6 @@ public abstract class Stats {
 		this.host = host;
 		this.port = port;
 		this.httpClient = httpClient;
-		logger.setLevel(Level.INFO);
 	}
 
 	/**
@@ -65,13 +63,13 @@ public abstract class Stats {
 		try {
 			solrMBeansNode = mapper.readValue(jsonString.getBytes(), JsonNode.class).path("solr-mbeans");
 		} catch (JsonParseException e) {
-			logger.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage());
 		} catch (JsonMappingException e) {
-			logger.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage());
 		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
+			LOG.error(e.getMessage(), e);
 			throw new RuntimeException(e.getMessage());
 		}
 		if (solrMBeansNode.isMissingNode()) {
@@ -93,7 +91,7 @@ public abstract class Stats {
 	 */
 	public String getJsonResponseString(String resource) {
 		HttpExecutionRequest request = new HttpExecutionRequest(resource, "", HttpOperation.GET);
-		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(logger));
+		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(LOG));
 		if (response.getStatusCode() == 404) {
 			throw new RuntimeException("Specified URL " + resource + " not supported in this Solr version");
 		}

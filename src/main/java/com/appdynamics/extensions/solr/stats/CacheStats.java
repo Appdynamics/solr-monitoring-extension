@@ -18,7 +18,6 @@ package com.appdynamics.extensions.solr.stats;
 
 import java.util.Map;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -56,7 +55,6 @@ public class CacheStats extends Stats {
 
 	public CacheStats(final String host, final String port, IHttpClientWrapper httpClient) {
 		super(host, port, httpClient);
-		LOG.setLevel(Level.INFO);
 	}
 
 	@Override
