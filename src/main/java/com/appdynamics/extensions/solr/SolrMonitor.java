@@ -37,8 +37,9 @@ public class SolrMonitor extends AManagedMonitor {
 
 	private static Logger LOG = Logger.getLogger("com.singularity.extensions.SolrMonitor");
 
-	private static final String METRIC_PATH_PREFIX = "Custom Metrics|Solr|";
-	private static final String PING_URI = "/solr/admin/ping";
+	private static String metric_path_prefix = "Custom Metrics|Solr|";
+	// private static final String PING_URI = "/solr/admin/ping";
+	private static final String PING_URI = "/solr";
 
 	private String host;
 	private String port;
@@ -54,7 +55,7 @@ public class SolrMonitor extends AManagedMonitor {
 	/*
 	 * Main execution method that uploads the metrics to AppDynamics Controller
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * com.singularity.ee.agent.systemagent.api.ITask#execute(java.util.Map,
 	 * com.singularity.ee.agent.systemagent.api.TaskExecutionContext)
@@ -64,16 +65,23 @@ public class SolrMonitor extends AManagedMonitor {
 		host = taskArguments.get("host");
 		port = taskArguments.get("port");
 
+		if (taskArguments.get("metric-path") != null && taskArguments.get("metric-path") != "") {
+			metric_path_prefix = taskArguments.get("metric-path");
+			LOG.debug("Metric path: " + metric_path_prefix);
+			if (!metric_path_prefix.endsWith("|")) {
+				metric_path_prefix += "|";
+			}
+		}
 
-        if (httpClient == null) {
-            if (Boolean.getBoolean("com.appdynamics.extensions.solr.useproxy")) {
-                httpClient = HttpClientWrapper.getInstance();
-            } else {
-                HttpClient client = HttpClientWrapper.getDefaultHttpClient();
-                client.getHostConfiguration().setProxyHost(null);
-                httpClient = new SimpleHttpClientWrapper(client);
-            }
-        }
+		if (httpClient == null) {
+			if (Boolean.getBoolean("com.appdynamics.extensions.solr.useproxy")) {
+				httpClient = HttpClientWrapper.getInstance();
+			} else {
+				HttpClient client = HttpClientWrapper.getDefaultHttpClient();
+				client.getHostConfiguration().setProxyHost(null);
+				httpClient = new SimpleHttpClientWrapper(client);
+			}
+		}
 
 		// Checks Solr health status. If up, fetches all metrics
 		try {
@@ -133,7 +141,7 @@ public class SolrMonitor extends AManagedMonitor {
 		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(LOG));
 		if (response.getStatusCode() == 200) {
 			if (LOG.isDebugEnabled()) {
-				LOG.debug("Connected to Solr successfully");
+				LOG.debug("Connected to Solr " + pingURL() + " successfully");
 			}
 		} else {
 			throw new RuntimeException("Error in connecting to " + pingURL() + " with HTTP status code " + response.getStatusCode());
@@ -199,7 +207,7 @@ public class SolrMonitor extends AManagedMonitor {
 
 	/**
 	 * Prints Metrics to AppDynamics Metric Browser
-	 *
+	 * 
 	 * @param metricPath
 	 * @param metricName
 	 * @param metricValue
@@ -221,7 +229,7 @@ public class SolrMonitor extends AManagedMonitor {
 	}
 
 	private String getMetricPrefix() {
-		return METRIC_PATH_PREFIX;
+		return metric_path_prefix;
 	}
 
 	public static String getImplementationVersion() {

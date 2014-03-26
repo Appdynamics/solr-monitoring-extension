@@ -25,7 +25,7 @@ import com.singularity.ee.util.httpclient.IHttpClientWrapper;
 
 public class CacheStats extends Stats {
 
-	private static final Logger LOG = Logger.getLogger(CacheStats.class.getName());
+	private static final Logger LOG = Logger.getLogger("com.singularity.extensions.CacheStats");
 
 	private static final String URI_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=CACHE&wt=json";
 

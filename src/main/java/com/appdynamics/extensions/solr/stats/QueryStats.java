@@ -25,7 +25,7 @@ import com.singularity.ee.util.httpclient.IHttpClientWrapper;
 
 public class QueryStats extends Stats {
 
-	private static Logger LOG = Logger.getLogger(QueryStats.class.getName());
+	private static Logger LOG = Logger.getLogger("com.singularity.extensions.QueryStats");
 
 	// https://cwiki.apache.org/confluence/display/solr/MBean+Request+Handler
 	private static final String URL_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=QUERYHANDLER&key=/select&wt=json";
@@ -67,7 +67,7 @@ public class QueryStats extends Stats {
 				LOG.debug("avgTimePerRequest=" + getAvgTimePerRequest());
 			}
 		} else {
-			throw new RuntimeException("Handler " + handler + " is not supported in this version");
+			throw new RuntimeException("Handler " + handler + " is not supported/configured in this Solr version");
 		}
 	}
 

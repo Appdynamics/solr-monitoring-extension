@@ -32,7 +32,7 @@ import com.singularity.ee.util.log4j.Log4JLogger;
 
 public class MemoryStats extends Stats {
 
-	private static final Logger LOG = Logger.getLogger(MemoryStats.class.getName());
+	private static final Logger LOG = Logger.getLogger("com.singularity.extensions.MemoryStats");
 
 	private static final String URI_QUERY_STRING = "/solr/admin/system?stats=true&wt=json";
 
@@ -202,7 +202,7 @@ public class MemoryStats extends Stats {
 
 	/**
 	 * Converts Bytes to MegaBytes
-	 *
+	 * 
 	 * @param d
 	 * @return
 	 */
@@ -211,19 +211,21 @@ public class MemoryStats extends Stats {
 	}
 
 	/**
-     * Converts from String form with Units("224 MB") to a number(224)
-     *
-     * @param value
-     * @return
-     */
-    public static Double convertMemoryStringToDouble(String value) {
-        if (value.contains("MB"))
-            return Double.valueOf(value.split("MB")[0].trim());
-        else if (value.contains("GB"))
-            return Double.valueOf(value.split("GB")[0].trim()) * 1024.0;
-        else
-            throw new RuntimeException("Unrecognized string format: " + value);
-    }
+	 * Converts from String form with Units("224 MB") to a number(224)
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static Double convertMemoryStringToDouble(String value) {
+		if (value.contains("KB"))
+			return Double.valueOf(value.split("KB")[0].trim()) / 1024.0;
+		else if (value.contains("MB"))
+			return Double.valueOf(value.split("MB")[0].trim());
+		else if (value.contains("GB"))
+			return Double.valueOf(value.split("GB")[0].trim()) * 1024.0;
+		else
+			throw new RuntimeException("Unrecognized string format: " + value);
+	}
 
 	@Override
 	public String constructURL() {

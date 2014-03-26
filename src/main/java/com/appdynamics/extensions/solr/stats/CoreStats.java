@@ -25,7 +25,7 @@ import com.singularity.ee.util.httpclient.IHttpClientWrapper;
 
 public class CoreStats extends Stats {
 
-	private static Logger LOG = Logger.getLogger(CoreStats.class.getName());
+	private static Logger LOG = Logger.getLogger("com.singularity.extensions.CoreStats");
 
 	private static final String URI_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=CORE&key=searcher&wt=json";
 

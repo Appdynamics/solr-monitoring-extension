@@ -34,7 +34,7 @@ import com.singularity.ee.util.log4j.Log4JLogger;
 
 public abstract class Stats {
 
-	private static Logger LOG = Logger.getLogger(Stats.class.getName());
+	private static Logger LOG = Logger.getLogger("com.singularity.extensions.Stats");
 
 	private IHttpClientWrapper httpClient;
 
