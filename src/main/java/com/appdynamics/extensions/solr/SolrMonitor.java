@@ -18,6 +18,8 @@ package com.appdynamics.extensions.solr;
 
 import java.util.Map;
 
+import com.singularity.ee.util.httpclient.*;
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.log4j.Logger;
 
 import com.appdynamics.extensions.solr.stats.CacheStats;
@@ -29,11 +31,6 @@ import com.singularity.ee.agent.systemagent.api.MetricWriter;
 import com.singularity.ee.agent.systemagent.api.TaskExecutionContext;
 import com.singularity.ee.agent.systemagent.api.TaskOutput;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
-import com.singularity.ee.util.httpclient.HttpClientWrapper;
-import com.singularity.ee.util.httpclient.HttpExecutionRequest;
-import com.singularity.ee.util.httpclient.HttpExecutionResponse;
-import com.singularity.ee.util.httpclient.HttpOperation;
-import com.singularity.ee.util.httpclient.IHttpClientWrapper;
 import com.singularity.ee.util.log4j.Log4JLogger;
 
 public class SolrMonitor extends AManagedMonitor {
@@ -57,7 +54,7 @@ public class SolrMonitor extends AManagedMonitor {
 	/*
 	 * Main execution method that uploads the metrics to AppDynamics Controller
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.singularity.ee.agent.systemagent.api.ITask#execute(java.util.Map,
 	 * com.singularity.ee.agent.systemagent.api.TaskExecutionContext)
@@ -67,9 +64,16 @@ public class SolrMonitor extends AManagedMonitor {
 		host = taskArguments.get("host");
 		port = taskArguments.get("port");
 
-		if (httpClient == null) {
-			httpClient = HttpClientWrapper.getInstance();
-		}
+
+        if (httpClient == null) {
+            if (Boolean.getBoolean("com.appdynamics.extensions.solr.useproxy")) {
+                httpClient = HttpClientWrapper.getInstance();
+            } else {
+                HttpClient client = HttpClientWrapper.getDefaultHttpClient();
+                client.getHostConfiguration().setProxyHost(null);
+                httpClient = new SimpleHttpClientWrapper(client);
+            }
+        }
 
 		// Checks Solr health status. If up, fetches all metrics
 		try {
@@ -195,7 +199,7 @@ public class SolrMonitor extends AManagedMonitor {
 
 	/**
 	 * Prints Metrics to AppDynamics Metric Browser
-	 * 
+	 *
 	 * @param metricPath
 	 * @param metricName
 	 * @param metricValue
