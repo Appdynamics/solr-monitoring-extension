@@ -202,7 +202,7 @@ public class MemoryStats extends Stats {
 
 	/**
 	 * Converts Bytes to MegaBytes
-	 * 
+	 *
 	 * @param d
 	 * @return
 	 */
@@ -211,14 +211,19 @@ public class MemoryStats extends Stats {
 	}
 
 	/**
-	 * Converts from String form with Units("224 MB") to a number(224)
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private Double convertMemoryStringToDouble(String value) {
-		return Double.valueOf(value.split("MB")[0].trim());
-	}
+     * Converts from String form with Units("224 MB") to a number(224)
+     *
+     * @param value
+     * @return
+     */
+    public static Double convertMemoryStringToDouble(String value) {
+        if (value.contains("MB"))
+            return Double.valueOf(value.split("MB")[0].trim());
+        else if (value.contains("GB"))
+            return Double.valueOf(value.split("GB")[0].trim()) * 1024.0;
+        else
+            throw new RuntimeException("Unrecognized string format: " + value);
+    }
 
 	@Override
 	public String constructURL() {
