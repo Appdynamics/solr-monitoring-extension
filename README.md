@@ -17,6 +17,7 @@ This extension collects metrics from Solr search engine and uploads them to AppD
      <pre>
      &lt;argument name="host" is-required="true" default-value="localhost" /&gt;
      &lt;argument name="port" is-required="true" default-value="8983" /&gt;
+     &lt;argument name="metric-path" is-required="false" default-value="" /&gt;
      </pre>
 5. Restart the Machine Agent.
 
