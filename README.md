@@ -109,6 +109,13 @@ The following metrics are reported under Cache/FilterCache
 ## Custom Dashboard
 ![](https://github.com/Appdynamics/solr-monitoring-extension/raw/master/SolrDashboard.png)
 
+## Configuration Options
+-Dcom.appdynamics.extensions.solr.useproxy=true|false
+Set this option to use proxy settings specified by
+-Dcom.singularity.httpclientwrapper.proxyHost
+-Dcom.singularity.httpclientwrapper.proxyPort
+when connecting to the Solr
+
 ##Contributing
 
 Always feel free to fork and contribute any changes directly here on GitHub.
