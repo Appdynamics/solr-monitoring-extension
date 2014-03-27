@@ -38,7 +38,6 @@ public class SolrMonitor extends AManagedMonitor {
 	private static Logger LOG = Logger.getLogger("com.singularity.extensions.SolrMonitor");
 
 	private static String metric_path_prefix = "Custom Metrics|Solr|";
-	// private static final String PING_URI = "/solr/admin/ping";
 	private static final String PING_URI = "/solr";
 
 	private String host;
@@ -136,7 +135,6 @@ public class SolrMonitor extends AManagedMonitor {
 	 * metrics
 	 */
 	private void pingSolr() {
-		IHttpClientWrapper httpClient = HttpClientWrapper.getInstance();
 		HttpExecutionRequest request = new HttpExecutionRequest(pingURL(), "", HttpOperation.GET);
 		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(LOG));
 		if (response.getStatusCode() == 200) {
