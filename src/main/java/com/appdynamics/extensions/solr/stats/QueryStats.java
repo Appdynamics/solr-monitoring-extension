@@ -67,6 +67,7 @@ public class QueryStats extends Stats {
 				LOG.debug("avgTimePerRequest=" + getAvgTimePerRequest());
 			}
 		} else {
+			LOG.error("Missing node while parsing json response " + constructURL());
 			throw new RuntimeException("Handler " + handler + " is not supported/configured in this Solr version");
 		}
 	}

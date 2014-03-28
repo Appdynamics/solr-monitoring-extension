@@ -52,7 +52,7 @@ public class CoreStats extends Stats {
 				LOG.debug("Max Docs=" + getMaxDocs());
 			}
 		} else {
-			throw new RuntimeException("Error accessing when CORE handler");
+			throw new RuntimeException("Missing node while parsing CORE handler " + constructURL());
 		}
 	}
 

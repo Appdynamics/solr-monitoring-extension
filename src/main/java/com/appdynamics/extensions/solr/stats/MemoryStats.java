@@ -90,7 +90,7 @@ public class MemoryStats extends Stats {
 				LOG.debug("free=" + getJvmMemoryFree());
 			}
 		} else {
-			LOG.error("Error in retrieving jvm memory stats");
+			LOG.error("Missing json node while retrieving jvm memory stats");
 		}
 
 		if (!memoryMBeansNode.isMissingNode()) {
@@ -102,7 +102,7 @@ public class MemoryStats extends Stats {
 			this.setOpenFileDescriptorCount(memoryMBeansNode.path("openFileDescriptorCount").asDouble());
 			this.setMaxFileDescriptorCount(memoryMBeansNode.path("maxFileDescriptorCount").asDouble());
 		} else {
-			LOG.error("Error in retrieving system memory stats");
+			LOG.error("Missing json node while retrieving system memory stats");
 		}
 	}
 
@@ -115,7 +115,7 @@ public class MemoryStats extends Stats {
 		HttpExecutionRequest request = new HttpExecutionRequest(resource, "", HttpOperation.GET);
 		HttpExecutionResponse response = getHttpClient().executeHttpOperation(request, new Log4JLogger(LOG));
 		if (response.getStatusCode() == 404) {
-			LOG.error("Specified URL " + resource + " not supported");
+			throw new RuntimeException("Error accessing " + resource);
 		}
 		return response.getResponseBody();
 	}
@@ -216,7 +216,7 @@ public class MemoryStats extends Stats {
 	 * @param value
 	 * @return
 	 */
-	public static Double convertMemoryStringToDouble(String value) {
+	private static Double convertMemoryStringToDouble(String value) {
 		if (value.contains("KB"))
 			return Double.valueOf(value.split("KB")[0].trim()) / 1024.0;
 		else if (value.contains("MB"))

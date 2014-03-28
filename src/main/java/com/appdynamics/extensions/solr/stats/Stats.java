@@ -73,7 +73,7 @@ public abstract class Stats {
 			throw new RuntimeException(e.getMessage());
 		}
 		if (solrMBeansNode.isMissingNode()) {
-			throw new RuntimeException("Error accessing when solr-mbeans node");
+			throw new RuntimeException("Missing node while parsing solr-mbeans node json string " + resource);
 		}
 		for (int i = 1; i <= solrMBeansNode.size(); i += 2) {
 			solrStatsMap.put(solrMBeansNode.get(i - 1).asText(), solrMBeansNode.get(i));
@@ -93,7 +93,7 @@ public abstract class Stats {
 		HttpExecutionRequest request = new HttpExecutionRequest(resource, "", HttpOperation.GET);
 		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(LOG));
 		if (response.getStatusCode() == 404) {
-			throw new RuntimeException("Specified URL " + resource + " not supported in this Solr version");
+			throw new RuntimeException("Error accessing " + resource);
 		}
 		return response.getResponseBody();
 	}

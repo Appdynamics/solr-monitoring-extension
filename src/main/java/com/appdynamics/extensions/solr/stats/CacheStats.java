@@ -76,7 +76,7 @@ public class CacheStats extends Stats {
 				LOG.debug("size= " + getQueryResultCacheSize());
 			}
 		} else {
-			LOG.error("Error in query result cache stats");
+			LOG.error("Missing node found in query result cache stats");
 		}
 
 		JsonNode documentCacheStats = cacheNode.path("documentCache").path("stats");
@@ -86,7 +86,7 @@ public class CacheStats extends Stats {
 			this.setDocumentCacheHitRatioCumulative(documentCacheStats.path("cumulative_hitratio").asDouble());
 			this.setDocumentCacheSize(documentCacheStats.path("size").asDouble());
 		} else {
-			LOG.error("Error in document cache stats");
+			LOG.error("Missing node found in document cache stats");
 		}
 
 		JsonNode fieldValueCacheStats = cacheNode.path("fieldValueCache").path("stats");
@@ -96,7 +96,7 @@ public class CacheStats extends Stats {
 			this.setFieldValueCacheHitRatioCumulative(fieldValueCacheStats.path("cumulative_hitratio").asDouble());
 			this.setFieldValueCacheSize(fieldValueCacheStats.path("size").asDouble());
 		} else {
-			LOG.error("Error in field value cache stats");
+			LOG.error("Missing node found in field value cache stats");
 		}
 
 		JsonNode filterCacheStats = cacheNode.path("filterCache").path("stats");
@@ -106,7 +106,7 @@ public class CacheStats extends Stats {
 			this.setFilterCacheHitRatioCumulative(filterCacheStats.path("cumulative_hitratio").asDouble());
 			this.setFilterCacheSize(filterCacheStats.path("size").asDouble());
 		} else {
-			LOG.error("Error in filter cache stats");
+			LOG.error("Missing node found in filter cache stats");
 		}
 	}
 
