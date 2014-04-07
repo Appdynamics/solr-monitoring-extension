@@ -24,17 +24,10 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.singularity.ee.util.httpclient.HttpExecutionRequest;
-import com.singularity.ee.util.httpclient.HttpExecutionResponse;
-import com.singularity.ee.util.httpclient.HttpOperation;
-import com.singularity.ee.util.httpclient.IHttpClientWrapper;
-import com.singularity.ee.util.log4j.Log4JLogger;
 
-public class MemoryStats extends Stats {
+public class MemoryStats {
 
 	private static final Logger LOG = Logger.getLogger("com.singularity.extensions.MemoryStats");
-
-	private static final String URI_QUERY_STRING = "/solr/admin/system?stats=true&wt=json";
 
 	private Double jvmMemoryUsed;
 
@@ -56,14 +49,7 @@ public class MemoryStats extends Stats {
 
 	private Number maxFileDescriptorCount;
 
-	public MemoryStats(String host, String port, IHttpClientWrapper httpClient) {
-		super(host, port, httpClient);
-	}
-
-	@Override
-	public void populateStats() {
-		String jsonString = getJsonResponseString(constructURL());
-
+	public void populateStats(String jsonString) {
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode jvmMBeansNode = null;
 		JsonNode memoryMBeansNode = null;
@@ -104,20 +90,6 @@ public class MemoryStats extends Stats {
 		} else {
 			LOG.error("Missing json node while retrieving system memory stats");
 		}
-	}
-
-	/**
-	 * Returns JsonResponse as String for Memory stats. Overrides super class
-	 * method as the structure of Json is different from other stats
-	 */
-	@Override
-	public String getJsonResponseString(String resource) {
-		HttpExecutionRequest request = new HttpExecutionRequest(resource, "", HttpOperation.GET);
-		HttpExecutionResponse response = getHttpClient().executeHttpOperation(request, new Log4JLogger(LOG));
-		if (response.getStatusCode() == 404) {
-			throw new RuntimeException("Error accessing " + resource);
-		}
-		return response.getResponseBody();
 	}
 
 	public Number getJvmMemoryUsed() {
@@ -226,10 +198,4 @@ public class MemoryStats extends Stats {
 		else
 			throw new RuntimeException("Unrecognized string format: " + value);
 	}
-
-	@Override
-	public String constructURL() {
-		return "http://" + getHost() + ":" + getPort() + URI_QUERY_STRING;
-	}
-
 }

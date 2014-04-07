@@ -4,7 +4,7 @@
 
   <groupId>com.appdynamics.extensions</groupId>
   <artifactId>solr-monitoring-extension</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.2</version>
   <packaging>jar</packaging>
 
   <name>solr-monitoring-extension</name>
@@ -51,7 +51,6 @@
         <scope>test</scope>
      </dependency>
    </dependencies>
-   
    <build>
        <finalName>${project.artifactId}</finalName>
        <plugins>
@@ -118,7 +117,7 @@
                                <copy todir="${target.dir}">
                                    <fileset dir="${project.build.directory}" includes="${project.artifactId}.${project.packaging}"/>
                                </copy>
-                               <zip destfile="${target.dir}.zip">
+                               <zip destfile="${target.dir} v${project.version}.zip">
                                    <zipfileset dir="${target.dir}" filemode="755" prefix="SolrMonitor"/>
                                </zip>
                                <delete dir="${target.dir}"/>

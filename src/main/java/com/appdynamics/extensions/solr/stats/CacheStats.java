@@ -21,13 +21,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.singularity.ee.util.httpclient.IHttpClientWrapper;
 
-public class CacheStats extends Stats {
+public class CacheStats {
 
 	private static final Logger LOG = Logger.getLogger("com.singularity.extensions.CacheStats");
-
-	private static final String URI_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=CACHE&wt=json";
 
 	private Number queryResultCacheHitRatio;
 
@@ -53,14 +50,7 @@ public class CacheStats extends Stats {
 
 	private Number filterCacheSize;
 
-	public CacheStats(final String host, final String port, IHttpClientWrapper httpClient) {
-		super(host, port, httpClient);
-	}
-
-	@Override
-	public void populateStats() throws Exception {
-
-		Map<String, JsonNode> solrMBeansHandlersMap = getSolrMBeansHandlersMap(constructURL());
+	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) throws Exception {
 
 		JsonNode cacheNode = solrMBeansHandlersMap.get("CACHE");
 		JsonNode queryResultCacheStats = cacheNode.path("queryResultCache").path("stats");
@@ -76,7 +66,7 @@ public class CacheStats extends Stats {
 				LOG.debug("size= " + getQueryResultCacheSize());
 			}
 		} else {
-			LOG.error("Missing node found in query result cache stats");
+			LOG.error("queryResultCache is disabled in solrconfig.xml");
 		}
 
 		JsonNode documentCacheStats = cacheNode.path("documentCache").path("stats");
@@ -86,7 +76,7 @@ public class CacheStats extends Stats {
 			this.setDocumentCacheHitRatioCumulative(documentCacheStats.path("cumulative_hitratio").asDouble());
 			this.setDocumentCacheSize(documentCacheStats.path("size").asDouble());
 		} else {
-			LOG.error("Missing node found in document cache stats");
+			LOG.error("documentCache is disabled in solrconfig.xml");
 		}
 
 		JsonNode fieldValueCacheStats = cacheNode.path("fieldValueCache").path("stats");
@@ -96,7 +86,7 @@ public class CacheStats extends Stats {
 			this.setFieldValueCacheHitRatioCumulative(fieldValueCacheStats.path("cumulative_hitratio").asDouble());
 			this.setFieldValueCacheSize(fieldValueCacheStats.path("size").asDouble());
 		} else {
-			LOG.error("Missing node found in field value cache stats");
+			LOG.error("fieldValueCache is disabled in solrconfig.xml");
 		}
 
 		JsonNode filterCacheStats = cacheNode.path("filterCache").path("stats");
@@ -106,7 +96,7 @@ public class CacheStats extends Stats {
 			this.setFilterCacheHitRatioCumulative(filterCacheStats.path("cumulative_hitratio").asDouble());
 			this.setFilterCacheSize(filterCacheStats.path("size").asDouble());
 		} else {
-			LOG.error("Missing node found in filter cache stats");
+			LOG.error("filterCache is disabled in solrconfig.xml");
 		}
 	}
 
@@ -204,11 +194,6 @@ public class CacheStats extends Stats {
 
 	public void setFilterCacheSize(Number filterCacheSize) {
 		this.filterCacheSize = filterCacheSize;
-	}
-
-	@Override
-	public String constructURL() {
-		return "http://" + getHost() + ":" + getPort() + URI_QUERY_STRING;
 	}
 
 }

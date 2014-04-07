@@ -21,13 +21,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.singularity.ee.util.httpclient.IHttpClientWrapper;
 
-public class CoreStats extends Stats {
+public class CoreStats {
 
 	private static Logger LOG = Logger.getLogger("com.singularity.extensions.CoreStats");
-
-	private static final String URI_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=CORE&key=searcher&wt=json";
 
 	private Number numDocs;
 
@@ -35,13 +32,7 @@ public class CoreStats extends Stats {
 
 	private Number deletedDocs;
 
-	public CoreStats(String host, String port, IHttpClientWrapper httpClient) {
-		super(host, port, httpClient);
-	}
-
-	@Override
-	public void populateStats() {
-		Map<String, JsonNode> solrMBeansHandlersMap = getSolrMBeansHandlersMap(constructURL());
+	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
 		JsonNode coreNode = solrMBeansHandlersMap.get("CORE");
 		if (!coreNode.isMissingNode()) {
 			this.setNumDocs(coreNode.path("searcher").path("stats").path("numDocs").asInt());
@@ -52,13 +43,8 @@ public class CoreStats extends Stats {
 				LOG.debug("Max Docs=" + getMaxDocs());
 			}
 		} else {
-			throw new RuntimeException("Missing node while parsing CORE handler " + constructURL());
+			throw new RuntimeException("Missing node while parsing CORE handler");
 		}
-	}
-
-	@Override
-	public String constructURL() {
-		return "http://" + getHost() + ":" + getPort() + URI_QUERY_STRING;
 	}
 
 	public Number getNumDocs() {

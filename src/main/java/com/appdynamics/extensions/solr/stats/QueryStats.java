@@ -21,14 +21,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.singularity.ee.util.httpclient.IHttpClientWrapper;
 
-public class QueryStats extends Stats {
+public class QueryStats {
 
 	private static Logger LOG = Logger.getLogger("com.singularity.extensions.QueryStats");
-
-	// https://cwiki.apache.org/confluence/display/solr/MBean+Request+Handler
-	private static final String URL_QUERY_STRING = "/solr/admin/mbeans?stats=true&cat=QUERYHANDLER&key=/select&wt=json";
 
 	private String handler = "/select";
 
@@ -44,13 +40,7 @@ public class QueryStats extends Stats {
 
 	private Number pcRequestTime95th;
 
-	public QueryStats(String host, String port, IHttpClientWrapper httpClient) {
-		super(host, port, httpClient);
-	}
-
-	@Override
-	public void populateStats() throws Exception {
-		Map<String, JsonNode> solrMBeansHandlersMap = getSolrMBeansHandlersMap(constructURL());
+	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) throws Exception {
 
 		JsonNode hstats = solrMBeansHandlersMap.get("QUERYHANDLER").path(handler).path("stats");
 
@@ -67,7 +57,7 @@ public class QueryStats extends Stats {
 				LOG.debug("avgTimePerRequest=" + getAvgTimePerRequest());
 			}
 		} else {
-			LOG.error("Missing node while parsing json response " + constructURL());
+			LOG.error("Missing node while parsing json response ");
 			throw new RuntimeException("Handler " + handler + " is not supported/configured in this Solr version");
 		}
 	}
@@ -118,11 +108,6 @@ public class QueryStats extends Stats {
 
 	public void setPcRequestTime95th(Number pcRequestTime95th) {
 		this.pcRequestTime95th = pcRequestTime95th;
-	}
-
-	@Override
-	public String constructURL() {
-		return "http://" + getHost() + ":" + getPort() + URL_QUERY_STRING;
 	}
 
 }

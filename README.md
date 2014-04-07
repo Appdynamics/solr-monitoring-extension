@@ -8,9 +8,9 @@ Solr is a popular open source enterprise search platform from the Apache Lucene 
 Its major features include powerful full-text search, hit highlighting, faceted search, near real-time indexing, dynamic clustering, database integration, rich document (e.g., Word, PDF) handling, and geospatial search.
 This extension collects metrics from Solr search engine and uploads them to AppDynamics Metric Broswer.
 
-Solr statistics (Core, Query, Cache) are obtained through an HTTP request to the SolrInfoMBeanHandler at http://\<host\>:\<port\>/solr/admin/mbeans. Please refer to [SolrInfoMBeanHandler](http://wiki.apache.org/solr/SystemInformationRequestHandlers) and [SolrJMX](http://wiki.apache.org/solr/SolrJmx) for details.
+Solr statistics (Core, Query, Cache) are obtained through an HTTP request to the SolrInfoMBeanHandler at http://\<host\>:\<port\>/solr/admin/mbeans. Please refer to [SolrInfoMBeanHandler](http://wiki.apache.org/solr/SystemInformationRequestHandlers) for details.
 
-Memory statistics are collected through an HTTP request to http://\<host\>:\<port\>/solr/admin/system
+Memory statistics are collected through an HTTP request SystemInfoHandler at http://\<host\>:\<port\>/solr/admin/system
 
 ##Installation
 

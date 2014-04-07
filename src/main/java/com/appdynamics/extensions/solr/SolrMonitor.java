@@ -16,7 +16,9 @@
 
 package com.appdynamics.extensions.solr;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -26,35 +28,33 @@ import com.appdynamics.extensions.solr.stats.CacheStats;
 import com.appdynamics.extensions.solr.stats.CoreStats;
 import com.appdynamics.extensions.solr.stats.MemoryStats;
 import com.appdynamics.extensions.solr.stats.QueryStats;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.singularity.ee.agent.systemagent.api.AManagedMonitor;
 import com.singularity.ee.agent.systemagent.api.MetricWriter;
 import com.singularity.ee.agent.systemagent.api.TaskExecutionContext;
 import com.singularity.ee.agent.systemagent.api.TaskOutput;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
 import com.singularity.ee.util.httpclient.HttpClientWrapper;
-import com.singularity.ee.util.httpclient.HttpExecutionRequest;
-import com.singularity.ee.util.httpclient.HttpExecutionResponse;
-import com.singularity.ee.util.httpclient.HttpOperation;
 import com.singularity.ee.util.httpclient.IHttpClientWrapper;
 import com.singularity.ee.util.httpclient.SimpleHttpClientWrapper;
-import com.singularity.ee.util.log4j.Log4JLogger;
 
 public class SolrMonitor extends AManagedMonitor {
 
 	private static Logger LOG = Logger.getLogger("com.singularity.extensions.SolrMonitor");
 
 	private static String metric_path_prefix = "Custom Metrics|Solr|";
+
 	private static final String SOLR_URI = "/solr";
-	private static final String MBEAN_URI = "/solr/admin/plugins?wt=json";
+	private static final String CORE_URI = "/solr/admin/cores?action=STATUS&wt=json";
+	private static String plugins_uri = "/solr/%s/admin/plugins?wt=json";
+	private static final String MEMORY_URI = "/solr/admin/system?stats=true&wt=json";
 
 	private String host;
 	private String port;
 
 	private IHttpClientWrapper httpClient;
+
+	private SolrHelper helper;
 
 	public SolrMonitor() {
 		String msg = "Using Monitor Version [" + getImplementationVersion() + "]";
@@ -72,16 +72,7 @@ public class SolrMonitor extends AManagedMonitor {
 	 */
 	public TaskOutput execute(Map<String, String> taskArguments, TaskExecutionContext arg1) throws TaskExecutionException {
 
-		host = taskArguments.get("host");
-		port = taskArguments.get("port");
-
-		if (taskArguments.get("metric-path") != null && taskArguments.get("metric-path") != "") {
-			metric_path_prefix = taskArguments.get("metric-path");
-			LOG.debug("Metric path: " + metric_path_prefix);
-			if (!metric_path_prefix.endsWith("|")) {
-				metric_path_prefix += "|";
-			}
-		}
+		checkTaskArgs(taskArguments);
 
 		if (httpClient == null) {
 			if (Boolean.getBoolean("com.appdynamics.extensions.solr.useproxy")) {
@@ -93,105 +84,112 @@ public class SolrMonitor extends AManagedMonitor {
 			}
 		}
 
+		if (helper == null) {
+			helper = new SolrHelper(host, port, httpClient);
+		}
+		// check for solr status
 		try {
-			pingSolr();
+			helper.getHttpResponse(buildURL(SOLR_URI));
 		} catch (Exception e) {
 			LOG.error("Connection to Solr failed", e);
 			return new TaskOutput("Connection to Solr failed");
 		}
 
-		// checks if MBeanHandler is supported. If yes, it fetches for core,
-		// query and cache metrics
-		if (checkIfMBeanHandlerSupported(buildURL(MBEAN_URI))) {
-			// Fetches and prints core metrics (number of docs, deleted docs) to
-			// Controller
-			try {
-				CoreStats coreStats = new CoreStats(host, port, httpClient);
-				coreStats.populateStats();
-				printMetrics(coreStats);
-			} catch (Exception e) {
-				LOG.error("Error Retrieving Core Stats", e);
-			}
-
-			// Fetches query metrics
-			try {
-				QueryStats queryStats = new QueryStats(host, port, httpClient);
-				queryStats.populateStats();
-				printMetrics(queryStats);
-			} catch (Exception e) {
-				LOG.error("Error Retrieving Query Stats", e);
-			}
-
-			// Fetches Cache metrics
-			try {
-				CacheStats cacheStats = new CacheStats(host, port, httpClient);
-				cacheStats.populateStats();
-				printMetrics(cacheStats);
-			} catch (Exception e) {
-				LOG.error("Error Retrieving Cache Stats", e);
-			}
-		} else {
-			LOG.error("Stats are collected through an HTTP Request to SolrInfoMBeanHandler");
-			LOG.error("SolrInfoMbeanHandler (/admin/mbeans) is not supported/configured in Solr. So Core, Query and Cache stats are not collected. Please refer http://wiki.apache.org/solr/SolrJmx");
-		}
-
-		// Fetches JVM Memory and System Memory Stats
+		// Monitor multiple cores
+		List<String> cores = new ArrayList<String>();
 		try {
-			MemoryStats memoryStats = new MemoryStats(host, port, httpClient);
-			memoryStats.populateStats();
-			printMetrics(memoryStats);
+			cores = helper.getCores(buildURL(CORE_URI));
+			if (cores.isEmpty()) {
+				LOG.error("There are no SolrCores running. Using this Solr Extension requires at least one SolrCore.");
+				return new TaskOutput("There are no SolrCores running. Using this Solr Extension requires at least one SolrCore.");
+			}
+
+			for (String core : cores) {
+				if ("".equals(core)) {
+					plugins_uri = "/solr/admin/plugins?wt=json";
+				}
+				if (helper.checkIfMBeanHandlerSupported(buildURL(String.format(plugins_uri, core)))) {
+					Map<String, JsonNode> solrMBeansHandlersMap = new HashMap<String, JsonNode>();
+					try {
+						solrMBeansHandlersMap = helper.getSolrMBeansHandlersMap(core);
+					} catch (Exception e) {
+						LOG.error(e.getMessage());
+						break;
+					}
+
+					try {
+						CoreStats coreStats = new CoreStats();
+						coreStats.populateStats(solrMBeansHandlersMap);
+						printMetrics(core, coreStats);
+					} catch (Exception e) {
+						LOG.error("Error Retrieving Core Stats", e);
+					}
+
+					try {
+						QueryStats queryStats = new QueryStats();
+						queryStats.populateStats(solrMBeansHandlersMap);
+						printMetrics(core, queryStats);
+					} catch (Exception e) {
+						LOG.error("Error Retrieving Query Stats", e);
+					}
+
+					try {
+						CacheStats cacheStats = new CacheStats();
+						cacheStats.populateStats(solrMBeansHandlersMap);
+						printMetrics(core, cacheStats);
+					} catch (Exception e) {
+						LOG.error("Error Retrieving Cache Stats", e);
+					}
+				} else {
+					LOG.error("Stats are collected through an HTTP Request to SolrInfoMBeanHandler");
+					LOG.error("SolrInfoMbeanHandler (/admin/mbeans) or /admin request handler is disabled in solrconfig.xml for this " + core);
+				}
+			}
+
+			// Fetches JVM Memory and System Memory Stats
+			try {
+				MemoryStats memoryStats = new MemoryStats();
+				String jsonString = helper.getHttpResponse(buildURL(MEMORY_URI)).getResponseBody();
+				memoryStats.populateStats(jsonString);
+				printMetrics(memoryStats);
+			} catch (Exception e) {
+				LOG.error("Error Retrieving Memory Stats: It is possible that defaultCoreName is missing in solr.xml", e);
+			}
+
 		} catch (Exception e) {
-			LOG.error("Error Retrieving Memory Stats", e);
+			LOG.error(e.getMessage());
 		}
 
 		return new TaskOutput("End of execute method");
 	}
 
-	/**
-	 * Checks Solr health status. If up proceeds further to fetch desired
-	 * metrics
-	 */
-	private void pingSolr() {
-		HttpExecutionRequest request = new HttpExecutionRequest(buildURL(SOLR_URI), "", HttpOperation.GET);
-		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(LOG));
-		if (response.getStatusCode() == 200) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Connected to Solr " + buildURL(SOLR_URI) + " successfully");
+	private void checkTaskArgs(Map<String, String> taskArguments) {
+		host = taskArguments.get("host");
+		port = taskArguments.get("port");
+		if (taskArguments.get("metric-path") != null && taskArguments.get("metric-path") != "") {
+			metric_path_prefix = taskArguments.get("metric-path");
+			LOG.debug("Metric path: " + metric_path_prefix);
+			if (!metric_path_prefix.endsWith("|")) {
+				metric_path_prefix += "|";
 			}
-		} else {
-			throw new RuntimeException("Could not connect to " + buildURL(SOLR_URI) + " with HTTP status code " + response.getStatusCode());
 		}
 	}
 
-	private boolean checkIfMBeanHandlerSupported(String resource) {
-		HttpExecutionRequest request = new HttpExecutionRequest(resource, "", HttpOperation.GET);
-		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(LOG));
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode node = null;
-		try {
-			node = mapper.readValue(response.getResponseBody().getBytes(), JsonNode.class).path("plugins").path("QUERYHANDLER");
-		} catch (JsonParseException e) {
-			LOG.error("Error parsing json response from " + resource);
-			throw new RuntimeException("Error parsing json response from " + resource + e.getMessage());
-		} catch (JsonMappingException e) {
-			LOG.error("Error mapping json response from " + resource);
-			throw new RuntimeException("Error mapping json response from " + resource + e.getMessage());
-		} catch (IOException e) {
-			LOG.error("Error mapping json response from " + resource);
-			throw new RuntimeException("IO Exception while parsing json response from " + resource + e.getMessage());
+	private void printMetrics(String collection, CoreStats stats) {
+		if ("".equals(collection)) {
+			collection = "Collection";
 		}
-		return node.has("/admin/mbeans");
-	}
-
-	private void printMetrics(CoreStats stats) {
-		String metricPath = "Core|";
+		String metricPath = "Collections |" + collection + "|" + "Core|";
 		printMetric(metricPath, "Number of Docs", stats.getNumDocs());
 		printMetric(metricPath, "Max Docs", stats.getMaxDocs());
 		printMetric(metricPath, "Deleted Docs", stats.getDeletedDocs());
 	}
 
-	private void printMetrics(CacheStats cacheStats) {
-		String metricPath = "Cache|";
+	private void printMetrics(String collection, CacheStats cacheStats) {
+		if ("".equals(collection)) {
+			collection = "Collection";
+		}
+		String metricPath = "Collections |" + collection + "|" + "Cache|";
 		String queryCachePath = metricPath + "QueryResultCache|";
 		String documentCachePath = metricPath + "DocumentCache|";
 		String fieldCachePath = metricPath + "FieldValueCache|";
@@ -229,8 +227,11 @@ public class SolrMonitor extends AManagedMonitor {
 
 	}
 
-	private void printMetrics(QueryStats stats) {
-		String metricPath = "Query|";
+	private void printMetrics(String collection, QueryStats stats) {
+		if ("".equals(collection)) {
+			collection = "Collection";
+		}
+		String metricPath = "Collections |" + collection + "|" + "Query|";
 		printMetric(metricPath, "Average Rate (requests per second)", stats.getAvgRate());
 		printMetric(metricPath, "5 Minute Rate (requests per second)", stats.getRate5min());
 		printMetric(metricPath, "15 Minute Rate (requests per second)", stats.getRate15min());
@@ -273,5 +274,13 @@ public class SolrMonitor extends AManagedMonitor {
 
 	private String buildURL(String uri) {
 		return "http://" + host + ":" + port + uri;
+	}
+
+	public static void main(String[] args) throws TaskExecutionException {
+		Map<String, String> taskArguments = new HashMap<String, String>();
+		taskArguments.put("host", "localhost");
+		taskArguments.put("port", "8983");
+		SolrMonitor monitor = new SolrMonitor();
+		monitor.execute(taskArguments, null);
 	}
 }
