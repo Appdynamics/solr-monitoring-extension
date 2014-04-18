@@ -16,14 +16,12 @@
 
 package com.appdynamics.extensions.solr.stats;
 
-import java.io.IOException;
+import java.io.InputStream;
 
 import org.apache.log4j.Logger;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.appdynamics.extensions.solr.SolrHelper;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class MemoryStats {
 
@@ -49,28 +47,14 @@ public class MemoryStats {
 
 	private Number maxFileDescriptorCount;
 
-	public void populateStats(String jsonString) {
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode jvmMBeansNode = null;
-		JsonNode memoryMBeansNode = null;
-		try {
-			jvmMBeansNode = mapper.readValue(jsonString.getBytes(), JsonNode.class).path("jvm").path("memory");
-			memoryMBeansNode = mapper.readValue(jsonString.getBytes(), JsonNode.class).path("system");
-		} catch (JsonParseException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e.getMessage());
-		} catch (JsonMappingException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e.getMessage());
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e.getMessage());
-		}
-
+	public void populateStats(InputStream inputStream) {
+		JsonNode jsonNode = SolrHelper.getJsonNode(inputStream);
+		JsonNode jvmMBeansNode = jsonNode.path("jvm").path("memory");
+		JsonNode memoryMBeansNode = jsonNode.path("system");
 		if (!jvmMBeansNode.isMissingNode()) {
-			this.setJvmMemoryUsed(convertMemoryStringToDouble(jvmMBeansNode.path("used").asText()));
-			this.setJvmMemoryFree(convertMemoryStringToDouble(jvmMBeansNode.path("free").asText()));
-			this.setJvmMemoryTotal(convertMemoryStringToDouble(jvmMBeansNode.path("total").asText()));
+			this.setJvmMemoryUsed(SolrHelper.convertMemoryStringToDouble(jvmMBeansNode.path("used").asText()));
+			this.setJvmMemoryFree(SolrHelper.convertMemoryStringToDouble(jvmMBeansNode.path("free").asText()));
+			this.setJvmMemoryTotal(SolrHelper.convertMemoryStringToDouble(jvmMBeansNode.path("total").asText()));
 			if (LOG.isDebugEnabled()) {
 				LOG.debug("used=" + getJvmMemoryUsed());
 				LOG.debug("free=" + getJvmMemoryFree());
@@ -121,7 +105,7 @@ public class MemoryStats {
 	}
 
 	public void setFreePhysicalMemorySize(Number freePhysicalMemorySize) {
-		this.freePhysicalMemorySize = convertBytesToMB(freePhysicalMemorySize);
+		this.freePhysicalMemorySize = SolrHelper.convertBytesToMB(freePhysicalMemorySize);
 	}
 
 	public Number getTotalPhysicalMemorySize() {
@@ -129,7 +113,7 @@ public class MemoryStats {
 	}
 
 	public void setTotalPhysicalMemorySize(Number totalPhysicalMemorySize) {
-		this.totalPhysicalMemorySize = convertBytesToMB(totalPhysicalMemorySize);
+		this.totalPhysicalMemorySize = SolrHelper.convertBytesToMB(totalPhysicalMemorySize);
 	}
 
 	public Number getCommittedVirtualMemorySize() {
@@ -137,7 +121,7 @@ public class MemoryStats {
 	}
 
 	public void setCommittedVirtualMemorySize(Number committedVirtualMemorySize) {
-		this.committedVirtualMemorySize = convertBytesToMB(committedVirtualMemorySize);
+		this.committedVirtualMemorySize = SolrHelper.convertBytesToMB(committedVirtualMemorySize);
 	}
 
 	public Number getFreeSwapSpaceSize() {
@@ -145,7 +129,7 @@ public class MemoryStats {
 	}
 
 	public void setFreeSwapSpaceSize(Number freeSwapSpaceSize) {
-		this.freeSwapSpaceSize = convertBytesToMB(freeSwapSpaceSize);
+		this.freeSwapSpaceSize = SolrHelper.convertBytesToMB(freeSwapSpaceSize);
 	}
 
 	public Number getTotalSwapSpaceSize() {
@@ -153,7 +137,7 @@ public class MemoryStats {
 	}
 
 	public void setTotalSwapSpaceSize(Number totalSwapSpaceSize) {
-		this.totalSwapSpaceSize = convertBytesToMB(totalSwapSpaceSize);
+		this.totalSwapSpaceSize = SolrHelper.convertBytesToMB(totalSwapSpaceSize);
 	}
 
 	public Number getOpenFileDescriptorCount() {
@@ -170,32 +154,5 @@ public class MemoryStats {
 
 	public void setMaxFileDescriptorCount(Number maxFileDescriptorCount) {
 		this.maxFileDescriptorCount = maxFileDescriptorCount;
-	}
-
-	/**
-	 * Converts Bytes to MegaBytes
-	 * 
-	 * @param d
-	 * @return
-	 */
-	private double convertBytesToMB(Number d) {
-		return (double) Math.round(d.doubleValue() / (1024.0 * 1024.0));
-	}
-
-	/**
-	 * Converts from String form with Units("224 MB") to a number(224)
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private static Double convertMemoryStringToDouble(String value) {
-		if (value.contains("KB"))
-			return Double.valueOf(value.split("KB")[0].trim()) / 1024.0;
-		else if (value.contains("MB"))
-			return Double.valueOf(value.split("MB")[0].trim());
-		else if (value.contains("GB"))
-			return Double.valueOf(value.split("GB")[0].trim()) * 1024.0;
-		else
-			throw new RuntimeException("Unrecognized string format: " + value);
 	}
 }

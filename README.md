@@ -21,7 +21,13 @@ Memory statistics are collected through an HTTP request SystemInfoHandler at htt
      <pre>
      &lt;argument name="host" is-required="true" default-value="localhost" /&gt;
      &lt;argument name="port" is-required="true" default-value="8983" /&gt;
-     &lt;argument name="metric-path" is-required="false" default-value="" /&gt;
+	Configure proxy parameters if any
+     &lt;argument name="proxy-host" is-required="false" default-value="" /&gt;
+     &lt;argument name="proxy-port" is-required="false" default-value="" /&gt;
+	Solr webapp root path (OPTIONAL):Default (if default-value="") is /solr
+     &lt;argument name="context-root" is-required="false" default-value="" /&gt;
+	METRIC PATH (OPTIONAL):Default (if default-value="") is "Custom Metrics|Solr|"
+     &lt;argument name="metric-prefix" is-required="false" default-value="" /&gt;
      </pre>
 5. Restart the Machine Agent.
 
@@ -113,12 +119,6 @@ The following metrics are reported under Cache/FilterCache
 ## Custom Dashboard
 ![](https://github.com/Appdynamics/solr-monitoring-extension/raw/master/SolrDashboard.png)
 
-## Configuration Options
--Dcom.appdynamics.extensions.solr.useproxy=true|false
-Set this option to use proxy settings specified by
--Dcom.singularity.httpclientwrapper.proxyHost
--Dcom.singularity.httpclientwrapper.proxyPort
-when connecting to the Solr
 
 ##Contributing
 

@@ -17,6 +17,7 @@
 package com.appdynamics.extensions.solr;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,31 +26,19 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.appdynamics.extensions.http.SimpleHttpClient;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.singularity.ee.util.httpclient.HttpExecutionRequest;
-import com.singularity.ee.util.httpclient.HttpExecutionResponse;
-import com.singularity.ee.util.httpclient.HttpOperation;
-import com.singularity.ee.util.httpclient.IHttpClientWrapper;
-import com.singularity.ee.util.log4j.Log4JLogger;
 
 public class SolrHelper {
 
 	private static Logger LOG = Logger.getLogger("com.singularity.extensions.SolrHelper");
 
-	private IHttpClientWrapper httpClient;
+	private SimpleHttpClient httpClient;
 
-	private String host;
-
-	private String port;
-
-	private String mbeansUri = "/solr/%s/admin/mbeans?stats=true&wt=json";
-
-	public SolrHelper(String host, String port, IHttpClientWrapper httpClient) {
-		this.host = host;
-		this.port = port;
+	public SolrHelper(SimpleHttpClient httpClient) {
 		this.httpClient = httpClient;
 	}
 
@@ -57,32 +46,22 @@ public class SolrHelper {
 	 * Fetches the solr-mbeans node from JsonResponse and puts it into a map
 	 * with key as Category name and its values as JsonNode
 	 * 
+	 * @param mbeansUri
+	 * 
 	 * @param resource
 	 * @return
+	 * @throws IOException
 	 */
-	public Map<String, JsonNode> getSolrMBeansHandlersMap(String core) {
+	public Map<String, JsonNode> getSolrMBeansHandlersMap(String core, String mbeansUri) throws IOException {
 		if ("".equals(core)) {
-			mbeansUri = "/solr/admin/mbeans?stats=true&wt=json";
+			mbeansUri = SolrMonitor.getContextRootPath() + "/admin/mbeans?stats=true&wt=json";
 		}
-		String url = buildURL(String.format(mbeansUri, core));
-		String jsonString = getHttpResponse(url).getResponseBody();
+		String uri = String.format(mbeansUri, core);
+		InputStream inputStream = httpClient.target().path(uri).get().inputStream();
 		Map<String, JsonNode> solrStatsMap = new HashMap<String, JsonNode>();
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode solrMBeansNode = null;
-		try {
-			solrMBeansNode = mapper.readValue(jsonString.getBytes(), JsonNode.class).path("solr-mbeans");
-		} catch (JsonParseException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e.getMessage());
-		} catch (JsonMappingException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e.getMessage());
-		} catch (IOException e) {
-			LOG.error(e.getMessage(), e);
-			throw new RuntimeException(e.getMessage());
-		}
+		JsonNode solrMBeansNode = getJsonNode(inputStream).path("solr-mbeans");
 		if (solrMBeansNode.isMissingNode()) {
-			throw new RuntimeException("Missing node while parsing solr-mbeans node json string for " + core + url);
+			throw new IllegalArgumentException("Missing node while parsing solr-mbeans node json string for " + core + uri);
 		}
 		for (int i = 1; i <= solrMBeansNode.size(); i += 2) {
 			solrStatsMap.put(solrMBeansNode.get(i - 1).asText(), solrMBeansNode.get(i));
@@ -91,95 +70,84 @@ public class SolrHelper {
 
 	}
 
-	/**
-	 * Connects to specified url and returns response. If the resource is not
-	 * found, an exception is thrown.
-	 * 
-	 * @param resource
-	 * @return
-	 */
-	public HttpExecutionResponse getHttpResponse(String url) {
-		HttpExecutionRequest request = new HttpExecutionRequest(url, "", HttpOperation.GET);
-		HttpExecutionResponse response = httpClient.executeHttpOperation(request, new Log4JLogger(LOG));
-		if (response.getStatusCode() == 200) {
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("HTTP Request to " + url + " executed successfully");
-			}
-		} else {
-			LOG.error("Failed to execute HTTP Request to " + url + " with HTTP status code " + response.getStatusCode());
-			throw new RuntimeException("HTTP Request Failed");
-		}
-		return response;
-	}
-
-	public List<String> getCores(String url) {
+	public List<String> getCores(String uri) {
 		List<String> cores = new ArrayList<String>();
-		HttpExecutionResponse response = getHttpResponse(url);
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode node = null;
 		try {
-			node = mapper.readValue(response.getResponseBody().getBytes(), JsonNode.class).path("status");
-		} catch (JsonParseException e) {
-			LOG.error("Error parsing json response from " + url);
-			throw new RuntimeException(e.getMessage());
-		} catch (JsonMappingException e) {
-			LOG.error("Error mapping json response from " + url);
-			throw new RuntimeException(e.getMessage());
+			InputStream inputStream = httpClient.target().path(uri).get().inputStream();
+			JsonNode node = getJsonNode(inputStream).path("status");
+			Iterator<String> fieldNames = node.fieldNames();
+			while (fieldNames.hasNext()) {
+				cores.add(fieldNames.next());
+			}
 		} catch (IOException e) {
-			LOG.error("Error mapping json response from " + url);
-			throw new RuntimeException(e.getMessage());
-		}
-
-		Iterator<String> fieldNames = node.fieldNames();
-		while (fieldNames.hasNext()) {
-			cores.add(fieldNames.next());
+			LOG.error("Exception in getCores Method");
+			throw new RuntimeException(e);
+		} catch (Exception e) {
+			LOG.error("Exception in getCores Method");
+			throw new RuntimeException(e);
 		}
 		if (LOG.isDebugEnabled())
 			LOG.debug("Cores / Collections size is " + cores.size());
 		return cores;
 	}
 
-	public boolean checkIfMBeanHandlerSupported(String resource) {
-		HttpExecutionResponse response = null;
-		JsonNode node = null;
-		boolean hasMBeans = false;
+	public static JsonNode getJsonNode(InputStream inputStream) {
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonNode = null;
 		try {
-			response = getHttpResponse(resource);
-			ObjectMapper mapper = new ObjectMapper();
-			node = mapper.readValue(response.getResponseBody().getBytes(), JsonNode.class).path("plugins").path("QUERYHANDLER");
-			hasMBeans = node.has("/admin/mbeans");
-		} catch (Exception e) {
-			LOG.error(e.getMessage());
+			jsonNode = mapper.readValue(inputStream, JsonNode.class);
+		} catch (JsonParseException e) {
+			LOG.error("JsonParsing error in getJsonNode()");
+			throw new RuntimeException(e);
+		} catch (JsonMappingException e) {
+			LOG.error("JsonMapping error in getJsonNode()");
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			LOG.error("Error in getJsonNode()");
+			throw new RuntimeException(e);
 		}
-		return hasMBeans;
+		return jsonNode;
 	}
 
-	public IHttpClientWrapper getHttpClient() {
+	public boolean checkIfMBeanHandlerSupported(String resource) throws IOException {
+		InputStream inputStream = httpClient.target().path(resource).get().inputStream();
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode node = mapper.readValue(inputStream, JsonNode.class).path("plugins").path("QUERYHANDLER");
+		return node.has("/admin/mbeans");
+	}
+
+	/**
+	 * Converts Bytes to MegaBytes
+	 * 
+	 * @param d
+	 * @return
+	 */
+	public static double convertBytesToMB(Number d) {
+		return (double) Math.round(d.doubleValue() / (1024.0 * 1024.0));
+	}
+
+	/**
+	 * Converts from String form with Units("224 MB") to a number(224)
+	 * 
+	 * @param value
+	 * @return
+	 */
+	public static Double convertMemoryStringToDouble(String value) {
+		if (value.contains("KB"))
+			return Double.valueOf(value.split("KB")[0].trim()) / 1024.0;
+		else if (value.contains("MB"))
+			return Double.valueOf(value.split("MB")[0].trim());
+		else if (value.contains("GB"))
+			return Double.valueOf(value.split("GB")[0].trim()) * 1024.0;
+		else
+			throw new NumberFormatException("Unrecognized string format: " + value);
+	}
+
+	public SimpleHttpClient getHttpClient() {
 		return httpClient;
 	}
 
-	public void setHttpClient(IHttpClientWrapper httpClient) {
+	public void setHttpClient(SimpleHttpClient httpClient) {
 		this.httpClient = httpClient;
 	}
-
-	public String getHost() {
-		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
-	}
-
-	public String getPort() {
-		return port;
-	}
-
-	public void setPort(String port) {
-		this.port = port;
-	}
-
-	private String buildURL(String uri) {
-		return "http://" + getHost() + ":" + getPort() + uri;
-	}
-
 }

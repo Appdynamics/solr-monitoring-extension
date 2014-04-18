@@ -14,11 +14,18 @@
 		<task-arguments>
 			<argument name="host" is-required="true" default-value="localhost" />
 			<argument name="port" is-required="true" default-value="8983" />
+			<!-- Configure proxy parameters if any -->
+			<argument name="proxy-host" is-required="false" default-value=""/>
+			<argument name="proxy-port" is-required="false" default-value=""/>
+			<!-- CONFIGURE Solr webapp root path (OPTIONAL): 
+				Default (if default-value="") is /solr
+			-->
+			<argument name="context-root" is-required="false" default-value=""/>
 			<!-- CONFIGURE METRIC PATH (OPTIONAL):
-				Default (if default-value="") is "Custom Metrics|Solr|" under
-				Application Infrastructure Performance in every tier
+				Default (if default-value="") is "Custom Metrics|Solr|" 
 			 -->
-			<argument name="metric-path" is-required="false" default-value=""/>
+			<argument name="metric-prefix" is-required="false" default-value=""/>
+			
 		</task-arguments>
 		<java-task>
 		      <classpath>solr-monitoring-extension.jar</classpath>

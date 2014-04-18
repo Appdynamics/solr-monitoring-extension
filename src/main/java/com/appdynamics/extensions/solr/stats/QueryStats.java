@@ -40,7 +40,7 @@ public class QueryStats {
 
 	private Number pcRequestTime95th;
 
-	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) throws Exception {
+	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
 
 		JsonNode hstats = solrMBeansHandlersMap.get("QUERYHANDLER").path(handler).path("stats");
 
@@ -109,5 +109,4 @@ public class QueryStats {
 	public void setPcRequestTime95th(Number pcRequestTime95th) {
 		this.pcRequestTime95th = pcRequestTime95th;
 	}
-
 }
