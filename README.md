@@ -21,13 +21,16 @@ Memory statistics are collected through an HTTP request SystemInfoHandler at htt
      <pre>
      &lt;argument name="host" is-required="true" default-value="localhost" /&gt;
      &lt;argument name="port" is-required="true" default-value="8983" /&gt;
-	Configure proxy parameters if any
+			<!--  Optional Parameters -->
+		Configure proxy parameters if any
      &lt;argument name="proxy-host" is-required="false" default-value="" /&gt;
      &lt;argument name="proxy-port" is-required="false" default-value="" /&gt;
-	Solr webapp root path (OPTIONAL):Default (if default-value="") is /solr
+		Solr webapp root path (OPTIONAL):Default (if default-value="") is /solr
      &lt;argument name="context-root" is-required="false" default-value="" /&gt;
-	METRIC PATH (OPTIONAL):Default (if default-value="") is "Custom Metrics|Solr|"
+		METRIC PATH (OPTIONAL):Default (if default-value="") is "Custom Metrics|Solr|"
      &lt;argument name="metric-prefix" is-required="false" default-value="" /&gt;
+		<!-- Default is /select with Solr distribution -->
+     &lt;argument name="search-handler" is-required="false" default-value=""/&gt;
      </pre>
 5. Restart the Machine Agent.
 
