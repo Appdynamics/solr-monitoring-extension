@@ -16,6 +16,7 @@
 
 package com.appdynamics.extensions.solr.stats;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.log4j.Logger;
@@ -47,32 +48,34 @@ public class MemoryStats {
 
 	private Number maxFileDescriptorCount;
 
-	public void populateStats(InputStream inputStream) {
+	public void populateStats(InputStream inputStream) throws IOException {
 		JsonNode jsonNode = SolrHelper.getJsonNode(inputStream);
-		JsonNode jvmMBeansNode = jsonNode.path("jvm").path("memory");
-		JsonNode memoryMBeansNode = jsonNode.path("system");
-		if (!jvmMBeansNode.isMissingNode()) {
-			this.setJvmMemoryUsed(SolrHelper.convertMemoryStringToDouble(jvmMBeansNode.path("used").asText()));
-			this.setJvmMemoryFree(SolrHelper.convertMemoryStringToDouble(jvmMBeansNode.path("free").asText()));
-			this.setJvmMemoryTotal(SolrHelper.convertMemoryStringToDouble(jvmMBeansNode.path("total").asText()));
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("used=" + getJvmMemoryUsed());
-				LOG.debug("free=" + getJvmMemoryFree());
+		if (jsonNode != null) {
+			JsonNode jvmMBeansNode = jsonNode.path("jvm").path("memory");
+			JsonNode memoryMBeansNode = jsonNode.path("system");
+			if (!jvmMBeansNode.isMissingNode()) {
+				this.setJvmMemoryUsed(SolrHelper.convertMemoryStringToDouble(jvmMBeansNode.path("used").asText()));
+				this.setJvmMemoryFree(SolrHelper.convertMemoryStringToDouble(jvmMBeansNode.path("free").asText()));
+				this.setJvmMemoryTotal(SolrHelper.convertMemoryStringToDouble(jvmMBeansNode.path("total").asText()));
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("used=" + getJvmMemoryUsed());
+					LOG.debug("free=" + getJvmMemoryFree());
+				}
+			} else {
+				LOG.error("Missing json node while retrieving jvm memory stats");
 			}
-		} else {
-			LOG.error("Missing json node while retrieving jvm memory stats");
-		}
 
-		if (!memoryMBeansNode.isMissingNode()) {
-			this.setFreePhysicalMemorySize(memoryMBeansNode.path("freePhysicalMemorySize").asDouble());
-			this.setTotalPhysicalMemorySize(memoryMBeansNode.path("totalPhysicalMemorySize").asDouble());
-			this.setCommittedVirtualMemorySize(memoryMBeansNode.path("committedVirtualMemorySize").asDouble());
-			this.setFreeSwapSpaceSize(memoryMBeansNode.path("freeSwapSpaceSize").asDouble());
-			this.setTotalSwapSpaceSize(memoryMBeansNode.path("totalSwapSpaceSize").asDouble());
-			this.setOpenFileDescriptorCount(memoryMBeansNode.path("openFileDescriptorCount").asDouble());
-			this.setMaxFileDescriptorCount(memoryMBeansNode.path("maxFileDescriptorCount").asDouble());
-		} else {
-			LOG.error("Missing json node while retrieving system memory stats");
+			if (!memoryMBeansNode.isMissingNode()) {
+				this.setFreePhysicalMemorySize(memoryMBeansNode.path("freePhysicalMemorySize").asDouble());
+				this.setTotalPhysicalMemorySize(memoryMBeansNode.path("totalPhysicalMemorySize").asDouble());
+				this.setCommittedVirtualMemorySize(memoryMBeansNode.path("committedVirtualMemorySize").asDouble());
+				this.setFreeSwapSpaceSize(memoryMBeansNode.path("freeSwapSpaceSize").asDouble());
+				this.setTotalSwapSpaceSize(memoryMBeansNode.path("totalSwapSpaceSize").asDouble());
+				this.setOpenFileDescriptorCount(memoryMBeansNode.path("openFileDescriptorCount").asDouble());
+				this.setMaxFileDescriptorCount(memoryMBeansNode.path("maxFileDescriptorCount").asDouble());
+			} else {
+				LOG.error("Missing json node while retrieving system memory stats");
+			}
 		}
 	}
 

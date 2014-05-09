@@ -21,6 +21,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.base.Strings;
 
 public class QueryStats {
 
@@ -40,26 +41,34 @@ public class QueryStats {
 
 	private Number pcRequestTime95th;
 
-	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
+	public void populateStats(Map<String, String> taskArguments, Map<String, JsonNode> solrMBeansHandlersMap) {
 
-		JsonNode hstats = solrMBeansHandlersMap.get("QUERYHANDLER").path(handler).path("stats");
-
-		if (!hstats.isMissingNode()) {
-			this.setAvgRate(hstats.path("avgRequestsPerSecond").asDouble());
-			this.setRate5min(hstats.path("5minRateReqsPerSecond").asDouble());
-			this.setRate15min(hstats.path("15minRateReqsPerSecond").asDouble());
-			this.setAvgTimePerRequest(hstats.path("avgTimePerRequest").asDouble());
-			this.setMedianRequestTime(hstats.path("medianRequestTime").asDouble());
-			this.setPcRequestTime95th(hstats.path("95thPcRequestTime").asDouble());
-
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("avgRequestsPerSecond=" + getAvgRate());
-				LOG.debug("avgTimePerRequest=" + getAvgTimePerRequest());
-			}
-		} else {
-			LOG.error("Missing node while parsing json response ");
-			throw new RuntimeException("Handler " + handler + " is not supported/configured in this Solr version");
+		if (!Strings.isNullOrEmpty(taskArguments.get("search-handler"))) {
+			handler = taskArguments.get("search-handler");
 		}
+
+		JsonNode node = solrMBeansHandlersMap.get("QUERYHANDLER");
+		if (node != null) {
+			JsonNode hstats = node.path(handler).path("stats");
+
+			if (!hstats.isMissingNode()) {
+				this.setAvgRate(hstats.path("avgRequestsPerSecond").asDouble());
+				this.setRate5min(hstats.path("5minRateReqsPerSecond").asDouble());
+				this.setRate15min(hstats.path("15minRateReqsPerSecond").asDouble());
+				this.setAvgTimePerRequest(hstats.path("avgTimePerRequest").asDouble());
+				this.setMedianRequestTime(hstats.path("medianRequestTime").asDouble());
+				this.setPcRequestTime95th(hstats.path("95thPcRequestTime").asDouble());
+
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("avgRequestsPerSecond=" + getAvgRate());
+					LOG.debug("avgTimePerRequest=" + getAvgTimePerRequest());
+				}
+			} else {
+				LOG.error("Handler " + handler + " is not supported/configured in this Solr version");
+				throw new RuntimeException();
+			}
+		}
+
 	}
 
 	public Number getAvgRate() {

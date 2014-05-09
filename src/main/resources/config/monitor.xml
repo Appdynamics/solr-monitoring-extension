@@ -14,6 +14,7 @@
 		<task-arguments>
 			<argument name="host" is-required="true" default-value="localhost" />
 			<argument name="port" is-required="true" default-value="8983" />
+						<!-- Optional Arguments -->
 			<!-- Configure proxy parameters if any -->
 			<argument name="proxy-host" is-required="false" default-value=""/>
 			<argument name="proxy-port" is-required="false" default-value=""/>
@@ -25,6 +26,8 @@
 				Default (if default-value="") is "Custom Metrics|Solr|" 
 			 -->
 			<argument name="metric-prefix" is-required="false" default-value=""/>
+				<!-- Default is /select with Solr distribution -->
+			<argument name="search-handler" is-required="false" default-value=""/>
 			
 		</task-arguments>
 		<java-task>

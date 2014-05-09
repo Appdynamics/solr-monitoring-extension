@@ -54,7 +54,7 @@ public class SolrMonitor extends AManagedMonitor {
 	private SolrHelper helper;
 
 	public SolrMonitor() {
-		String msg = "Using Monitor Version [" + getImplementationVersion() + "]";
+		String msg = String.format("Using Monitor Version [ %s ]", getImplementationVersion());
 		LOG.info(msg);
 		System.out.println(msg);
 	}
@@ -68,6 +68,7 @@ public class SolrMonitor extends AManagedMonitor {
 	 * com.singularity.ee.agent.systemagent.api.TaskExecutionContext)
 	 */
 	public TaskOutput execute(Map<String, String> taskArguments, TaskExecutionContext arg1) throws TaskExecutionException {
+		LOG.info("Starting Solr Monitoring Task");
 
 		checkTaskArgs(taskArguments);
 		httpClient = SimpleHttpClient.builder(taskArguments).build();
@@ -75,14 +76,8 @@ public class SolrMonitor extends AManagedMonitor {
 
 		checkSolrStatus();
 
-		// Monitor multiple cores
 		try {
 			List<String> cores = helper.getCores(context_root_path + CORE_URI);
-			if (cores.isEmpty()) {
-				LOG.error("There are no SolrCores running. Using this Solr Extension requires at least one SolrCore.");
-				return new TaskOutput("There are no SolrCores running. Using this Solr Extension requires at least one SolrCore.");
-			}
-
 			for (String core : cores) {
 				if ("".equals(core)) {
 					plugins_uri = "/admin/plugins?wt=json";
@@ -92,7 +87,7 @@ public class SolrMonitor extends AManagedMonitor {
 					try {
 						solrMBeansHandlersMap = helper.getSolrMBeansHandlersMap(core, context_root_path + mbeansUri);
 					} catch (Exception e) {
-						LOG.error("Error in retrieving mbeans info for " + core, e);
+						LOG.error("Error in retrieving mbeans info for " + core);
 						break;
 					}
 
@@ -106,7 +101,7 @@ public class SolrMonitor extends AManagedMonitor {
 
 					try {
 						QueryStats queryStats = new QueryStats();
-						queryStats.populateStats(solrMBeansHandlersMap);
+						queryStats.populateStats(taskArguments, solrMBeansHandlersMap);
 						printMetrics(core, queryStats);
 					} catch (Exception e) {
 						LOG.error("Error Retrieving Query Stats for " + core, e);
@@ -119,9 +114,6 @@ public class SolrMonitor extends AManagedMonitor {
 					} catch (Exception e) {
 						LOG.error("Error Retrieving Cache Stats for " + core, e);
 					}
-				} else {
-					LOG.error("Stats are collected through an HTTP Request to SolrInfoMBeanHandler");
-					LOG.error("SolrInfoMbeanHandler (/admin/mbeans) or /admin request handler is disabled in solrconfig.xml for this " + core);
 				}
 			}
 
@@ -132,13 +124,12 @@ public class SolrMonitor extends AManagedMonitor {
 				memoryStats.populateStats(inputStream);
 				printMetrics(memoryStats);
 			} catch (Exception e) {
-				LOG.error("Error Retrieving Memory Stats: It is possible that defaultCoreName is missing in solr.xml", e);
+				LOG.error("Error retrieving memory stats", e);
 			}
-
 		} catch (Exception e) {
-			LOG.error("Exception in execute method: ", e);
+			LOG.error("Exception while running Solr Monitor Task ", e);
 		}
-
+		LOG.info("Completed Solr Monitor task successfully");
 		return new TaskOutput("End of execute method");
 	}
 
@@ -249,12 +240,14 @@ public class SolrMonitor extends AManagedMonitor {
 
 	private void printMetric(String metricPath, String metricName, Object metricValue, String aggregation, String timeRollup, String cluster) {
 		MetricWriter metricWriter = super.getMetricWriter(metricPath + metricName, aggregation, timeRollup, cluster);
-		if (metricValue instanceof Double) {
-			metricWriter.printMetric(String.valueOf(Math.round((Double) metricValue)));
-		} else if (metricValue instanceof Float) {
-			metricWriter.printMetric(String.valueOf(Math.round((Float) metricValue)));
-		} else {
-			metricWriter.printMetric(String.valueOf(metricValue));
+		if (metricValue != null) {
+			if (metricValue instanceof Double) {
+				metricWriter.printMetric(String.valueOf(Math.round((Double) metricValue)));
+			} else if (metricValue instanceof Float) {
+				metricWriter.printMetric(String.valueOf(Math.round((Float) metricValue)));
+			} else {
+				metricWriter.printMetric(String.valueOf(metricValue));
+			}
 		}
 	}
 
@@ -268,14 +261,5 @@ public class SolrMonitor extends AManagedMonitor {
 
 	private static String getImplementationVersion() {
 		return SolrMonitor.class.getPackage().getImplementationTitle();
-	}
-
-	public static void main(String[] args) throws TaskExecutionException {
-		Map<String, String> taskArguments = new HashMap<String, String>();
-		taskArguments.put("host", "localhost");
-		taskArguments.put("port", "8983");
-		taskArguments.put("context-root", "");
-		SolrMonitor monitor = new SolrMonitor();
-		monitor.execute(taskArguments, null);
 	}
 }

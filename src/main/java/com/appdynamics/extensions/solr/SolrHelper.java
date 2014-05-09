@@ -27,8 +27,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.appdynamics.extensions.http.SimpleHttpClient;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -57,63 +55,111 @@ public class SolrHelper {
 			mbeansUri = SolrMonitor.getContextRootPath() + "/admin/mbeans?stats=true&wt=json";
 		}
 		String uri = String.format(mbeansUri, core);
-		InputStream inputStream = httpClient.target().path(uri).get().inputStream();
+		InputStream inputStream = null;
 		Map<String, JsonNode> solrStatsMap = new HashMap<String, JsonNode>();
-		JsonNode solrMBeansNode = getJsonNode(inputStream).path("solr-mbeans");
-		if (solrMBeansNode.isMissingNode()) {
-			throw new IllegalArgumentException("Missing node while parsing solr-mbeans node json string for " + core + uri);
+		try {
+			inputStream = httpClient.target().path(uri).get().inputStream();
+			JsonNode jsonNode = getJsonNode(inputStream);
+			if (jsonNode != null) {
+				JsonNode solrMBeansNode = jsonNode.path("solr-mbeans");
+				if (solrMBeansNode.isMissingNode()) {
+					throw new IllegalArgumentException("Missing node while parsing solr-mbeans node json string for " + core + uri);
+				}
+				for (int i = 1; i <= solrMBeansNode.size(); i += 2) {
+					solrStatsMap.put(solrMBeansNode.get(i - 1).asText(), solrMBeansNode.get(i));
+				}
+			}
+		} catch (Exception e) {
+			LOG.error(e);
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (inputStream != null) {
+					inputStream.close();
+				}
+			} catch (Exception e) {
+				// Ignore
+			}
 		}
-		for (int i = 1; i <= solrMBeansNode.size(); i += 2) {
-			solrStatsMap.put(solrMBeansNode.get(i - 1).asText(), solrMBeansNode.get(i));
-		}
+
 		return solrStatsMap;
 
 	}
 
 	public List<String> getCores(String uri) {
 		List<String> cores = new ArrayList<String>();
+		InputStream inputStream = null;
 		try {
-			InputStream inputStream = httpClient.target().path(uri).get().inputStream();
-			JsonNode node = getJsonNode(inputStream).path("status");
-			Iterator<String> fieldNames = node.fieldNames();
-			while (fieldNames.hasNext()) {
-				cores.add(fieldNames.next());
+			inputStream = httpClient.target().path(uri).get().inputStream();
+			JsonNode node = getJsonNode(inputStream);
+			if (node != null) {
+				Iterator<String> fieldNames = node.path("status").fieldNames();
+				while (fieldNames.hasNext()) {
+					cores.add(fieldNames.next());
+				}
+				if (cores.isEmpty()) {
+					LOG.error("There are no SolrCores running. Using this Solr Extension requires at least one SolrCore.");
+					throw new RuntimeException();
+				}
+				if (LOG.isDebugEnabled())
+					LOG.debug("Cores / Collections size is " + cores.size());
 			}
-		} catch (IOException e) {
-			LOG.error("Exception in getCores Method");
-			throw new RuntimeException(e);
 		} catch (Exception e) {
-			LOG.error("Exception in getCores Method");
-			throw new RuntimeException(e);
+			LOG.error("Error while fetching cores " + uri, e);
+			throw new RuntimeException();
+		} finally {
+			try {
+				if (inputStream != null) {
+					inputStream.close();
+				}
+			} catch (Exception e) {
+				// Ignore
+			}
 		}
-		if (LOG.isDebugEnabled())
-			LOG.debug("Cores / Collections size is " + cores.size());
 		return cores;
 	}
 
-	public static JsonNode getJsonNode(InputStream inputStream) {
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode jsonNode = null;
-		try {
-			jsonNode = mapper.readValue(inputStream, JsonNode.class);
-		} catch (JsonParseException e) {
-			LOG.error("JsonParsing error in getJsonNode()");
-			throw new RuntimeException(e);
-		} catch (JsonMappingException e) {
-			LOG.error("JsonMapping error in getJsonNode()");
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			LOG.error("Error in getJsonNode()");
-			throw new RuntimeException(e);
+	public static JsonNode getJsonNode(InputStream inputStream) throws IOException {
+		if (inputStream == null) {
+			return null;
 		}
-		return jsonNode;
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.readValue(inputStream, JsonNode.class);
 	}
 
 	public boolean checkIfMBeanHandlerSupported(String resource) throws IOException {
-		InputStream inputStream = httpClient.target().path(resource).get().inputStream();
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode node = mapper.readValue(inputStream, JsonNode.class).path("plugins").path("QUERYHANDLER");
-		return node.has("/admin/mbeans");
+		InputStream inputStream = null;
+		try {
+			inputStream = httpClient.target().path(resource).get().inputStream();
+			JsonNode jsonNode = getJsonNode(inputStream);
+			if (jsonNode != null) {
+				JsonNode node = jsonNode.findValue("QUERYHANDLER");
+				if (node == null) {
+					LOG.error("Missing 'QUERYHANDLER' when checking for mbeans " + resource);
+					return false;
+				}
+				boolean mbeanSupport = node.has("/admin/mbeans");
+				if (!mbeanSupport) {
+					LOG.error("Stats are collected through an HTTP Request to SolrInfoMBeanHandler");
+					LOG.error("SolrInfoMbeanHandler (/admin/mbeans) or /admin request handler is disabled in solrconfig.xml " + resource);
+				}
+				return mbeanSupport;
+			} else {
+				LOG.error("Response null when accessing " + resource);
+				return false;
+			}
+		} catch (Exception e) {
+			LOG.error("Exception when mbean handler check " + resource, e);
+			return false;
+		} finally {
+			try {
+				if (inputStream != null) {
+					inputStream.close();
+				}
+			} catch (Exception e) {
+				// Ignore
+			}
+		}
 	}
 
 	/**
@@ -133,14 +179,19 @@ public class SolrHelper {
 	 * @return
 	 */
 	public static Double convertMemoryStringToDouble(String value) {
-		if (value.contains("KB"))
-			return Double.valueOf(value.split("KB")[0].trim()) / 1024.0;
-		else if (value.contains("MB"))
-			return Double.valueOf(value.split("MB")[0].trim());
-		else if (value.contains("GB"))
-			return Double.valueOf(value.split("GB")[0].trim()) * 1024.0;
-		else
-			throw new NumberFormatException("Unrecognized string format: " + value);
+		try {
+			if (value.contains("KB")) {
+				return Double.valueOf(value.split("KB")[0].trim()) / 1024.0;
+			} else if (value.contains("MB")) {
+				return Double.valueOf(value.split("MB")[0].trim());
+			} else if (value.contains("GB")) {
+				return Double.valueOf(value.split("GB")[0].trim()) * 1024.0;
+			}
+		} catch (Exception e) {
+			// ignore
+		}
+		LOG.error("Unrecognized string format: " + value);
+		return null;
 	}
 
 	public SimpleHttpClient getHttpClient() {

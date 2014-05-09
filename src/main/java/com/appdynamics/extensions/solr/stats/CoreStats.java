@@ -33,17 +33,18 @@ public class CoreStats {
 	private Number deletedDocs;
 
 	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
-		JsonNode coreNode = solrMBeansHandlersMap.get("CORE");
-		if (!coreNode.isMissingNode()) {
-			this.setNumDocs(coreNode.path("searcher").path("stats").path("numDocs").asInt());
-			this.setMaxDocs(coreNode.path("searcher").path("stats").path("maxDoc").asInt());
-			this.setDeletedDocs(coreNode.path("searcher").path("stats").path("deletedDocs").asInt());
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("Docs=" + getNumDocs());
-				LOG.debug("Max Docs=" + getMaxDocs());
+		JsonNode node = solrMBeansHandlersMap.get("CORE");
+		if (node != null) {
+			JsonNode coreNode = node.path("searcher").path("stats");
+			if (!coreNode.isMissingNode()) {
+				this.setNumDocs(coreNode.path("numDocs").asInt());
+				this.setMaxDocs(coreNode.path("maxDoc").asInt());
+				this.setDeletedDocs(coreNode.path("deletedDocs").asInt());
+				if (LOG.isDebugEnabled()) {
+					LOG.debug("Docs=" + getNumDocs());
+					LOG.debug("Max Docs=" + getMaxDocs());
+				}
 			}
-		} else {
-			throw new RuntimeException("Missing node while parsing CORE handler");
 		}
 	}
 
