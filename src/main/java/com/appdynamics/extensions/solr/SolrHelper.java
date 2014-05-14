@@ -55,9 +55,6 @@ public class SolrHelper {
 	 * @throws IOException
 	 */
 	public Map<String, JsonNode> getSolrMBeansHandlersMap(String core, String mbeansUri) throws IOException {
-		if ("".equals(core)) {
-			mbeansUri = SolrMonitor.getContextRootPath() + "/admin/mbeans?stats=true&wt=json";
-		}
 		String uri = String.format(mbeansUri, core);
 		InputStream inputStream = null;
 		Map<String, JsonNode> solrStatsMap = new HashMap<String, JsonNode>();

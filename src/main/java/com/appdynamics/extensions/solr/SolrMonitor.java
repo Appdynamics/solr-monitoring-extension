@@ -46,7 +46,7 @@ public class SolrMonitor extends AManagedMonitor {
 	private static String context_root_path = "/solr";
 	private static final String CORE_URI = "/admin/cores?action=STATUS&wt=json";
 	private static String plugins_uri = "/%s/admin/plugins?wt=json";
-	private static final String MEMORY_URI = "/admin/system?stats=true&wt=json";
+	private static String memory_uri = "/%s/admin/system?stats=true&wt=json";
 	private static String mbeansUri = "/%s/admin/mbeans?stats=true&wt=json";
 
 	private SimpleHttpClient httpClient;
@@ -79,9 +79,6 @@ public class SolrMonitor extends AManagedMonitor {
 		try {
 			List<String> cores = helper.getCores(context_root_path + CORE_URI);
 			for (String core : cores) {
-				if ("".equals(core)) {
-					plugins_uri = "/admin/plugins?wt=json";
-				}
 				if (helper.checkIfMBeanHandlerSupported(String.format(context_root_path + plugins_uri, core))) {
 					Map<String, JsonNode> solrMBeansHandlersMap = new HashMap<String, JsonNode>();
 					try {
@@ -115,17 +112,18 @@ public class SolrMonitor extends AManagedMonitor {
 						LOG.error("Error Retrieving Cache Stats for " + core, e);
 					}
 				}
+				try {
+					MemoryStats memoryStats = new MemoryStats();
+					String uri = context_root_path + String.format(memory_uri, core);
+					InputStream inputStream = httpClient.target().path(uri).get().inputStream();
+					memoryStats.populateStats(inputStream);
+					printMetrics(core, memoryStats);
+				} catch (Exception e) {
+					LOG.error("Error retrieving memory stats for " + core, e);
+				}
 			}
 
-			// Fetches JVM Memory and System Memory Stats
-			try {
-				MemoryStats memoryStats = new MemoryStats();
-				InputStream inputStream = httpClient.target().path(context_root_path + MEMORY_URI).get().inputStream();
-				memoryStats.populateStats(inputStream);
-				printMetrics(memoryStats);
-			} catch (Exception e) {
-				LOG.error("Error retrieving memory stats", e);
-			}
+			
 		} catch (Exception e) {
 			LOG.error("Exception while running Solr Monitor Task ", e);
 		}
@@ -194,8 +192,11 @@ public class SolrMonitor extends AManagedMonitor {
 		printMetric(filterCachePath, "CacheSize (Bytes)", cacheStats.getFilterCacheSize());
 	}
 
-	private void printMetrics(MemoryStats memoryStats) {
-		String metricPath = "Memory|";
+	private void printMetrics(String collection, MemoryStats memoryStats) {
+		if ("".equals(collection)) {
+			collection = "Collection";
+		}
+		String metricPath = "Collections |" + collection + "|" + "Memory|";
 		String jvmPath = metricPath + "JVMMemory|";
 		String systemPath = metricPath + "SystemMemory|";
 
