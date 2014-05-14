@@ -18,10 +18,13 @@ package com.appdynamics.extensions.solr;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -29,6 +32,7 @@ import org.apache.log4j.Logger;
 import com.appdynamics.extensions.http.SimpleHttpClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 
 public class SolrHelper {
 
@@ -175,22 +179,38 @@ public class SolrHelper {
 	/**
 	 * Converts from String form with Units("224 MB") to a number(224)
 	 * 
-	 * @param value
+	 * @param valueStr
 	 * @return
 	 */
-	public static Double convertMemoryStringToDouble(String value) {
-		try {
-			if (value.contains("KB")) {
-				return Double.valueOf(value.split("KB")[0].trim()) / 1024.0;
-			} else if (value.contains("MB")) {
-				return Double.valueOf(value.split("MB")[0].trim());
-			} else if (value.contains("GB")) {
-				return Double.valueOf(value.split("GB")[0].trim()) * 1024.0;
+	public static Double convertMemoryStringToDouble(String valueStr) {
+		if (!Strings.isNullOrEmpty(valueStr)) {
+			String strippedValueStr = null;
+			try {
+				if (valueStr.contains("KB")) {
+					strippedValueStr = valueStr.split("KB")[0].trim();
+					return unLocalizeStrValue(strippedValueStr) / 1024.0;
+				} else if (valueStr.contains("MB")) {
+					strippedValueStr = valueStr.split("MB")[0].trim();
+					return unLocalizeStrValue(strippedValueStr);
+				} else if (valueStr.contains("GB")) {
+					strippedValueStr = valueStr.split("GB")[0].trim();
+					return unLocalizeStrValue(strippedValueStr) * 1024.0;
+				}
+			} catch (Exception e) {
+				// ignore
 			}
-		} catch (Exception e) {
-			// ignore
+			LOG.error("Unrecognized string format: " + valueStr);
 		}
-		LOG.error("Unrecognized string format: " + value);
+		return null;
+	}
+
+	private static Double unLocalizeStrValue(String valueStr) {
+		try {
+			Locale loc = Locale.getDefault();
+			return Double.valueOf(NumberFormat.getInstance(loc).parse(valueStr).doubleValue());
+		} catch (ParseException e) {
+			LOG.error("Exception while unlocalizing number string "+ valueStr, e);
+		}
 		return null;
 	}
 
