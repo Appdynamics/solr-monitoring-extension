@@ -82,9 +82,7 @@ public class SolrHelper {
 				// Ignore
 			}
 		}
-
 		return solrStatsMap;
-
 	}
 
 	public List<String> getCores(String uri) {
@@ -217,5 +215,9 @@ public class SolrHelper {
 
 	public void setHttpClient(SimpleHttpClient httpClient) {
 		this.httpClient = httpClient;
+	}
+	
+	public static Double multipyBy(Double value, int multiplier) {
+		return value * multiplier;
 	}
 }

@@ -38,34 +38,35 @@ In the AppDynamics Metric Browser, look for: Application Infrastructure Performa
 
 
 ## Metrics
-
+The following metrics are available for each core under Cores
 ###Core Metrics
 
-The following metrics are reported under Core
+The following metrics are reported under CORE
 
 | Metric Name 			|
 |-------------------------------|
 |Number of Docs			|
-|Max Docs			|
+|Max Docs				|
 |Deleted Docs			|
 
 
 ###Query Statistics
 
-The following metrics are reported under Query
+The following metrics are reported under QUERYHANDLER for SearchHandler and UpdateHandler
 
 | Metric Name 			|
 |-------------------------------|
-|Average Rate (requests per second)		|
-|5 Minute Rate (requests per second)		|
-|15 Minute Rate (requests per second)		|
+|Requests						|
+|Errors							|
+|Timeouts						|
+|Average Requests Per Minute	|
+|Average Requests Per Second	|
+|5 min Rate Requests Per Minute	|
 |Average Time Per Request (milliseconds)	|
-|Median Request Time (milliseconds)		|
-|95th Percentile Request Time (milliseconds)	|
 
 ###Memory Statistics
 
-The following metrics are reported under Memory/JVMMemory
+The following metrics are reported under MEMORY/JVM
 
 | Metric Name 			|
 |-------------------------------|
@@ -73,7 +74,7 @@ The following metrics are reported under Memory/JVMMemory
 |Free (MB)			|
 |Total (MB)			|
 
-The following metrics are reported under Memory/SystemMemory
+The following metrics are reported under MEMORY/System
 
 | Metric Name 			|
 |-------------------------------|
@@ -91,32 +92,32 @@ The following metrics are reported under Cache /QueryResultCache
 
 | Metric Name 			|
 |-------------------------------|
-|HitRatio			|
-|HitRatioCumulative		|
+|HitRatio %				|
+|HitRatioCumulative %	|
 |CacheSize (Bytes)		|
 
 The following metrics are reported under Cache/DocumentCache
 
 | Metric Name 			|
 |-------------------------------|
-|HitRatio			|
-|HitRatioCumulative		| 
+|HitRatio %				|
+|HitRatioCumulative	%	| 
 |CacheSize (Bytes)		|
 
 The following metrics are reported under Cache/FieldValueCache
 
 | Metric Name 			|
 |-------------------------------|
-|HitRatio			| 
-|HitRatioCumulative		| 
+|HitRatio %				| 
+|HitRatioCumulative %	| 
 |CacheSize (Bytes)		|
 
 The following metrics are reported under Cache/FilterCache
 
 | Metric Name 			|
 |-------------------------------|
-|HitRatio			| 
-|HitRatioCumulative		| 
+|HitRatio %				| 
+|HitRatioCumulative	%	| 
 |CacheSize (Bytes)		|
 
 ## Custom Dashboard

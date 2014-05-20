@@ -29,24 +29,15 @@ public class MemoryStats {
 	private static final Logger LOG = Logger.getLogger("com.singularity.extensions.MemoryStats");
 
 	private Double jvmMemoryUsed;
-
 	private Double jvmMemoryFree;
-
 	private Double jvmMemoryTotal;
-
-	private Number freePhysicalMemorySize;
-
-	private Number totalPhysicalMemorySize;
-
-	private Number committedVirtualMemorySize;
-
-	private Number freeSwapSpaceSize;
-
-	private Number totalSwapSpaceSize;
-
-	private Number openFileDescriptorCount;
-
-	private Number maxFileDescriptorCount;
+	private Double freePhysicalMemorySize;
+	private Double totalPhysicalMemorySize;
+	private Double committedVirtualMemorySize;
+	private Double freeSwapSpaceSize;
+	private Double totalSwapSpaceSize;
+	private Double openFileDescriptorCount;
+	private Double maxFileDescriptorCount;
 
 	public void populateStats(InputStream inputStream) throws IOException {
 		JsonNode jsonNode = SolrHelper.getJsonNode(inputStream);
@@ -79,7 +70,7 @@ public class MemoryStats {
 		}
 	}
 
-	public Number getJvmMemoryUsed() {
+	public Double getJvmMemoryUsed() {
 		return jvmMemoryUsed;
 	}
 
@@ -87,7 +78,7 @@ public class MemoryStats {
 		this.jvmMemoryUsed = jvmMemoryUsed;
 	}
 
-	public Number getJvmMemoryFree() {
+	public Double getJvmMemoryFree() {
 		return jvmMemoryFree;
 	}
 
@@ -95,7 +86,7 @@ public class MemoryStats {
 		this.jvmMemoryFree = jvmMemoryFree;
 	}
 
-	public Number getJvmMemoryTotal() {
+	public Double getJvmMemoryTotal() {
 		return jvmMemoryTotal;
 	}
 
@@ -103,59 +94,59 @@ public class MemoryStats {
 		this.jvmMemoryTotal = jvmMemoryTotal;
 	}
 
-	public Number getFreePhysicalMemorySize() {
+	public Double getFreePhysicalMemorySize() {
 		return freePhysicalMemorySize;
 	}
 
-	public void setFreePhysicalMemorySize(Number freePhysicalMemorySize) {
+	public void setFreePhysicalMemorySize(Double freePhysicalMemorySize) {
 		this.freePhysicalMemorySize = SolrHelper.convertBytesToMB(freePhysicalMemorySize);
 	}
 
-	public Number getTotalPhysicalMemorySize() {
+	public Double getTotalPhysicalMemorySize() {
 		return totalPhysicalMemorySize;
 	}
 
-	public void setTotalPhysicalMemorySize(Number totalPhysicalMemorySize) {
+	public void setTotalPhysicalMemorySize(Double totalPhysicalMemorySize) {
 		this.totalPhysicalMemorySize = SolrHelper.convertBytesToMB(totalPhysicalMemorySize);
 	}
 
-	public Number getCommittedVirtualMemorySize() {
+	public Double getCommittedVirtualMemorySize() {
 		return committedVirtualMemorySize;
 	}
 
-	public void setCommittedVirtualMemorySize(Number committedVirtualMemorySize) {
+	public void setCommittedVirtualMemorySize(Double committedVirtualMemorySize) {
 		this.committedVirtualMemorySize = SolrHelper.convertBytesToMB(committedVirtualMemorySize);
 	}
 
-	public Number getFreeSwapSpaceSize() {
+	public Double getFreeSwapSpaceSize() {
 		return freeSwapSpaceSize;
 	}
 
-	public void setFreeSwapSpaceSize(Number freeSwapSpaceSize) {
+	public void setFreeSwapSpaceSize(Double freeSwapSpaceSize) {
 		this.freeSwapSpaceSize = SolrHelper.convertBytesToMB(freeSwapSpaceSize);
 	}
 
-	public Number getTotalSwapSpaceSize() {
+	public Double getTotalSwapSpaceSize() {
 		return totalSwapSpaceSize;
 	}
 
-	public void setTotalSwapSpaceSize(Number totalSwapSpaceSize) {
+	public void setTotalSwapSpaceSize(Double totalSwapSpaceSize) {
 		this.totalSwapSpaceSize = SolrHelper.convertBytesToMB(totalSwapSpaceSize);
 	}
 
-	public Number getOpenFileDescriptorCount() {
+	public Double getOpenFileDescriptorCount() {
 		return openFileDescriptorCount;
 	}
 
-	public void setOpenFileDescriptorCount(Number openFileDescriptorCount) {
+	public void setOpenFileDescriptorCount(Double openFileDescriptorCount) {
 		this.openFileDescriptorCount = openFileDescriptorCount;
 	}
 
-	public Number getMaxFileDescriptorCount() {
+	public Double getMaxFileDescriptorCount() {
 		return maxFileDescriptorCount;
 	}
 
-	public void setMaxFileDescriptorCount(Number maxFileDescriptorCount) {
+	public void setMaxFileDescriptorCount(Double maxFileDescriptorCount) {
 		this.maxFileDescriptorCount = maxFileDescriptorCount;
 	}
 }

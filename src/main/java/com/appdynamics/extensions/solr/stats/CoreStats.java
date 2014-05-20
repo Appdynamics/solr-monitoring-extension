@@ -26,20 +26,18 @@ public class CoreStats {
 
 	private static Logger LOG = Logger.getLogger("com.singularity.extensions.CoreStats");
 
-	private Number numDocs;
-
-	private Number maxDocs;
-
-	private Number deletedDocs;
+	private Double numDocs;
+	private Double maxDocs;
+	private Double deletedDocs;
 
 	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
 		JsonNode node = solrMBeansHandlersMap.get("CORE");
 		if (node != null) {
 			JsonNode coreNode = node.path("searcher").path("stats");
 			if (!coreNode.isMissingNode()) {
-				this.setNumDocs(coreNode.path("numDocs").asInt());
-				this.setMaxDocs(coreNode.path("maxDoc").asInt());
-				this.setDeletedDocs(coreNode.path("deletedDocs").asInt());
+				this.setNumDocs(coreNode.path("numDocs").asDouble());
+				this.setMaxDocs(coreNode.path("maxDoc").asDouble());
+				this.setDeletedDocs(coreNode.path("deletedDocs").asDouble());
 				if (LOG.isDebugEnabled()) {
 					LOG.debug("Docs=" + getNumDocs());
 					LOG.debug("Max Docs=" + getMaxDocs());
@@ -48,27 +46,27 @@ public class CoreStats {
 		}
 	}
 
-	public Number getNumDocs() {
+	public Double getNumDocs() {
 		return numDocs;
 	}
 
-	public void setNumDocs(Number numDocs) {
+	public void setNumDocs(Double numDocs) {
 		this.numDocs = numDocs;
 	}
 
-	public Number getMaxDocs() {
+	public Double getMaxDocs() {
 		return maxDocs;
 	}
 
-	public void setMaxDocs(Number maxDocs) {
+	public void setMaxDocs(Double maxDocs) {
 		this.maxDocs = maxDocs;
 	}
 
-	public Number getDeletedDocs() {
+	public Double getDeletedDocs() {
 		return deletedDocs;
 	}
 
-	public void setDeletedDocs(Number deletedDocs) {
+	public void setDeletedDocs(Double deletedDocs) {
 		this.deletedDocs = deletedDocs;
 	}
 }

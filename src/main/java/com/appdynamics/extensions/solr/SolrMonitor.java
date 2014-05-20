@@ -69,7 +69,7 @@ public class SolrMonitor extends AManagedMonitor {
 	 */
 	public TaskOutput execute(Map<String, String> taskArguments, TaskExecutionContext arg1) throws TaskExecutionException {
 		LOG.info("Starting Solr Monitoring Task");
-
+		
 		checkTaskArgs(taskArguments);
 		httpClient = SimpleHttpClient.builder(taskArguments).build();
 		helper = new SolrHelper(httpClient);
@@ -122,8 +122,6 @@ public class SolrMonitor extends AManagedMonitor {
 					LOG.error("Error retrieving memory stats for " + core, e);
 				}
 			}
-
-			
 		} catch (Exception e) {
 			LOG.error("Exception while running Solr Monitor Task ", e);
 		}
@@ -157,38 +155,62 @@ public class SolrMonitor extends AManagedMonitor {
 			}
 		}
 	}
-
+	
 	private void printMetrics(String collection, CoreStats stats) {
 		if ("".equals(collection)) {
 			collection = "Collection";
 		}
-		String metricPath = "Collections |" + collection + "|" + "Core|";
+		String metricPath = "Cores |" + collection + "|" + "CORE|";
 		printMetric(metricPath, "Number of Docs", stats.getNumDocs());
 		printMetric(metricPath, "Max Docs", stats.getMaxDocs());
 		printMetric(metricPath, "Deleted Docs", stats.getDeletedDocs());
+	}
+	
+	private void printMetrics(String collection, QueryStats stats) {
+		if ("".equals(collection)) {
+			collection = "Collection";
+		}
+		String metricPath = "Cores |" + collection + "|" + "QUERYHANDLER|";
+		String searchMetricPath = metricPath + "SearchHandler|";
+		printMetric(searchMetricPath, "Requests", stats.getSearchRequests());
+		printMetric(searchMetricPath, "Errors", stats.getSearchErrors());
+		printMetric(searchMetricPath, "Timeouts", stats.getSearchTimeouts());
+		printMetric(searchMetricPath, "Average Requests Per Minute", SolrHelper.multipyBy(stats.getSearchAvgRequests(), 60));
+		printMetric(searchMetricPath, "Average Requests Per Second", stats.getSearchAvgRequests());
+		printMetric(searchMetricPath, "5 min Rate Requests Per Minute", stats.getSearch5minRateRequests());
+		printMetric(searchMetricPath, "Average Time Per Request (milliseconds)", stats.getSearchAvgTimePerRequest());
+		
+		String updateMetricPath = metricPath + "UpdateHandler|";
+		printMetric(updateMetricPath, "Requests", stats.getUpdateRequests());
+		printMetric(updateMetricPath, "Errors", stats.getUpdateErrors());
+		printMetric(updateMetricPath, "Timeouts", stats.getUpdateTimeouts());
+		printMetric(updateMetricPath, "Average Requests Per Minute", SolrHelper.multipyBy(stats.getUpdateAvgRequests(), 60));
+		printMetric(updateMetricPath, "Average Requests Per Second", stats.getUpdateAvgRequests());
+		printMetric(searchMetricPath, "5 min Rate Requests Per Minute", stats.getUpdate5minRateRequests());
+		printMetric(updateMetricPath, "Average Time Per Request (milliseconds)", stats.getUpdateAvgTimePerRequest());
 	}
 
 	private void printMetrics(String collection, CacheStats cacheStats) {
 		if ("".equals(collection)) {
 			collection = "Collection";
 		}
-		String metricPath = "Collections |" + collection + "|" + "Cache|";
+		String metricPath = "Cores |" + collection + "|" + "CACHE|";
 		String queryCachePath = metricPath + "QueryResultCache|";
 		String documentCachePath = metricPath + "DocumentCache|";
 		String fieldCachePath = metricPath + "FieldValueCache|";
 		String filterCachePath = metricPath + "FilterCache|";
 
-		printMetric(queryCachePath, "HitRatio", cacheStats.getQueryResultCacheHitRatio());
-		printMetric(queryCachePath, "HitRatioCumulative", cacheStats.getQueryResultCacheHitRatioCumulative());
+		printMetric(queryCachePath, "HitRatio %", cacheStats.getQueryResultCacheHitRatio());
+		printMetric(queryCachePath, "HitRatioCumulative %", cacheStats.getQueryResultCacheHitRatioCumulative());
 		printMetric(queryCachePath, "CacheSize (Bytes)", cacheStats.getQueryResultCacheSize());
-		printMetric(documentCachePath, "HitRatio", cacheStats.getDocumentCacheHitRatio());
-		printMetric(documentCachePath, "HitRatioCumulative", cacheStats.getDocumentCacheHitRatioCumulative());
+		printMetric(documentCachePath, "HitRatio %", cacheStats.getDocumentCacheHitRatio());
+		printMetric(documentCachePath, "HitRatioCumulative %", cacheStats.getDocumentCacheHitRatioCumulative());
 		printMetric(documentCachePath, "CacheSize (Bytes)", cacheStats.getDocumentCacheSize());
-		printMetric(fieldCachePath, "HitRatio", cacheStats.getFieldValueCacheHitRatio());
-		printMetric(fieldCachePath, "HitRatioCumulative", cacheStats.getFieldValueCacheHitRatioCumulative());
+		printMetric(fieldCachePath, "HitRatio %", cacheStats.getFieldValueCacheHitRatio());
+		printMetric(fieldCachePath, "HitRatioCumulative %", cacheStats.getFieldValueCacheHitRatioCumulative());
 		printMetric(fieldCachePath, "CacheSize (Bytes)", cacheStats.getFieldValueCacheSize());
-		printMetric(filterCachePath, "HitRatio", cacheStats.getFilterCacheHitRatio());
-		printMetric(filterCachePath, "HitRatioCumulative", cacheStats.getFilterCacheHitRatioCumulative());
+		printMetric(filterCachePath, "HitRatio %", cacheStats.getFilterCacheHitRatio());
+		printMetric(filterCachePath, "HitRatioCumulative %", cacheStats.getFilterCacheHitRatioCumulative());
 		printMetric(filterCachePath, "CacheSize (Bytes)", cacheStats.getFilterCacheSize());
 	}
 
@@ -196,9 +218,9 @@ public class SolrMonitor extends AManagedMonitor {
 		if ("".equals(collection)) {
 			collection = "Collection";
 		}
-		String metricPath = "Collections |" + collection + "|" + "Memory|";
-		String jvmPath = metricPath + "JVMMemory|";
-		String systemPath = metricPath + "SystemMemory|";
+		String metricPath = "Cores |" + collection + "|" + "MEMORY|";
+		String jvmPath = metricPath + "JVM|";
+		String systemPath = metricPath + "System|";
 
 		printMetric(jvmPath, "Used (MB)", memoryStats.getJvmMemoryUsed());
 		printMetric(jvmPath, "Free (MB)", memoryStats.getJvmMemoryFree());
@@ -210,20 +232,6 @@ public class SolrMonitor extends AManagedMonitor {
 		printMetric(systemPath, "Total Swap Size (MB)", memoryStats.getTotalSwapSpaceSize());
 		printMetric(systemPath, "Open File Descriptor Count", memoryStats.getOpenFileDescriptorCount());
 		printMetric(systemPath, "Max File Descriptor Count", memoryStats.getMaxFileDescriptorCount());
-
-	}
-
-	private void printMetrics(String collection, QueryStats stats) {
-		if ("".equals(collection)) {
-			collection = "Collection";
-		}
-		String metricPath = "Collections |" + collection + "|" + "Query|";
-		printMetric(metricPath, "Average Rate (requests per second)", stats.getAvgRate());
-		printMetric(metricPath, "5 Minute Rate (requests per second)", stats.getRate5min());
-		printMetric(metricPath, "15 Minute Rate (requests per second)", stats.getRate15min());
-		printMetric(metricPath, "Average Time Per Request (milliseconds)", stats.getAvgTimePerRequest());
-		printMetric(metricPath, "Median Request Time (milliseconds)", stats.getMedianRequestTime());
-		printMetric(metricPath, "95th Percentile Request Time (milliseconds)", stats.getPcRequestTime95th());
 
 	}
 
