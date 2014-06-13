@@ -25,6 +25,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class CacheStats {
 
+	private static final int PERCENT_MULTIPLIER = 100;
+
 	private static final Logger LOG = Logger.getLogger("com.singularity.extensions.CacheStats");
 
 	private Double queryResultCacheHitRatio;
@@ -49,8 +51,8 @@ public class CacheStats {
 		JsonNode queryResultCacheStats = cacheNode.path("queryResultCache").path("stats");
 
 		if (!queryResultCacheStats.isMissingNode()) {
-			this.setQueryResultCacheHitRatio(SolrHelper.multipyBy(queryResultCacheStats.path("hitratio").asDouble(), 100));
-			this.setQueryResultCacheHitRatioCumulative(SolrHelper.multipyBy(queryResultCacheStats.path("cumulative_hitratio").asDouble(), 100));
+			this.setQueryResultCacheHitRatio(SolrHelper.multipyBy(queryResultCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
+			this.setQueryResultCacheHitRatioCumulative(SolrHelper.multipyBy(queryResultCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
 			this.setQueryResultCacheSize(queryResultCacheStats.path("size").asDouble());
 
 			if (LOG.isDebugEnabled()) {
@@ -65,8 +67,8 @@ public class CacheStats {
 		JsonNode documentCacheStats = cacheNode.path("documentCache").path("stats");
 
 		if (!documentCacheStats.isMissingNode()) {
-			this.setDocumentCacheHitRatio(SolrHelper.multipyBy(documentCacheStats.path("hitratio").asDouble(), 100));
-			this.setDocumentCacheHitRatioCumulative(SolrHelper.multipyBy(documentCacheStats.path("cumulative_hitratio").asDouble(), 100));
+			this.setDocumentCacheHitRatio(SolrHelper.multipyBy(documentCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
+			this.setDocumentCacheHitRatioCumulative(SolrHelper.multipyBy(documentCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
 			this.setDocumentCacheSize(documentCacheStats.path("size").asDouble());
 		} else {
 			LOG.error("documentCache is disabled in solrconfig.xml");
@@ -75,8 +77,8 @@ public class CacheStats {
 		JsonNode fieldValueCacheStats = cacheNode.path("fieldValueCache").path("stats");
 
 		if (!fieldValueCacheStats.isMissingNode()) {
-			this.setFieldValueCacheHitRatio(SolrHelper.multipyBy(fieldValueCacheStats.path("hitratio").asDouble(), 100));
-			this.setFieldValueCacheHitRatioCumulative(SolrHelper.multipyBy(fieldValueCacheStats.path("cumulative_hitratio").asDouble(), 100));
+			this.setFieldValueCacheHitRatio(SolrHelper.multipyBy(fieldValueCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
+			this.setFieldValueCacheHitRatioCumulative(SolrHelper.multipyBy(fieldValueCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
 			this.setFieldValueCacheSize(fieldValueCacheStats.path("size").asDouble());
 		} else {
 			LOG.error("fieldValueCache is disabled in solrconfig.xml");
@@ -85,8 +87,8 @@ public class CacheStats {
 		JsonNode filterCacheStats = cacheNode.path("filterCache").path("stats");
 
 		if (!filterCacheStats.isMissingNode()) {
-			this.setFilterCacheHitRatio(SolrHelper.multipyBy(filterCacheStats.path("hitratio").asDouble(), 100));
-			this.setFilterCacheHitRatioCumulative(SolrHelper.multipyBy(filterCacheStats.path("cumulative_hitratio").asDouble(), 100));
+			this.setFilterCacheHitRatio(SolrHelper.multipyBy(filterCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
+			this.setFilterCacheHitRatioCumulative(SolrHelper.multipyBy(filterCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
 			this.setFilterCacheSize(filterCacheStats.path("size").asDouble());
 		} else {
 			LOG.error("filterCache is disabled in solrconfig.xml");

@@ -36,6 +36,8 @@ import com.google.common.base.Strings;
 
 public class SolrHelper {
 
+	private static final double BYTES_CONVERSION_FACTOR = 1024.0;
+
 	private static Logger LOG = Logger.getLogger("com.singularity.extensions.SolrHelper");
 
 	private SimpleHttpClient httpClient;
@@ -167,8 +169,11 @@ public class SolrHelper {
 	 * @param d
 	 * @return
 	 */
-	public static double convertBytesToMB(Number d) {
-		return (double) Math.round(d.doubleValue() / (1024.0 * 1024.0));
+	public static double convertBytesToMB(Double d) {
+		if(d != null) {
+			d = d/(BYTES_CONVERSION_FACTOR * BYTES_CONVERSION_FACTOR);
+		}
+		return d;
 	}
 
 	/**
@@ -183,13 +188,13 @@ public class SolrHelper {
 			try {
 				if (valueStr.contains("KB")) {
 					strippedValueStr = valueStr.split("KB")[0].trim();
-					return unLocalizeStrValue(strippedValueStr) / 1024.0;
+					return unLocalizeStrValue(strippedValueStr) / BYTES_CONVERSION_FACTOR;
 				} else if (valueStr.contains("MB")) {
 					strippedValueStr = valueStr.split("MB")[0].trim();
 					return unLocalizeStrValue(strippedValueStr);
 				} else if (valueStr.contains("GB")) {
 					strippedValueStr = valueStr.split("GB")[0].trim();
-					return unLocalizeStrValue(strippedValueStr) * 1024.0;
+					return unLocalizeStrValue(strippedValueStr) * BYTES_CONVERSION_FACTOR;
 				}
 			} catch (Exception e) {
 				// ignore
@@ -204,7 +209,7 @@ public class SolrHelper {
 			Locale loc = Locale.getDefault();
 			return Double.valueOf(NumberFormat.getInstance(loc).parse(valueStr).doubleValue());
 		} catch (ParseException e) {
-			LOG.error("Exception while unlocalizing number string "+ valueStr, e);
+			LOG.error("Exception while unlocalizing number string " + valueStr, e);
 		}
 		return null;
 	}
@@ -216,8 +221,11 @@ public class SolrHelper {
 	public void setHttpClient(SimpleHttpClient httpClient) {
 		this.httpClient = httpClient;
 	}
-	
+
 	public static Double multipyBy(Double value, int multiplier) {
-		return value * multiplier;
+		if (value != null) {
+			value = value * multiplier;
+		}
+		return value;
 	}
 }

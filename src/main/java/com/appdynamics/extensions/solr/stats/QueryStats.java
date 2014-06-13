@@ -61,7 +61,7 @@ public class QueryStats {
 				this.setSearch5minRateRequests(SolrHelper.multipyBy(searchStats.path("5minRateReqsPerSecond").asDouble(), 60));
 				this.setSearchAvgTimePerRequest(searchStats.path("avgTimePerRequest").asDouble());
 			} else {
-				LOG.error("Missing Handler " + handler + " in this Solr");
+				LOG.warn("Missing Handler " + handler + " in this Solr");
 			}
 			
 			JsonNode updateStats = node.path("/update").path("stats");
@@ -73,7 +73,7 @@ public class QueryStats {
 				this.setUpdate5minRateRequests(SolrHelper.multipyBy(searchStats.path("5minRateReqsPerSecond").asDouble(), 60));
 				this.setUpdateAvgTimePerRequest(updateStats.path("avgTimePerRequest").asDouble());
 			} else {
-				LOG.error("Missing Handler /update in this Solr");
+				LOG.warn("Missing Handler /update in this Solr");
 			}
 		}
 	}
