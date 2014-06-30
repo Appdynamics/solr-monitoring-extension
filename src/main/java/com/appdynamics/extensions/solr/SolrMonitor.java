@@ -16,15 +16,25 @@
 
 package com.appdynamics.extensions.solr;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.appdynamics.TaskInputArgs;
+import com.appdynamics.extensions.ArgumentsValidator;
+import com.appdynamics.extensions.PathResolver;
 import com.appdynamics.extensions.http.Response;
 import com.appdynamics.extensions.http.SimpleHttpClient;
+import com.appdynamics.extensions.solr.config.ConfigUtil;
+import com.appdynamics.extensions.solr.config.Configuration;
+import com.appdynamics.extensions.solr.config.Core;
 import com.appdynamics.extensions.solr.stats.CacheStats;
 import com.appdynamics.extensions.solr.stats.CoreStats;
 import com.appdynamics.extensions.solr.stats.MemoryStats;
@@ -40,24 +50,33 @@ import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException
 public class SolrMonitor extends AManagedMonitor {
 
 	private static Logger LOG = Logger.getLogger("com.singularity.extensions.SolrMonitor");
-
+	private static final String CONFIG_FILE = "monitors/SolrMonitor/config.yml";
 	private static String metric_path_prefix = "Custom Metrics|Solr|";
-
-	private static String context_root_path = "/solr";
+	public static final String CONFIG_ARG = "config-file";
+	private static String context_root = "/solr";
 	private static final String CORE_URI = "/admin/cores?action=STATUS&wt=json";
 	private static String plugins_uri = "/%s/admin/plugins?wt=json";
 	private static String memory_uri = "/%s/admin/system?stats=true&wt=json";
 	private static String mbeansUri = "/%s/admin/mbeans?stats=true&wt=json";
+	public static final String METRIC_SEPARATOR = "|";
 
 	private SimpleHttpClient httpClient;
-
 	private SolrHelper helper;
+	private final static ConfigUtil<Configuration> configUtil = new ConfigUtil<Configuration>();
 
 	public SolrMonitor() {
 		String msg = String.format("Using Monitor Version [ %s ]", getImplementationVersion());
 		LOG.info(msg);
 		System.out.println(msg);
 	}
+
+	public static final Map<String, String> DEFAULT_ARGS = new HashMap<String, String>() {
+		{
+			put("context-root", context_root);
+			put(TaskInputArgs.METRIC_PREFIX, metric_path_prefix);
+			put(CONFIG_ARG, CONFIG_FILE);
+		}
+	};
 
 	/*
 	 * Main execution method that uploads the metrics to AppDynamics Controller
@@ -68,60 +87,23 @@ public class SolrMonitor extends AManagedMonitor {
 	 * com.singularity.ee.agent.systemagent.api.TaskExecutionContext)
 	 */
 	public TaskOutput execute(Map<String, String> taskArguments, TaskExecutionContext arg1) throws TaskExecutionException {
-		LOG.info("Starting Solr Monitoring Task");
-		
-		checkTaskArgs(taskArguments);
-		httpClient = SimpleHttpClient.builder(taskArguments).build();
-		helper = new SolrHelper(httpClient);
-
-		checkSolrStatus();
-
 		try {
-			List<String> cores = helper.getCores(context_root_path + CORE_URI);
-			for (String core : cores) {
-				if (helper.checkIfMBeanHandlerSupported(String.format(context_root_path + plugins_uri, core))) {
-					Map<String, JsonNode> solrMBeansHandlersMap = new HashMap<String, JsonNode>();
-					try {
-						solrMBeansHandlersMap = helper.getSolrMBeansHandlersMap(core, context_root_path + mbeansUri);
-					} catch (Exception e) {
-						LOG.error("Error in retrieving mbeans info for " + core);
-						break;
-					}
+			LOG.info("Starting Solr Monitoring Task");
 
-					try {
-						CoreStats coreStats = new CoreStats();
-						coreStats.populateStats(solrMBeansHandlersMap);
-						printMetrics(core, coreStats);
-					} catch (Exception e) {
-						LOG.error("Error Retrieving Core Stats for " + core, e);
-					}
+			taskArguments = ArgumentsValidator.validateArguments(taskArguments, DEFAULT_ARGS);
+			metric_path_prefix = taskArguments.get(TaskInputArgs.METRIC_PREFIX);
+			context_root = taskArguments.get("context-root");
 
-					try {
-						QueryStats queryStats = new QueryStats();
-						queryStats.populateStats(taskArguments, solrMBeansHandlersMap);
-						printMetrics(core, queryStats);
-					} catch (Exception e) {
-						LOG.error("Error Retrieving Query Stats for " + core, e);
-					}
+			httpClient = SimpleHttpClient.builder(taskArguments).build();
+			helper = new SolrHelper(httpClient);
 
-					try {
-						CacheStats cacheStats = new CacheStats();
-						cacheStats.populateStats(solrMBeansHandlersMap);
-						printMetrics(core, cacheStats);
-					} catch (Exception e) {
-						LOG.error("Error Retrieving Cache Stats for " + core, e);
-					}
-				}
-				try {
-					MemoryStats memoryStats = new MemoryStats();
-					String uri = context_root_path + String.format(memory_uri, core);
-					InputStream inputStream = httpClient.target().path(uri).get().inputStream();
-					memoryStats.populateStats(inputStream);
-					printMetrics(core, memoryStats);
-				} catch (Exception e) {
-					LOG.error("Error retrieving memory stats for " + core, e);
-				}
-			}
+			checkSolrStatus();
+
+			String configFilename = getConfigFilename(taskArguments.get(CONFIG_ARG));
+			Configuration config = configUtil.readConfig(configFilename, Configuration.class);
+
+			List<Core> cores = getCores(config);
+			populateStats(cores);
 		} catch (Exception e) {
 			LOG.error("Exception while running Solr Monitor Task ", e);
 		}
@@ -129,10 +111,90 @@ public class SolrMonitor extends AManagedMonitor {
 		return new TaskOutput("End of execute method");
 	}
 
+	/**
+	 * Gets list of cores. First tries to retrieve from config file. If no cores
+	 * are configured in config file, then gets the default core.
+	 * 
+	 * @param config
+	 * @return
+	 */
+	public List<Core> getCores(Configuration config) {
+		List<Core> cores = new ArrayList<Core>();
+		if (config != null && config.getCores() != null) {
+			cores = config.getCores();
+		}
+		Iterator<Core> iterator = cores.iterator();
+		while (iterator.hasNext()) {
+			if (Strings.isNullOrEmpty(iterator.next().getName())) {
+				iterator.remove();
+			}
+		}
+		if (cores.size() == 0) {
+			String defaultCore = helper.getDefaultCore(context_root + CORE_URI);
+			LOG.info("Cores not configured, default core " + defaultCore + " to be used for stats");
+			Core core = new Core();
+			core.setName(defaultCore);
+			core.setQueryHandlers(new ArrayList<String>());
+			cores.add(core);
+		}
+		return cores;
+	}
+
+	private void populateStats(List<Core> coresConfig) throws IOException {
+		for (Core coreConfig : coresConfig) {
+			String core = coreConfig.getName();
+			if (helper.checkIfMBeanHandlerSupported(String.format(context_root + plugins_uri, core))) {
+				Map<String, JsonNode> solrMBeansHandlersMap = new HashMap<String, JsonNode>();
+				try {
+					solrMBeansHandlersMap = helper.getSolrMBeansHandlersMap(core, context_root + mbeansUri);
+				} catch (Exception e) {
+					LOG.error("Error in retrieving mbeans info for " + core);
+					break;
+				}
+
+				try {
+					CoreStats coreStats = new CoreStats();
+					coreStats.populateStats(solrMBeansHandlersMap);
+					printMetrics(core, coreStats);
+				} catch (Exception e) {
+					LOG.error("Error Retrieving Core Stats for " + core, e);
+				}
+
+				try {
+					for (String handler : coreConfig.getQueryHandlers()) {
+						QueryStats queryStats = new QueryStats();
+						queryStats.populateStats(solrMBeansHandlersMap, handler);
+						printMetrics(core, queryStats, handler);
+					}
+
+				} catch (Exception e) {
+					LOG.error("Error Retrieving Query Stats for " + core, e);
+				}
+
+				try {
+					CacheStats cacheStats = new CacheStats();
+					cacheStats.populateStats(solrMBeansHandlersMap);
+					printMetrics(core, cacheStats);
+				} catch (Exception e) {
+					LOG.error("Error Retrieving Cache Stats for " + core, e);
+				}
+			}
+			try {
+				MemoryStats memoryStats = new MemoryStats();
+				String uri = context_root + String.format(memory_uri, core);
+				InputStream inputStream = httpClient.target().path(uri).get().inputStream();
+				memoryStats.populateStats(inputStream);
+				printMetrics(core, memoryStats);
+			} catch (Exception e) {
+				LOG.error("Error retrieving memory stats for " + core, e);
+			}
+		}
+	}
+
 	private void checkSolrStatus() throws TaskExecutionException {
 		Response response = null;
 		try {
-			response = httpClient.target().path(context_root_path).get();
+			response = httpClient.target().path(context_root).get();
 		} catch (Exception e) {
 			LOG.error("Connection to Solr failed", e);
 			throw new TaskExecutionException("Connection to Solr failed", e);
@@ -142,20 +204,6 @@ public class SolrMonitor extends AManagedMonitor {
 		}
 	}
 
-	private void checkTaskArgs(Map<String, String> taskArguments) {
-		if (!Strings.isNullOrEmpty(taskArguments.get("context-root"))) {
-			context_root_path = taskArguments.get("context-root");
-		}
-
-		if (!Strings.isNullOrEmpty(taskArguments.get("metric-prefix"))) {
-			metric_path_prefix = taskArguments.get("metric-prefix");
-			LOG.debug("Metric path: " + metric_path_prefix);
-			if (!metric_path_prefix.endsWith("|")) {
-				metric_path_prefix += "|";
-			}
-		}
-	}
-	
 	private void printMetrics(String collection, CoreStats stats) {
 		if ("".equals(collection)) {
 			collection = "Collection";
@@ -165,29 +213,20 @@ public class SolrMonitor extends AManagedMonitor {
 		printMetric(metricPath, "Max Docs", stats.getMaxDocs());
 		printMetric(metricPath, "Deleted Docs", stats.getDeletedDocs());
 	}
-	
-	private void printMetrics(String collection, QueryStats stats) {
+
+	private void printMetrics(String collection, QueryStats stats, String handler) {
 		if ("".equals(collection)) {
 			collection = "Collection";
 		}
 		String metricPath = "Cores |" + collection + "|" + "QUERYHANDLER|";
-		String searchMetricPath = metricPath + "SearchHandler|";
-		printMetric(searchMetricPath, "Requests", stats.getSearchRequests());
-		printMetric(searchMetricPath, "Errors", stats.getSearchErrors());
-		printMetric(searchMetricPath, "Timeouts", stats.getSearchTimeouts());
-		printMetric(searchMetricPath, "Average Requests Per Minute", SolrHelper.multipyBy(stats.getSearchAvgRequests(), 60));
-		printMetric(searchMetricPath, "Average Requests Per Second", stats.getSearchAvgRequests());
-		printMetric(searchMetricPath, "5 min Rate Requests Per Minute", stats.getSearch5minRateRequests());
-		printMetric(searchMetricPath, "Average Time Per Request (milliseconds)", stats.getSearchAvgTimePerRequest());
-		
-		String updateMetricPath = metricPath + "UpdateHandler|";
-		printMetric(updateMetricPath, "Requests", stats.getUpdateRequests());
-		printMetric(updateMetricPath, "Errors", stats.getUpdateErrors());
-		printMetric(updateMetricPath, "Timeouts", stats.getUpdateTimeouts());
-		printMetric(updateMetricPath, "Average Requests Per Minute", SolrHelper.multipyBy(stats.getUpdateAvgRequests(), 60));
-		printMetric(updateMetricPath, "Average Requests Per Second", stats.getUpdateAvgRequests());
-		printMetric(searchMetricPath, "5 min Rate Requests Per Minute", stats.getUpdate5minRateRequests());
-		printMetric(updateMetricPath, "Average Time Per Request (milliseconds)", stats.getUpdateAvgTimePerRequest());
+		String searchMetricPath = metricPath + handler + "|";
+		printMetric(searchMetricPath, "Requests", stats.getRequests());
+		printMetric(searchMetricPath, "Errors", stats.getErrors());
+		printMetric(searchMetricPath, "Timeouts", stats.getTimeouts());
+		printMetric(searchMetricPath, "Average Requests Per Minute", SolrHelper.multipyBy(stats.getAvgRequests(), 60));
+		printMetric(searchMetricPath, "Average Requests Per Second", stats.getAvgRequests());
+		printMetric(searchMetricPath, "5 min Rate Requests Per Minute", stats.getFiveMinRateRequests());
+		printMetric(searchMetricPath, "Average Time Per Request (milliseconds)", stats.getAvgTimePerRequest());
 	}
 
 	private void printMetrics(String collection, CacheStats cacheStats) {
@@ -260,12 +299,32 @@ public class SolrMonitor extends AManagedMonitor {
 		}
 	}
 
+	private String getConfigFilename(String filename) {
+		if (filename == null) {
+			return "";
+		}
+		// for absolute paths
+		if (new File(filename).exists()) {
+			return filename;
+		}
+		// for relative paths
+		File jarPath = PathResolver.resolveDirectory(AManagedMonitor.class);
+		String configFileName = "";
+		if (!Strings.isNullOrEmpty(filename)) {
+			configFileName = jarPath + File.separator + filename;
+		}
+		return configFileName;
+	}
+
 	private String getMetricPrefix() {
+		if (!metric_path_prefix.endsWith("|")) {
+			metric_path_prefix += METRIC_SEPARATOR;
+		}
 		return metric_path_prefix;
 	}
 
 	public static String getContextRootPath() {
-		return context_root_path;
+		return context_root;
 	}
 
 	private static String getImplementationVersion() {

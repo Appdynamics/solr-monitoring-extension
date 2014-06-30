@@ -22,155 +22,81 @@ import org.apache.log4j.Logger;
 
 import com.appdynamics.extensions.solr.SolrHelper;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.base.Strings;
 
 public class QueryStats {
 
 	private static Logger LOG = Logger.getLogger("com.singularity.extensions.QueryStats");
 
-	private String handler = "/select";
-	
-	private Double searchRequests;
-	private Double searchErrors;
-	private Double searchTimeouts;
-	private Double searchAvgRequests;
-	private Double searchAvgTimePerRequest;
-	private Double search5minRateRequests;
-	
-	private Double updateRequests;
-	private Double updateErrors;
-	private Double updateTimeouts;
-	private Double updateAvgRequests;
-	private Double updateAvgTimePerRequest;
-	private Double update5minRateRequests;
+	private Double requests;
+	private Double errors;
+	private Double timeouts;
+	private Double avgRequests;
+	private Double avgTimePerRequest;
+	private Double fiveMinRateRequests;
 
-	public void populateStats(Map<String, String> taskArguments, Map<String, JsonNode> solrMBeansHandlersMap) {
-
-		if (!Strings.isNullOrEmpty(taskArguments.get("search-handler"))) {
-			handler = taskArguments.get("search-handler");
-		}
+	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap, String handler) {
 
 		JsonNode node = solrMBeansHandlersMap.get("QUERYHANDLER");
 		if (node != null) {
 			JsonNode searchStats = node.path(handler).path("stats");
 			if (!searchStats.isMissingNode()) {
-				this.setSearchRequests(searchStats.path("requests").asDouble());
-				this.setSearchErrors(searchStats.path("errors").asDouble());
-				this.setSearchTimeouts(searchStats.path("timeouts").asDouble());
-				this.setSearchAvgRequests(searchStats.path("avgRequestsPerSecond").asDouble());
-				this.setSearch5minRateRequests(SolrHelper.multipyBy(searchStats.path("5minRateReqsPerSecond").asDouble(), 60));
-				this.setSearchAvgTimePerRequest(searchStats.path("avgTimePerRequest").asDouble());
+				this.setRequests(searchStats.path("requests").asDouble());
+				this.setErrors(searchStats.path("errors").asDouble());
+				this.setTimeouts(searchStats.path("timeouts").asDouble());
+				this.setAvgRequests(searchStats.path("avgRequestsPerSecond").asDouble());
+				this.setFiveMinRateRequests(SolrHelper.multipyBy(searchStats.path("5minRateReqsPerSecond").asDouble(), 60));
+				this.setAvgTimePerRequest(searchStats.path("avgTimePerRequest").asDouble());
 			} else {
 				LOG.warn("Missing Handler " + handler + " in this Solr");
-			}
-			
-			JsonNode updateStats = node.path("/update").path("stats");
-			if (!searchStats.isMissingNode()) {
-				this.setUpdateRequests(updateStats.path("requests").asDouble());
-				this.setUpdateErrors(updateStats.path("errors").asDouble());
-				this.setUpdateTimeouts(updateStats.path("timeouts").asDouble());
-				this.setUpdateAvgRequests(updateStats.path("avgRequestsPerSecond").asDouble());
-				this.setUpdate5minRateRequests(SolrHelper.multipyBy(searchStats.path("5minRateReqsPerSecond").asDouble(), 60));
-				this.setUpdateAvgTimePerRequest(updateStats.path("avgTimePerRequest").asDouble());
-			} else {
-				LOG.warn("Missing Handler /update in this Solr");
 			}
 		}
 	}
 
-	public Double getSearchRequests() {
-		return searchRequests;
+	public Double getRequests() {
+		return requests;
 	}
 
-	public void setSearchRequests(Double searchRequests) {
-		this.searchRequests = searchRequests;
+	public void setRequests(Double requests) {
+		this.requests = requests;
 	}
 
-	public Double getSearchErrors() {
-		return searchErrors;
+	public Double getErrors() {
+		return errors;
 	}
 
-	public void setSearchErrors(Double searchErrors) {
-		this.searchErrors = searchErrors;
+	public void setErrors(Double errors) {
+		this.errors = errors;
 	}
 
-	public Double getSearchTimeouts() {
-		return searchTimeouts;
+	public Double getTimeouts() {
+		return timeouts;
 	}
 
-	public void setSearchTimeouts(Double searchTimeouts) {
-		this.searchTimeouts = searchTimeouts;
+	public void setTimeouts(Double timeouts) {
+		this.timeouts = timeouts;
 	}
 
-	public Double getSearchAvgRequests() {
-		return searchAvgRequests;
+	public Double getAvgRequests() {
+		return avgRequests;
 	}
 
-	public void setSearchAvgRequests(Double searchAvgRequests) {
-		this.searchAvgRequests = searchAvgRequests;
+	public void setAvgRequests(Double avgRequests) {
+		this.avgRequests = avgRequests;
 	}
 
-	public Double getSearchAvgTimePerRequest() {
-		return searchAvgTimePerRequest;
+	public Double getAvgTimePerRequest() {
+		return avgTimePerRequest;
 	}
 
-	public void setSearchAvgTimePerRequest(Double searchAvgTimePerRequest) {
-		this.searchAvgTimePerRequest = searchAvgTimePerRequest;
+	public void setAvgTimePerRequest(Double avgTimePerRequest) {
+		this.avgTimePerRequest = avgTimePerRequest;
 	}
 
-	public Double getUpdateRequests() {
-		return updateRequests;
+	public Double getFiveMinRateRequests() {
+		return fiveMinRateRequests;
 	}
 
-	public void setUpdateRequests(Double updateRequests) {
-		this.updateRequests = updateRequests;
-	}
-
-	public Double getUpdateErrors() {
-		return updateErrors;
-	}
-
-	public void setUpdateErrors(Double updateErrors) {
-		this.updateErrors = updateErrors;
-	}
-
-	public Double getUpdateTimeouts() {
-		return updateTimeouts;
-	}
-
-	public void setUpdateTimeouts(Double updateTimeouts) {
-		this.updateTimeouts = updateTimeouts;
-	}
-
-	public Double getUpdateAvgRequests() {
-		return updateAvgRequests;
-	}
-
-	public void setUpdateAvgRequests(Double updateAvgRequests) {
-		this.updateAvgRequests = updateAvgRequests;
-	}
-
-	public Double getUpdateAvgTimePerRequest() {
-		return updateAvgTimePerRequest;
-	}
-
-	public void setUpdateAvgTimePerRequest(Double updateAvgTimePerRequest) {
-		this.updateAvgTimePerRequest = updateAvgTimePerRequest;
-	}
-
-	public Double getSearch5minRateRequests() {
-		return search5minRateRequests;
-	}
-
-	public void setSearch5minRateRequests(Double search5minRateReqsPerSecond) {
-		this.search5minRateRequests = search5minRateReqsPerSecond;
-	}
-
-	public Double getUpdate5minRateRequests() {
-		return update5minRateRequests;
-	}
-
-	public void setUpdate5minRateRequests(Double update5minRateReqsPerSecond) {
-		this.update5minRateRequests = update5minRateReqsPerSecond;
+	public void setFiveMinRateRequests(Double fiveMinRateRequests) {
+		this.fiveMinRateRequests = fiveMinRateRequests;
 	}
 }

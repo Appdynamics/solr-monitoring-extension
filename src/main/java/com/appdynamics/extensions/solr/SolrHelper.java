@@ -119,6 +119,32 @@ public class SolrHelper {
 		}
 		return cores;
 	}
+	
+	public String getDefaultCore(String uri) {
+		String defaultCore = "";
+		InputStream inputStream = null;
+		try {
+			inputStream = httpClient.target().path(uri).get().inputStream();
+			JsonNode node = getJsonNode(inputStream);
+			if (node != null) {
+				defaultCore = node.path("defaultCoreName").asText();
+				if (LOG.isDebugEnabled())
+					LOG.debug("Default Core name is " + defaultCore);
+			}
+		} catch (Exception e) {
+			LOG.error("Error while fetching default Core name " + uri, e);
+			throw new RuntimeException();
+		} finally {
+			try {
+				if (inputStream != null) {
+					inputStream.close();
+				}
+			} catch (Exception e) {
+				// Ignore
+			}
+		}
+		return defaultCore;
+	}
 
 	public static JsonNode getJsonNode(InputStream inputStream) throws IOException {
 		if (inputStream == null) {
