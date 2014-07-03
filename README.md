@@ -31,7 +31,7 @@ Memory statistics are collected through an HTTP request SystemInfoHandler at `ht
 5. Configure the Solr Cores and Request handlers to monitor by editing the config.yml file in `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/`.
 Note : Please make sure to not use tab (\t) while editing yaml files. You may want to validate the yaml file using a [yaml validator](http://yamllint.com/).
 Below is the sample.
-  	```
+    ```
         cores:
         - name: "collection1"
         queryHandlers: ["/select", "/update"]
@@ -39,6 +39,7 @@ Below is the sample.
         queryHandlers: []
         .....
         .....
+
     ```
 Specify as many cores as you want to monitor and corresponding comma separated request handlers. If none of the cores are specified, default core with empty request handlers is monitored.
 5. Restart the Machine Agent.
