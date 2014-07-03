@@ -15,23 +15,32 @@ Memory statistics are collected through an HTTP request SystemInfoHandler at htt
 ##Installation
 
 1. Run 'mvn clean install' from the solr-monitoring-extension directory
-2. Download the file SolrMonitor.zip located in the 'target' directory into \<machineagent install dir\>/monitors/
+2. Download the file SolrMonitor.zip located in the 'target' directory into `<MACHINE_AGENT_HOME>/monitors`
 3. Unzip the downloaded file
-4. In \<machineagent install dir\>/monitors/SolrMonitor/, open monitor.xml and configure the Solr parameters.
+4. In `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/`, open monitor.xml and configure the Solr parameters.
      <pre>
      &lt;argument name="host" is-required="true" default-value="localhost" /&gt;
      &lt;argument name="port" is-required="true" default-value="8983" /&gt;
-			<!--  Optional Parameters -->
-		Configure proxy parameters if any
+			<!--  Optional Parameters -->		
      &lt;argument name="proxy-host" is-required="false" default-value="" /&gt;
      &lt;argument name="proxy-port" is-required="false" default-value="" /&gt;
-		Solr webapp root path (OPTIONAL):Default (if default-value="") is /solr
-     &lt;argument name="context-root" is-required="false" default-value="" /&gt;
-		METRIC PATH (OPTIONAL):Default (if default-value="") is "Custom Metrics|Solr|"
-     &lt;argument name="metric-prefix" is-required="false" default-value="" /&gt;
-		<!-- Default is /select with Solr distribution -->
-     &lt;argument name="search-handler" is-required="false" default-value=""/&gt;
+     &lt;argument name="context-root" is-required="false" default-value="/solr" /&gt;
+     &lt;argument name="metric-prefix" is-required="false" default-value="Custom Metrics|Solr|" /&gt;	
+     &lt;argument name="config-file" is-required="false" default-value="monitors/SolrMonitor/config.yml"/&gt;
      </pre>
+5. Configure the Solr Cores and request handlers to monitor by editing the config.yml file in `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/`.
+Note : Please make sure to not use tab (\t) while editing yaml files. You may want to validate the yaml file using a [yaml validator](http://yamllint.com/)
+Below is the sample.
+  	```
+        cores:
+        - name: ""
+        queryHandlers: []
+        - name: ""
+        queryHandlers: []
+        .....
+        .....
+    ```
+Specify as many cores as you want to monitor and comma separated request handlers corresponding to that core. If none of the cores are specified, default core with no request handlers is monitored.
 5. Restart the Machine Agent.
 
 In the AppDynamics Metric Browser, look for: Application Infrastructure Performance  | \<Tier\> | Custom Metrics | Solr for default metric-path.
