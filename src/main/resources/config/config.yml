@@ -1,10 +1,9 @@
-# Example: 
+# Example
 # cores
 # - name: "collection1"
 #     queryHandlers: ["/select", "/update"]
 #   - name: "collection2"
 #     queryHandlers: ["/admin/ping"]
-
 cores:
    - name: ""
      queryHandlers: []
