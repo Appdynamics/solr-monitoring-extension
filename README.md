@@ -8,9 +8,9 @@ Solr is a popular open source enterprise search platform from the Apache Lucene 
 Its major features include powerful full-text search, hit highlighting, faceted search, near real-time indexing, dynamic clustering, database integration, rich document (e.g., Word, PDF) handling, and geospatial search.
 This extension collects metrics from Solr search engine and uploads them to AppDynamics Metric Broswer.
 
-Solr statistics (Core, Query, Cache) are obtained through an HTTP request to the SolrInfoMBeanHandler at `http://\<host\>:\<port\>/solr/admin/mbeans`. Please refer to [SolrInfoMBeanHandler](http://wiki.apache.org/solr/SystemInformationRequestHandlers) for details.
+Solr statistics (Core, Query, Cache) are obtained through an HTTP request to the SolrInfoMBeanHandler at `http://<host>:<port>/solr/admin/mbeans`. Please refer to [SolrInfoMBeanHandler](http://wiki.apache.org/solr/SystemInformationRequestHandlers) for details.
 
-Memory statistics are collected through an HTTP request SystemInfoHandler at `http://\<host\>:\<port\>/solr/admin/system`
+Memory statistics are collected through an HTTP request SystemInfoHandler at `http://<host>:<port>/solr/admin/system`
 
 ##Installation
 
@@ -22,9 +22,14 @@ Memory statistics are collected through an HTTP request SystemInfoHandler at `ht
      &lt;argument name="host" is-required="true" default-value="localhost" /&gt;
      &lt;argument name="port" is-required="true" default-value="8983" /&gt;
 			<!--  Optional Parameters -->
+     &lt;argument name="username" is-required="true" default-value=""&gt;
+     &lt;argument name="password" is-required="false" default-value=""&gt;
+     &lt;argument name="context-root" is-required="false" default-value="/solr" /&gt;
+     &lt;argument name="use-ssl" is-required="false" default-value="false"&gt;
      &lt;argument name="proxy-host" is-required="false" default-value="" /&gt;
      &lt;argument name="proxy-port" is-required="false" default-value="" /&gt;
-     &lt;argument name="context-root" is-required="false" default-value="/solr" /&gt;
+     &lt;argument name="proxy-username" is-required="false" default-value=""&gt;
+     &lt;argument name="proxy-password" is-required="false" default-value=""&gt;
      &lt;argument name="metric-prefix" is-required="false" default-value="Custom Metrics|Solr|" /&gt;
      &lt;argument name="config-file" is-required="false" default-value="monitors/SolrMonitor/config.yml"/&gt;
      </pre>
