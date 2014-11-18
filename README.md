@@ -14,45 +14,63 @@ Memory statistics are collected through an HTTP request SystemInfoHandler at `ht
 
 ##Installation
 
-1. Run 'mvn clean install' from the solr-monitoring-extension directory
-2. Download the file SolrMonitor.zip located in the 'target' directory into `<MACHINE_AGENT_HOME>/monitors`
-3. Unzip the downloaded file
-4. In `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/`, open monitor.xml and configure the Solr parameters.
-     <pre>
-     &lt;argument name="host" is-required="true" default-value="localhost" /&gt;
-     &lt;argument name="port" is-required="true" default-value="8983" /&gt;
-			<!--  Optional Parameters -->
-     &lt;argument name="username" is-required="true" default-value=""&gt;
-     &lt;argument name="password" is-required="false" default-value=""&gt;
-     &lt;argument name="context-root" is-required="false" default-value="/solr" /&gt;
-     &lt;argument name="use-ssl" is-required="false" default-value="false"&gt;
-     &lt;argument name="proxy-host" is-required="false" default-value="" /&gt;
-     &lt;argument name="proxy-port" is-required="false" default-value="" /&gt;
-     &lt;argument name="proxy-username" is-required="false" default-value=""&gt;
-     &lt;argument name="proxy-password" is-required="false" default-value=""&gt;
-     &lt;argument name="metric-prefix" is-required="false" default-value="Custom Metrics|Solr|" /&gt;
-     &lt;argument name="config-file" is-required="false" default-value="monitors/SolrMonitor/config.yml"/&gt;
-     </pre>
-5. Configure the Solr Cores and Request handlers to monitor by editing the config.yml file in `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/`.
-Note : Please make sure to not use tab (\t) while editing yaml files. You may want to validate the yaml file using a [yaml validator](http://yamllint.com/).
-Below is the sample.
-    ```
-        cores:
-        - name: "collection1"
-        queryHandlers: ["/select", "/update"]
-        - name: ""
-        queryHandlers: []
-        .....
-        .....
-
-    ```
-Specify as many cores as you want to monitor and corresponding comma separated request handlers. If none of the cores are specified, default core with empty request handlers is monitored.
-5. Restart the Machine Agent.
+1. Run 'mvn clean install' from the solr-monitoring-extension directory and find the SolrMonitor.zip in the 'target' directory.
+2. Unzip SolrMonitor.zip and copy the "SolrMonitor" directory to `<MACHINE_AGENT_HOME>/monitors`
+3. Configure the extension by referring to the below section.
+4. Restart the Machine Agent.
 
 In the AppDynamics Metric Browser, look for: Application Infrastructure Performance  | \<Tier\> | Custom Metrics | Solr for default metric-path.
 
+##Configuration
+Note : Please make sure to not use tab (\t) while editing yaml files. You may want to validate the yaml file using a [yaml validator](http://yamllint.com/)
+
+1. Configure the Solr instance, Cores and Request handlers to monitor by editing the config.yml file in `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/`.
+Below is the sample.
+    ```
+        server:
+          host: "localhost"
+          port: 8983
+        # Optional Parameters. Configure if any required
+          username: ""
+          password: ""
+          contextRoot: "/solr"
+          usessl: ""
+          proxyHost: ""
+          proxyPort: ""
+          proxyUsername: ""
+          proxyPassword: ""
+
+        cores:
+        - name: "collection1"
+          queryHandlers: ["/select", "/update"]
+        - name: ""
+          queryHandlers: []
+        .....
+        .....
+   
+        #prefix used to show up metrics in AppDynamics
+        metricPrefix:  "Custom Metrics|Solr|"
+
+    ```
+Specify as many cores as you want to monitor and corresponding comma separated request handlers. If none of the cores are specified, default core with empty request handlers is monitored.
+
+2. Configure the path to the config.yml file by editing the <task-arguments> in the monitor.xml file in the `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/` directory. Below is the sample
+
+     ```
+     <task-arguments>
+         <!-- config file-->
+         <argument name="config-file" is-required="true" default-value="monitors/SolrMonitor/config.yml" />
+          ....
+     </task-arguments>
+    ```
 
 ## Metrics
+Note : By default, a Machine agent or a AppServer agent can send a fixed number of metrics to the controller. To change this limit, please follow the instructions mentioned [here](http://docs.appdynamics.com/display/PRO14S/Metrics+Limits).
+For eg.  
+```    
+    java -Dappdynamics.agent.maxMetrics=2500 -jar machineagent.jar
+```
+
 The following metrics are available for each core under Cores
 ###Core Metrics
 
@@ -149,6 +167,6 @@ Find out more in the [AppSphere](http://appsphere.appdynamics.com/t5/AppDynamics
 
 ##Support
 
-For any questions or feature request, please contact [AppDynamics Center of Excellence](mailto:ace-request@appdynamics.com).
+For any questions or feature request, please contact [AppDynamics Support](mailto:help@appdynamics.com).
 
 

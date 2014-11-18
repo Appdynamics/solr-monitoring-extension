@@ -1,3 +1,17 @@
+
+server:
+    host: "localhost"
+    port: 8983
+    # Optional Parameters. Configure if any required
+    username: ""
+    password: ""
+    contextRoot: ""
+    usessl: ""
+    proxyHost: ""
+    proxyPort: ""
+    proxyUsername: ""
+    proxyPassword: ""
+    
 # Example
 # cores
 # - name: "collection1"
@@ -9,4 +23,7 @@ cores:
      queryHandlers: []
    - name: ""
      queryHandlers: []
+
+#prefix used to show up metrics in AppDynamics
+metricPrefix:  "Custom Metrics|Solr|"
 
