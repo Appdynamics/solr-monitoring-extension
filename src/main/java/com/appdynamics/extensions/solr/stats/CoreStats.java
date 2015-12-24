@@ -16,57 +16,56 @@
 
 package com.appdynamics.extensions.solr.stats;
 
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.log4j.Logger;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.util.Map;
 
 public class CoreStats {
 
-	private static Logger LOG = Logger.getLogger("com.singularity.extensions.CoreStats");
+    private static Logger logger = Logger.getLogger(CoreStats.class);
 
-	private Double numDocs;
-	private Double maxDocs;
-	private Double deletedDocs;
+    private Double numDocs;
+    private Double maxDocs;
+    private Double deletedDocs;
 
-	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
-		JsonNode node = solrMBeansHandlersMap.get("CORE");
-		if (node != null) {
-			JsonNode coreNode = node.path("searcher").path("stats");
-			if (!coreNode.isMissingNode()) {
-				this.setNumDocs(coreNode.path("numDocs").asDouble());
-				this.setMaxDocs(coreNode.path("maxDoc").asDouble());
-				this.setDeletedDocs(coreNode.path("deletedDocs").asDouble());
-				if (LOG.isDebugEnabled()) {
-					LOG.debug("Docs=" + getNumDocs());
-					LOG.debug("Max Docs=" + getMaxDocs());
-				}
-			}
-		}
-	}
+    public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
+        JsonNode node = solrMBeansHandlersMap.get("CORE");
+        if (node != null) {
+            JsonNode coreNode = node.path("searcher").path("stats");
+            if (!coreNode.isMissingNode()) {
+                this.setNumDocs(coreNode.path("numDocs").asDouble());
+                this.setMaxDocs(coreNode.path("maxDoc").asDouble());
+                this.setDeletedDocs(coreNode.path("deletedDocs").asDouble());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Docs=" + getNumDocs());
+                    logger.debug("Max Docs=" + getMaxDocs());
+                }
+            }
+        }
+    }
 
-	public Double getNumDocs() {
-		return numDocs;
-	}
+    public Double getNumDocs() {
+        return numDocs;
+    }
 
-	public void setNumDocs(Double numDocs) {
-		this.numDocs = numDocs;
-	}
+    public void setNumDocs(Double numDocs) {
+        this.numDocs = numDocs;
+    }
 
-	public Double getMaxDocs() {
-		return maxDocs;
-	}
+    public Double getMaxDocs() {
+        return maxDocs;
+    }
 
-	public void setMaxDocs(Double maxDocs) {
-		this.maxDocs = maxDocs;
-	}
+    public void setMaxDocs(Double maxDocs) {
+        this.maxDocs = maxDocs;
+    }
 
-	public Double getDeletedDocs() {
-		return deletedDocs;
-	}
+    public Double getDeletedDocs() {
+        return deletedDocs;
+    }
 
-	public void setDeletedDocs(Double deletedDocs) {
-		this.deletedDocs = deletedDocs;
-	}
+    public void setDeletedDocs(Double deletedDocs) {
+        this.deletedDocs = deletedDocs;
+    }
 }

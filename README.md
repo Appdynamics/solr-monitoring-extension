@@ -42,8 +42,10 @@ Below is the sample.
 
         cores:
         - name: "collection1"
+          pingHandler: "/admin/ping"
           queryHandlers: ["/select", "/update"]
         - name: ""
+          pingHandler: "/admin/ping"
           queryHandlers: []
         .....
         .....

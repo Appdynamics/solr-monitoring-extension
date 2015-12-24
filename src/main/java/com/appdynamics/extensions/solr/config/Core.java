@@ -18,23 +18,32 @@ package com.appdynamics.extensions.solr.config;
 import java.util.List;
 
 public class Core {
-	private String name;
-	private List<String> queryHandlers;
+    private String name;
+    private String pingHandler;
+    private List<String> queryHandlers;
 
-	public String getName() {
-		return name;
-	}
+    public String getPingHandler() {
+        return pingHandler;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setPingHandler(String pingHandler) {
+        this.pingHandler = pingHandler;
+    }
 
-	public List<String> getQueryHandlers() {
-		return queryHandlers;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setQueryHandlers(List<String> queryHandlers) {
-		this.queryHandlers = queryHandlers;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<String> getQueryHandlers() {
+        return queryHandlers;
+    }
+
+    public void setQueryHandlers(List<String> queryHandlers) {
+        this.queryHandlers = queryHandlers;
+    }
 
 }

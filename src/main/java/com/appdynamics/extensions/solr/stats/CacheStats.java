@@ -16,178 +16,177 @@
 
 package com.appdynamics.extensions.solr.stats;
 
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
 import com.appdynamics.extensions.solr.SolrHelper;
 import com.fasterxml.jackson.databind.JsonNode;
+import org.apache.log4j.Logger;
+
+import java.util.Map;
 
 public class CacheStats {
 
-	private static final int PERCENT_MULTIPLIER = 100;
+    private static final int PERCENT_MULTIPLIER = 100;
 
-	private static final Logger LOG = Logger.getLogger("com.singularity.extensions.CacheStats");
+    private static final Logger logger = Logger.getLogger(CacheStats.class);
 
-	private Double queryResultCacheHitRatio;
-	private Double queryResultCacheHitRatioCumulative;
-	private Double queryResultCacheSize;
+    private Double queryResultCacheHitRatio;
+    private Double queryResultCacheHitRatioCumulative;
+    private Double queryResultCacheSize;
 
-	private Double documentCacheHitRatio;
-	private Double documentCacheHitRatioCumulative;
-	private Double documentCacheSize;
+    private Double documentCacheHitRatio;
+    private Double documentCacheHitRatioCumulative;
+    private Double documentCacheSize;
 
-	private Double fieldValueCacheHitRatio;
-	private Double fieldValueCacheHitRatioCumulative;
-	private Double fieldValueCacheSize;
+    private Double fieldValueCacheHitRatio;
+    private Double fieldValueCacheHitRatioCumulative;
+    private Double fieldValueCacheSize;
 
-	private Double filterCacheHitRatio;
-	private Double filterCacheHitRatioCumulative;
-	private Double filterCacheSize;
+    private Double filterCacheHitRatio;
+    private Double filterCacheHitRatioCumulative;
+    private Double filterCacheSize;
 
-	public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) throws Exception {
+    public void populateStats(Map<String, JsonNode> solrMBeansHandlersMap) throws Exception {
 
-		JsonNode cacheNode = solrMBeansHandlersMap.get("CACHE");
-		JsonNode queryResultCacheStats = cacheNode.path("queryResultCache").path("stats");
+        JsonNode cacheNode = solrMBeansHandlersMap.get("CACHE");
+        JsonNode queryResultCacheStats = cacheNode.path("queryResultCache").path("stats");
 
-		if (!queryResultCacheStats.isMissingNode()) {
-			this.setQueryResultCacheHitRatio(SolrHelper.multipyBy(queryResultCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
-			this.setQueryResultCacheHitRatioCumulative(SolrHelper.multipyBy(queryResultCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
-			this.setQueryResultCacheSize(queryResultCacheStats.path("size").asDouble());
+        if (!queryResultCacheStats.isMissingNode()) {
+            this.setQueryResultCacheHitRatio(SolrHelper.multipyBy(queryResultCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
+            this.setQueryResultCacheHitRatioCumulative(SolrHelper.multipyBy(queryResultCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
+            this.setQueryResultCacheSize(queryResultCacheStats.path("size").asDouble());
 
-			if (LOG.isDebugEnabled()) {
-				LOG.debug("hitratio % = " + getQueryResultCacheHitRatio());
-				LOG.debug("cumulative_hitratio % = " + getQueryResultCacheHitRatioCumulative());
-				LOG.debug("size= " + getQueryResultCacheSize());
-			}
-		} else {
-			LOG.error("queryResultCache is disabled in solrconfig.xml");
-		}
+            if (logger.isDebugEnabled()) {
+                logger.debug("hitratio % = " + getQueryResultCacheHitRatio());
+                logger.debug("cumulative_hitratio % = " + getQueryResultCacheHitRatioCumulative());
+                logger.debug("size= " + getQueryResultCacheSize());
+            }
+        } else {
+            logger.info("queryResultCache is disabled in solrconfig.xml");
+        }
 
-		JsonNode documentCacheStats = cacheNode.path("documentCache").path("stats");
+        JsonNode documentCacheStats = cacheNode.path("documentCache").path("stats");
 
-		if (!documentCacheStats.isMissingNode()) {
-			this.setDocumentCacheHitRatio(SolrHelper.multipyBy(documentCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
-			this.setDocumentCacheHitRatioCumulative(SolrHelper.multipyBy(documentCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
-			this.setDocumentCacheSize(documentCacheStats.path("size").asDouble());
-		} else {
-			LOG.error("documentCache is disabled in solrconfig.xml");
-		}
+        if (!documentCacheStats.isMissingNode()) {
+            this.setDocumentCacheHitRatio(SolrHelper.multipyBy(documentCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
+            this.setDocumentCacheHitRatioCumulative(SolrHelper.multipyBy(documentCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
+            this.setDocumentCacheSize(documentCacheStats.path("size").asDouble());
+        } else {
+            logger.info("documentCache is disabled in solrconfig.xml");
+        }
 
-		JsonNode fieldValueCacheStats = cacheNode.path("fieldValueCache").path("stats");
+        JsonNode fieldValueCacheStats = cacheNode.path("fieldValueCache").path("stats");
 
-		if (!fieldValueCacheStats.isMissingNode()) {
-			this.setFieldValueCacheHitRatio(SolrHelper.multipyBy(fieldValueCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
-			this.setFieldValueCacheHitRatioCumulative(SolrHelper.multipyBy(fieldValueCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
-			this.setFieldValueCacheSize(fieldValueCacheStats.path("size").asDouble());
-		} else {
-			LOG.error("fieldValueCache is disabled in solrconfig.xml");
-		}
+        if (!fieldValueCacheStats.isMissingNode()) {
+            this.setFieldValueCacheHitRatio(SolrHelper.multipyBy(fieldValueCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
+            this.setFieldValueCacheHitRatioCumulative(SolrHelper.multipyBy(fieldValueCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
+            this.setFieldValueCacheSize(fieldValueCacheStats.path("size").asDouble());
+        } else {
+            logger.info("fieldValueCache is disabled in solrconfig.xml");
+        }
 
-		JsonNode filterCacheStats = cacheNode.path("filterCache").path("stats");
+        JsonNode filterCacheStats = cacheNode.path("filterCache").path("stats");
 
-		if (!filterCacheStats.isMissingNode()) {
-			this.setFilterCacheHitRatio(SolrHelper.multipyBy(filterCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
-			this.setFilterCacheHitRatioCumulative(SolrHelper.multipyBy(filterCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
-			this.setFilterCacheSize(filterCacheStats.path("size").asDouble());
-		} else {
-			LOG.error("filterCache is disabled in solrconfig.xml");
-		}
-	}
+        if (!filterCacheStats.isMissingNode()) {
+            this.setFilterCacheHitRatio(SolrHelper.multipyBy(filterCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER));
+            this.setFilterCacheHitRatioCumulative(SolrHelper.multipyBy(filterCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER));
+            this.setFilterCacheSize(filterCacheStats.path("size").asDouble());
+        } else {
+            logger.info("filterCache is disabled in solrconfig.xml");
+        }
+    }
 
-	public Double getQueryResultCacheHitRatio() {
-		return queryResultCacheHitRatio;
-	}
+    public Double getQueryResultCacheHitRatio() {
+        return queryResultCacheHitRatio;
+    }
 
-	public void setQueryResultCacheHitRatio(Double queryResultCacheHitRatio) {
-		this.queryResultCacheHitRatio = queryResultCacheHitRatio;
-	}
+    public void setQueryResultCacheHitRatio(Double queryResultCacheHitRatio) {
+        this.queryResultCacheHitRatio = queryResultCacheHitRatio;
+    }
 
-	public Double getDocumentCacheHitRatio() {
-		return documentCacheHitRatio;
-	}
+    public Double getDocumentCacheHitRatio() {
+        return documentCacheHitRatio;
+    }
 
-	public void setDocumentCacheHitRatio(Double documentCacheHitRatio) {
-		this.documentCacheHitRatio = documentCacheHitRatio;
-	}
+    public void setDocumentCacheHitRatio(Double documentCacheHitRatio) {
+        this.documentCacheHitRatio = documentCacheHitRatio;
+    }
 
-	public Double getFieldValueCacheHitRatio() {
-		return fieldValueCacheHitRatio;
-	}
+    public Double getFieldValueCacheHitRatio() {
+        return fieldValueCacheHitRatio;
+    }
 
-	public void setFieldValueCacheHitRatio(Double fieldValueCacheHitRatio) {
-		this.fieldValueCacheHitRatio = fieldValueCacheHitRatio;
-	}
+    public void setFieldValueCacheHitRatio(Double fieldValueCacheHitRatio) {
+        this.fieldValueCacheHitRatio = fieldValueCacheHitRatio;
+    }
 
-	public Double getFilterCacheHitRatio() {
-		return filterCacheHitRatio;
-	}
+    public Double getFilterCacheHitRatio() {
+        return filterCacheHitRatio;
+    }
 
-	public void setFilterCacheHitRatio(Double filterCacheHitRatio) {
-		this.filterCacheHitRatio = filterCacheHitRatio;
-	}
+    public void setFilterCacheHitRatio(Double filterCacheHitRatio) {
+        this.filterCacheHitRatio = filterCacheHitRatio;
+    }
 
-	public Double getQueryResultCacheHitRatioCumulative() {
-		return queryResultCacheHitRatioCumulative;
-	}
+    public Double getQueryResultCacheHitRatioCumulative() {
+        return queryResultCacheHitRatioCumulative;
+    }
 
-	public void setQueryResultCacheHitRatioCumulative(Double queryResultCacheHitRatioCumulative) {
-		this.queryResultCacheHitRatioCumulative = queryResultCacheHitRatioCumulative;
-	}
+    public void setQueryResultCacheHitRatioCumulative(Double queryResultCacheHitRatioCumulative) {
+        this.queryResultCacheHitRatioCumulative = queryResultCacheHitRatioCumulative;
+    }
 
-	public Double getDocumentCacheHitRatioCumulative() {
-		return documentCacheHitRatioCumulative;
-	}
+    public Double getDocumentCacheHitRatioCumulative() {
+        return documentCacheHitRatioCumulative;
+    }
 
-	public void setDocumentCacheHitRatioCumulative(Double documentCacheHitRatioCumulative) {
-		this.documentCacheHitRatioCumulative = documentCacheHitRatioCumulative;
-	}
+    public void setDocumentCacheHitRatioCumulative(Double documentCacheHitRatioCumulative) {
+        this.documentCacheHitRatioCumulative = documentCacheHitRatioCumulative;
+    }
 
-	public Double getFieldValueCacheHitRatioCumulative() {
-		return fieldValueCacheHitRatioCumulative;
-	}
+    public Double getFieldValueCacheHitRatioCumulative() {
+        return fieldValueCacheHitRatioCumulative;
+    }
 
-	public void setFieldValueCacheHitRatioCumulative(Double fieldValueCacheHitRatioCumulative) {
-		this.fieldValueCacheHitRatioCumulative = fieldValueCacheHitRatioCumulative;
-	}
+    public void setFieldValueCacheHitRatioCumulative(Double fieldValueCacheHitRatioCumulative) {
+        this.fieldValueCacheHitRatioCumulative = fieldValueCacheHitRatioCumulative;
+    }
 
-	public Double getFilterCacheHitRatioCumulative() {
-		return filterCacheHitRatioCumulative;
-	}
+    public Double getFilterCacheHitRatioCumulative() {
+        return filterCacheHitRatioCumulative;
+    }
 
-	public void setFilterCacheHitRatioCumulative(Double filterCacheHitRatioCumulative) {
-		this.filterCacheHitRatioCumulative = filterCacheHitRatioCumulative;
-	}
+    public void setFilterCacheHitRatioCumulative(Double filterCacheHitRatioCumulative) {
+        this.filterCacheHitRatioCumulative = filterCacheHitRatioCumulative;
+    }
 
-	public Double getQueryResultCacheSize() {
-		return queryResultCacheSize;
-	}
+    public Double getQueryResultCacheSize() {
+        return queryResultCacheSize;
+    }
 
-	public void setQueryResultCacheSize(Double queryResultCacheSize) {
-		this.queryResultCacheSize = queryResultCacheSize;
-	}
+    public void setQueryResultCacheSize(Double queryResultCacheSize) {
+        this.queryResultCacheSize = queryResultCacheSize;
+    }
 
-	public Double getDocumentCacheSize() {
-		return documentCacheSize;
-	}
+    public Double getDocumentCacheSize() {
+        return documentCacheSize;
+    }
 
-	public void setDocumentCacheSize(Double documentCacheSize) {
-		this.documentCacheSize = documentCacheSize;
-	}
+    public void setDocumentCacheSize(Double documentCacheSize) {
+        this.documentCacheSize = documentCacheSize;
+    }
 
-	public Double getFieldValueCacheSize() {
-		return fieldValueCacheSize;
-	}
+    public Double getFieldValueCacheSize() {
+        return fieldValueCacheSize;
+    }
 
-	public void setFieldValueCacheSize(Double fieldValueCacheSize) {
-		this.fieldValueCacheSize = fieldValueCacheSize;
-	}
+    public void setFieldValueCacheSize(Double fieldValueCacheSize) {
+        this.fieldValueCacheSize = fieldValueCacheSize;
+    }
 
-	public Double getFilterCacheSize() {
-		return filterCacheSize;
-	}
+    public Double getFilterCacheSize() {
+        return filterCacheSize;
+    }
 
-	public void setFilterCacheSize(Double filterCacheSize) {
-		this.filterCacheSize = filterCacheSize;
-	}
+    public void setFilterCacheSize(Double filterCacheSize) {
+        this.filterCacheSize = filterCacheSize;
+    }
 }

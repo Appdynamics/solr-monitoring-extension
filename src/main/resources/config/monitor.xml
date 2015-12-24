@@ -1,22 +1,22 @@
 <monitor>
-	<name>SolrMonitor</name>
-	<type>managed</type>
-	<description>Monitors Solr</description>
-	<monitor-configuration></monitor-configuration>
-	<monitor-run-task>
-		<execution-style>periodic</execution-style>
-		<execution-frequency-in-seconds>60</execution-frequency-in-seconds>
-		<name>Solr Monitor Run Task</name>
-		<display-name>Solr Monitor Task</display-name>
-		<description>Solr Monitor Task</description>
-		<type>java</type>
-		<execution-timeout-in-secs>60</execution-timeout-in-secs>
-		<task-arguments>
-			<argument name="config-file" is-required="false" default-value="monitors/SolrMonitor/config.yml"/>
-		</task-arguments>
-		<java-task>
-		      <classpath>solr-monitoring-extension.jar</classpath>
-		          <impl-class>com.appdynamics.extensions.solr.SolrMonitor</impl-class>
-		</java-task>
-	</monitor-run-task>
+    <name>SolrMonitor</name>
+    <type>managed</type>
+    <description>Monitors Solr</description>
+    <monitor-configuration></monitor-configuration>
+    <monitor-run-task>
+        <execution-style>periodic</execution-style>
+        <execution-frequency-in-seconds>60</execution-frequency-in-seconds>
+        <name>Solr Monitor Run Task</name>
+        <display-name>Solr Monitor Task</display-name>
+        <description>Solr Monitor Task</description>
+        <type>java</type>
+        <execution-timeout-in-secs>60</execution-timeout-in-secs>
+        <task-arguments>
+            <argument name="config-file" is-required="false" default-value="monitors/SolrMonitor/config.yml"/>
+        </task-arguments>
+        <java-task>
+            <classpath>solr-monitoring-extension.jar</classpath>
+            <impl-class>com.appdynamics.extensions.solr.SolrMonitor</impl-class>
+        </java-task>
+    </monitor-run-task>
 </monitor>
