@@ -16,14 +16,15 @@
 
 package com.appdynamics.extensions.solr.stats;
 
+import com.appdynamics.extensions.solr.SolrMonitor;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.log4j.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 public class CoreStats {
 
-    private static Logger logger = Logger.getLogger(CoreStats.class);
+    public static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
 
     private Double numDocs;
     private Double maxDocs;

@@ -17,17 +17,17 @@
 package com.appdynamics.extensions.solr.stats;
 
 import com.appdynamics.extensions.solr.SolrHelper;
+import com.appdynamics.extensions.solr.SolrMonitor;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.log4j.Logger;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Map;
 
 public class CacheStats {
 
     private static final int PERCENT_MULTIPLIER = 100;
 
-    private static final Logger logger = Logger.getLogger(CacheStats.class);
-
+    public static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
     private Double queryResultCacheHitRatio;
     private Double queryResultCacheHitRatioCumulative;
     private Double queryResultCacheSize;

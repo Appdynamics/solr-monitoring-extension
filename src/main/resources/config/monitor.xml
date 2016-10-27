@@ -12,7 +12,7 @@
         <type>java</type>
         <execution-timeout-in-secs>60</execution-timeout-in-secs>
         <task-arguments>
-            <argument name="config-file" is-required="false" default-value="monitors/SolrMonitor/config.yml"/>
+            <argument name="config-file" is-required="true" default-value="monitors/SolrMonitor/config.yml"/>
         </task-arguments>
         <java-task>
             <classpath>solr-monitoring-extension.jar</classpath>

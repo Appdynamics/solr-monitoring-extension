@@ -1,17 +1,19 @@
+#prefix used to show up metrics in AppDynamics
+metricPrefix: "Custom Metrics|Solr|"
 
-server:
-    host: "localhost"
-    port: 8983
-    # Optional Parameters. Configure if any required
-    username: ""
-    password: ""
-    contextRoot: ""
-    usessl: ""
-    proxyHost: ""
-    proxyPort: ""
-    proxyUsername: ""
-    proxyPassword: ""
-    
+servers:
+   - host: "localhost"
+     port: 8983
+     # Optional Parameters. Configure if any required
+     username: ""
+     password: ""
+     contextRoot: ""
+     usessl: ""
+     proxyHost: ""
+     proxyPort: ""
+     proxyUsername: ""
+     proxyPassword: ""
+
 # Example
 # cores
 # - name: "collection1"
@@ -21,13 +23,13 @@ server:
 #     pingHandler: "/admin/ping"
 #     queryHandlers: ["/admin/ping"]
 cores:
-   - name: ""
-     pingHandler: ""
-     queryHandlers: []
-   - name: ""
-     pingHandler: ""
-     queryHandlers: []
+    - name: "gettingstarted"
+      pingHandler: "/admin/ping"
+      queryHandlers: ["/select", "/update"]
+    - name: ""
+      pingHandler: "/admin/ping"
+      queryHandlers: []
 
-#prefix used to show up metrics in AppDynamics
-metricPrefix:  "Custom Metrics|Solr|"
+numberOfThreads: 5
+
 

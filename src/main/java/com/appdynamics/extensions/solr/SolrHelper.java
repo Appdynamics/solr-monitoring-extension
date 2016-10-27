@@ -16,20 +16,19 @@
 
 package com.appdynamics.extensions.solr;
 
-import com.appdynamics.extensions.http.Response;
-import com.appdynamics.extensions.http.SimpleHttpClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
-import org.apache.log4j.Logger;
-
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -37,20 +36,20 @@ public class SolrHelper {
 
     private static final double BYTES_CONVERSION_FACTOR = 1024.0;
 
-    private static Logger logger = Logger.getLogger(SolrHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(SolrHelper.class);
 
-    private SimpleHttpClient httpClient;
+    private CloseableHttpClient httpClient;
 
-    public SolrHelper(SimpleHttpClient httpClient) {
+    public SolrHelper(CloseableHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
-    public static JsonNode getJsonNode(Response response) throws IOException {
+    public static JsonNode getJsonNode(CloseableHttpResponse response) throws IOException {
         if (response == null) {
             return null;
         }
         ObjectMapper mapper = new ObjectMapper();
-        return mapper.readValue(response.string(), JsonNode.class);
+        return mapper.readValue(EntityUtils.toString(response.getEntity(), "UTF-8"), JsonNode.class);
     }
 
     /**
@@ -121,10 +120,11 @@ public class SolrHelper {
      */
     public Map<String, JsonNode> getSolrMBeansHandlersMap(String core, String mbeansUri) {
         String uri = String.format(mbeansUri, core);
-        Response response = null;
+        CloseableHttpResponse response = null;
         Map<String, JsonNode> solrStatsMap = new HashMap<String, JsonNode>();
         try {
-            response = httpClient.target().path(uri).get();
+            HttpGet get = new HttpGet(uri);
+            response = httpClient.execute(get);
             JsonNode jsonNode = getJsonNode(response);
             if (jsonNode != null) {
                 JsonNode solrMBeansNode = jsonNode.path("solr-mbeans");
@@ -136,7 +136,7 @@ public class SolrHelper {
                 }
             }
         } catch (Exception e) {
-            logger.error(e);
+            logger.error(e.getMessage());
             throw new RuntimeException(e);
         } finally {
             closeResponse(response);
@@ -144,38 +144,12 @@ public class SolrHelper {
         return solrStatsMap;
     }
 
-    public List<String> getCores(String uri) {
-        List<String> cores = new ArrayList<String>();
-        Response response = null;
-        try {
-            response = httpClient.target().path(uri).get();
-            JsonNode node = getJsonNode(response);
-            if (node != null) {
-                Iterator<String> fieldNames = node.path("status").fieldNames();
-                while (fieldNames.hasNext()) {
-                    cores.add(fieldNames.next());
-                }
-                if (cores.isEmpty()) {
-                    logger.error("There are no SolrCores running. Using this Solr Extension requires at least one SolrCore.");
-                    throw new RuntimeException();
-                }
-                if (logger.isDebugEnabled())
-                    logger.debug("Cores / Collections size is " + cores.size());
-            }
-        } catch (Exception e) {
-            logger.error("Error while fetching cores " + uri, e);
-            throw new RuntimeException();
-        } finally {
-            closeResponse(response);
-        }
-        return cores;
-    }
-
     public String getDefaultCore(String uri) {
         String defaultCore = "";
-        Response response = null;
+        CloseableHttpResponse response = null;
         try {
-            response = httpClient.target().path(uri).get();
+            HttpGet get = new HttpGet(uri);
+            response = httpClient.execute(get);
             JsonNode node = getJsonNode(response);
             if (node != null) {
                 defaultCore = node.path("defaultCoreName").asText();
@@ -192,9 +166,10 @@ public class SolrHelper {
     }
 
     public boolean checkIfMBeanHandlerSupported(String resource) throws IOException {
-        Response response = null;
+        CloseableHttpResponse response = null;
         try {
-            response = httpClient.target().path(resource).get();
+            HttpGet get = new HttpGet(resource);
+            response = httpClient.execute(get);
             JsonNode jsonNode = getJsonNode(response);
             if (jsonNode != null) {
                 JsonNode node = jsonNode.findValue("QUERYHANDLER");
@@ -220,7 +195,7 @@ public class SolrHelper {
         }
     }
 
-    public void closeResponse(Response response) {
+    public void closeResponse(CloseableHttpResponse response) {
         try {
             if (response != null) {
                 response.close();
@@ -229,12 +204,7 @@ public class SolrHelper {
             logger.error("Error while closing input stream", e);
         }
     }
-
-    public SimpleHttpClient getHttpClient() {
-        return httpClient;
-    }
-
-    public void setHttpClient(SimpleHttpClient httpClient) {
-        this.httpClient = httpClient;
-    }
 }
+
+
+

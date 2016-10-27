@@ -16,16 +16,16 @@
 
 package com.appdynamics.extensions.solr.stats;
 
-import com.appdynamics.extensions.http.Response;
 import com.appdynamics.extensions.solr.SolrHelper;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.log4j.Logger;
-
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 public class MemoryStats {
 
-    private static final Logger logger = Logger.getLogger(MemoryStats.class);
+    public static final Logger logger = LoggerFactory.getLogger(MemoryStats.class);
 
     private Double jvmMemoryUsed;
     private Double jvmMemoryFree;
@@ -38,7 +38,7 @@ public class MemoryStats {
     private Double openFileDescriptorCount;
     private Double maxFileDescriptorCount;
 
-    public void populateStats(Response response) throws IOException {
+    public void populateStats(CloseableHttpResponse response) throws IOException {
         JsonNode jsonNode = SolrHelper.getJsonNode(response);
         if (jsonNode != null) {
             JsonNode jvmMBeansNode = jsonNode.path("jvm").path("memory");

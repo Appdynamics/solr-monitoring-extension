@@ -17,15 +17,16 @@
 package com.appdynamics.extensions.solr.stats;
 
 import com.appdynamics.extensions.solr.SolrHelper;
+import com.appdynamics.extensions.solr.SolrMonitor;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
 public class QueryStats {
 
-    private static Logger logger = Logger.getLogger(QueryStats.class);
-
+    public static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
     private Double requests;
     private Double errors;
     private Double timeouts;
