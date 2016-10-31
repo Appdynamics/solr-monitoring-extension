@@ -27,31 +27,45 @@ Note : Please make sure to not use tab (\t) while editing yaml files. You may wa
 1. Configure the Solr instance, Cores and Request handlers to monitor by editing the config.yml file in `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/`.
 Below is the sample.
     ```
-        server:
-          host: "localhost"
-          port: 8983
-        # Optional Parameters. Configure if any required
-          username: ""
-          password: ""
-          contextRoot: "/solr"
-          usessl: ""
-          proxyHost: ""
-          proxyPort: ""
-          proxyUsername: ""
-          proxyPassword: ""
+       #prefix used to show up metrics in AppDynamics
+metricPrefix: "Custom Metrics|Solr"
 
-        cores:
-        - name: "collection1"
-          pingHandler: "/admin/ping"
-          queryHandlers: ["/select", "/update"]
-        - name: ""
-          pingHandler: "/admin/ping"
-          queryHandlers: []
-        .....
-        .....
-   
-        #prefix used to show up metrics in AppDynamics
-        metricPrefix:  "Custom Metrics|Solr|"
+#This will create it in specific Tier. Replace <TIER_ID>
+#metricPrefix:  "Server|Component:<TIER_ID>|Custom Metrics|Solr Monitor|"
+
+servers:
+   - host: "localhost"
+     port: 8983
+     name: "Solr Monitor 1" #optional if only one server
+     # Optional Parameters. Configure if any required
+     username: ""
+     password: ""
+     contextRoot: ""
+     usessl: ""
+     proxyHost: ""
+     proxyPort: ""
+     proxyUsername: ""
+     proxyPassword: ""
+
+# Example
+# cores
+# - name: "collection1"
+#     pingHandler: "/admin/ping"
+#     queryHandlers: ["/select", "/update"]
+#   - name: "collection2"
+#     pingHandler: "/admin/ping"
+#     queryHandlers: ["/admin/ping"]
+cores:
+    - name: "gettingstarted"
+      pingHandler: "/admin/ping"
+      queryHandlers: ["/select", "/update"]
+    - name: ""
+      pingHandler: "/admin/ping"
+      queryHandlers: []
+
+numberOfThreads: 5
+
+
 
     ```
 Specify as many cores as you want to monitor and corresponding comma separated request handlers. If none of the cores are specified, default core with empty request handlers is monitored.
