@@ -7,20 +7,8 @@ metricPrefix: "Custom Metrics|Solr"
 servers:
    - host: "localhost"
      port: 8983
+     name: "Solr Monitor 1" #optional if only one server
      # Optional Parameters. Configure if any required
-     name: "Solr Monitor 1"
-     username: ""
-     password: ""
-     contextRoot: ""
-     usessl: ""
-     proxyHost: ""
-     proxyPort: ""
-     proxyUsername: ""
-     proxyPassword: ""
-   - host: "localhost"
-     port: 8983
-     # Optional Parameters. Configure if any required
-     name: "Solr Monitor 2"
      username: ""
      password: ""
      contextRoot: ""

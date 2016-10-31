@@ -2,7 +2,6 @@ package com.appdynamics.extensions.solr;
 
 import com.appdynamics.extensions.conf.MonitorConfiguration;
 import com.appdynamics.extensions.solr.config.Core;
-import com.appdynamics.extensions.solr.stats.CoreStats;
 import com.appdynamics.extensions.util.MetricWriteHelper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.singularity.ee.agent.systemagent.api.MetricWriter;
@@ -29,6 +28,7 @@ import static org.mockito.Mockito.*;
 /**
  * Created by adityajagtiani on 10/27/16.
  */
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(SolrHelper.class)
 public class SolrMonitorTaskTest {
@@ -67,12 +67,7 @@ public class SolrMonitorTaskTest {
         Core core = new Core();
         core.setName("TestCore");
         core.setPingHandler("TestPingHandler");
-        core.setQueryHandlers(new ArrayList<String>() {
-            @Override
-            public void add (int index, String element) {
-                super.add(0, "TestQueryHandler");
-            }
-        });
+        core.setQueryHandlers(new ArrayList<String>());
         List<Core> cores = new ArrayList<Core>();
         cores.add(core);
 
