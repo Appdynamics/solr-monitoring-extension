@@ -16,6 +16,7 @@
 
 package com.appdynamics.extensions.solr;
 
+import com.appdynamics.extensions.solr.config.Core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
@@ -28,9 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class SolrHelper {
 
@@ -165,6 +164,37 @@ public class SolrHelper {
         return defaultCore;
     }
 
+    public List<Core> getCores (Map<String, ?> config) {
+        List<Core> cores = new ArrayList<Core>();
+        if (config != null) {
+            List<Map<String, ?>> coresFromCfg = (List) config.get("cores");
+            for (Map<String, ?> map : coresFromCfg) {
+                Core core = new Core();
+                for (Map.Entry<String, ?> entry : map.entrySet()) {
+                    if (entry.getKey().equals("name")) {
+                        core.setName((String) entry.getValue());
+                    } else if (entry.getKey().equals("pingHandler")) {
+                        core.setPingHandler((String) entry.getValue());
+                    } else if (entry.getKey().equals("queryHandlers")) {
+                        core.setQueryHandlers((List<String>) entry.getValue());
+                    }
+                }
+                cores.add(core);
+            }
+        }
+        if (cores.size() == 0) {
+            String defaultCore = getDefaultCore(SolrMonitorTask.context_root + SolrMonitorTask.CORE_URI);
+            logger.info("Cores not configured in config.yml, default core " + defaultCore + " to be used for " +
+                    "stats");
+
+            Core core = new Core();
+            core.setName(defaultCore);
+            core.setQueryHandlers(new ArrayList<String>());
+            cores.add(core);
+        }
+        return cores;
+    }
+
     public boolean checkIfMBeanHandlerSupported(String resource) throws IOException {
         CloseableHttpResponse response = null;
         try {
@@ -203,6 +233,10 @@ public class SolrHelper {
         } catch (Exception e) {
             logger.error("Error while closing input stream", e);
         }
+    }
+
+    public CloseableHttpClient getHttpClient() {
+        return httpClient;
     }
 }
 

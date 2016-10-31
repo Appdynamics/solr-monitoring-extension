@@ -1,10 +1,26 @@
 #prefix used to show up metrics in AppDynamics
-metricPrefix: "Custom Metrics|Solr|"
+metricPrefix: "Custom Metrics|Solr"
+
+#This will create it in specific Tier. Replace <TIER_ID>
+#metricPrefix:  "Server|Component:<TIER_ID>|Custom Metrics|Solr Monitor|"
 
 servers:
    - host: "localhost"
      port: 8983
      # Optional Parameters. Configure if any required
+     name: "Solr Monitor 1"
+     username: ""
+     password: ""
+     contextRoot: ""
+     usessl: ""
+     proxyHost: ""
+     proxyPort: ""
+     proxyUsername: ""
+     proxyPassword: ""
+   - host: "localhost"
+     port: 8983
+     # Optional Parameters. Configure if any required
+     name: "Solr Monitor 2"
      username: ""
      password: ""
      contextRoot: ""

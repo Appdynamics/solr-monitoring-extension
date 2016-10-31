@@ -24,6 +24,7 @@ import com.singularity.ee.agent.systemagent.api.AManagedMonitor;
 import com.singularity.ee.agent.systemagent.api.TaskExecutionContext;
 import com.singularity.ee.agent.systemagent.api.TaskOutput;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,11 +67,12 @@ public class SolrMonitor extends AManagedMonitor {
     private class TaskRunner implements Runnable {
 
         public void run () {
+            SolrHelper helper = new SolrHelper(configuration.getHttpClient());
             Map<String, ?> config = configuration.getConfigYml();
             List<Map> servers = (List) config.get("servers");
             if(servers != null && !servers.isEmpty()) {
                 for(Map server : servers) {
-                    SolrMonitorTask task = new SolrMonitorTask(configuration, server);
+                    SolrMonitorTask task = new SolrMonitorTask(configuration, server, helper);
                     configuration.getExecutorService().execute(task);
                 }
             }
@@ -82,13 +84,6 @@ public class SolrMonitor extends AManagedMonitor {
 
     private static String getImplementationVersion() {
         return SolrMonitor.class.getPackage().getImplementationVersion();
-    }
-
-    public static void main(String[] arg) throws TaskExecutionException {
-        SolrMonitor monitor = new SolrMonitor();
-        Map<String, String> args = Maps.newHashMap();
-        args.put("config-file", "/Users/adityajagtiani/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/config.yml");
-        monitor.execute(args, null);
     }
 }
 
