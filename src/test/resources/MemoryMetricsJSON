@@ -1,0 +1,123 @@
+{
+   "responseHeader":{
+      "status":0,
+      "QTime":21
+   },
+   "core":{
+      "schema":"example-data-driven-schema",
+      "host":"ajagtiani-mac.corp.appdynamics.com",
+      "now":"2016-11-08T23:55:16.946Z",
+      "start":"2016-11-07T18:27:52.556Z",
+      "directory":{
+         "cwd":"/Users/adityajagtiani/Documents/solr-6.2.1/server",
+         "instance":"/Users/adityajagtiani/Documents/solr-6.2.1/example/cloud/node2/solr/gettingstarted_shard2_replica2",
+         "data":"/Users/adityajagtiani/Documents/solr-6.2.1/example/cloud/node2/solr/gettingstarted_shard2_replica2/data",
+         "dirimpl":"org.apache.solr.core.NRTCachingDirectoryFactory",
+         "index":"/Users/adityajagtiani/Documents/solr-6.2.1/example/cloud/node2/solr/gettingstarted_shard2_replica2/data/index"
+      }
+   },
+   "mode":"solrcloud",
+   "zkHost":"localhost:9983",
+   "lucene":{
+      "solr-spec-version":"6.2.1",
+      "solr-impl-version":"6.2.1 43ab70147eb494324a1410f7a9f16a896a59bc6f - shalin - 2016-09-15 05:20:53",
+      "lucene-spec-version":"6.2.1",
+      "lucene-impl-version":"6.2.1 43ab70147eb494324a1410f7a9f16a896a59bc6f - shalin - 2016-09-15 05:15:20"
+   },
+   "jvm":{
+      "version":"1.8.0_102 25.102-b14",
+      "name":"Oracle Corporation Java HotSpot(TM) 64-Bit Server VM",
+      "spec":{
+         "vendor":"Oracle Corporation",
+         "name":"Java Platform API Specification",
+         "version":"1.8"
+      },
+      "jre":{
+         "vendor":"Oracle Corporation",
+         "version":"1.8.0_102"
+      },
+      "vm":{
+         "vendor":"Oracle Corporation",
+         "name":"Java HotSpot(TM) 64-Bit Server VM",
+         "version":"25.102-b14"
+      },
+      "processors":8,
+      "memory":{
+         "free":"463.7 MB",
+         "total":"490.7 MB",
+         "max":"490.7 MB",
+         "used":"27 MB (%5.5)",
+         "raw":{
+            "free":486216848,
+            "total":514523136,
+            "max":514523136,
+            "used":28306288,
+            "used%":5.501460676784804
+         }
+      },
+      "jmx":{
+         "bootclasspath":"/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_102.jdk/Contents/Home/jre/classes",
+         "classpath":"/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/javax.servlet-api-3.1.0.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-continuation-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-deploy-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-http-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-io-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-jmx-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-rewrite-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-security-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-server-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-servlet-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-servlets-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-util-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-webapp-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/jetty-xml-9.3.8.v20160314.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/ext/jcl-over-slf4j-1.7.7.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/ext/jul-to-slf4j-1.7.7.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/ext/log4j-1.2.17.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/ext/slf4j-api-1.7.7.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/lib/ext/slf4j-log4j12-1.7.7.jar:/Users/adityajagtiani/Documents/solr-6.2.1/server/resources",
+         "commandLineArgs":[
+            "-Xms512m",
+            "-Xmx512m",
+            "-XX:NewRatio=3",
+            "-XX:SurvivorRatio=4",
+            "-XX:TargetSurvivorRatio=90",
+            "-XX:MaxTenuringThreshold=8",
+            "-XX:+UseConcMarkSweepGC",
+            "-XX:+UseParNewGC",
+            "-XX:ConcGCThreads=4",
+            "-XX:ParallelGCThreads=4",
+            "-XX:+CMSScavengeBeforeRemark",
+            "-XX:PretenureSizeThreshold=64m",
+            "-XX:+UseCMSInitiatingOccupancyOnly",
+            "-XX:CMSInitiatingOccupancyFraction=50",
+            "-XX:CMSMaxAbortablePrecleanTime=6000",
+            "-XX:+CMSParallelRemarkEnabled",
+            "-XX:+ParallelRefProcEnabled",
+            "-verbose:gc",
+            "-XX:+PrintHeapAtGC",
+            "-XX:+PrintGCDetails",
+            "-XX:+PrintGCDateStamps",
+            "-XX:+PrintGCTimeStamps",
+            "-XX:+PrintTenuringDistribution",
+            "-XX:+PrintGCApplicationStoppedTime",
+            "-Xloggc:/Users/adityajagtiani/Documents/solr-6.2.1/example/cloud/node2/solr/../logs/solr_gc.log",
+            "-DzkClientTimeout=15000",
+            "-DzkHost=localhost:9983",
+            "-Djetty.port=7574",
+            "-DSTOP.PORT=6574",
+            "-DSTOP.KEY=solrrocks",
+            "-Duser.timezone=UTC",
+            "-Djetty.home=/Users/adityajagtiani/Documents/solr-6.2.1/server",
+            "-Dsolr.solr.home=/Users/adityajagtiani/Documents/solr-6.2.1/example/cloud/node2/solr",
+            "-Dsolr.install.dir=/Users/adityajagtiani/Documents/solr-6.2.1",
+            "-Dlog4j.configuration=file:/Users/adityajagtiani/Documents/solr-6.2.1/example/resources/log4j.properties",
+            "-Xss256k",
+            "-XX:OnOutOfMemoryError=/Users/adityajagtiani/Documents/solr-6.2.1/bin/oom_solr.sh 7574 /Users/adityajagtiani/Documents/solr-6.2.1/example/cloud/node2/solr/../logs"
+         ],
+         "startTime":"2016-11-07T18:27:46.306Z",
+         "upTimeMS":48727167
+      }
+   },
+   "system":{
+      "name":"Mac OS X",
+      "arch":"x86_64",
+      "availableProcessors":8,
+      "systemLoadAverage":4.6494140625,
+      "version":"10.12.1",
+      "committedVirtualMemorySize":4664827904,
+      "freePhysicalMemorySize":190607360,
+      "freeSwapSpaceSize":1052246016,
+      "processCpuLoad":1.827921832432762E-4,
+      "processCpuTime":104110254000,
+      "systemCpuLoad":0.09567976504948773,
+      "totalPhysicalMemorySize":17179869184,
+      "totalSwapSpaceSize":3221225472,
+      "maxFileDescriptorCount":10240,
+      "openFileDescriptorCount":198,
+      "uname":"Darwin ajagtiani-mac.corp.appdynamics.com 16.1.0 Darwin Kernel Version 16.1.0: Wed Oct 19 20:31:56 PDT 2016; root:xnu-3789.21.4~4/RELEASE_X86_64 x86_64\n",
+      "uptime":"15:55  up 5 days,  5:11, 7 users, load averages: 4.65 5.71 5.78\n"
+   }
+}

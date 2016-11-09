@@ -1,0 +1,4 @@
+cores:
+  - name: "gettingstarted"
+    pingHandler: "/admin/ping"
+    queryHandlers: ["/select", "/update"]

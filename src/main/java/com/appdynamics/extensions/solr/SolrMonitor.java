@@ -26,6 +26,7 @@ import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -65,12 +66,11 @@ public class SolrMonitor extends AManagedMonitor {
     private class TaskRunner implements Runnable {
 
         public void run () {
-            SolrHelper helper = new SolrHelper(configuration.getHttpClient());
             Map<String, ?> config = configuration.getConfigYml();
             List<Map> servers = (List) config.get("servers");
             if(servers != null && !servers.isEmpty()) {
                 for(Map server : servers) {
-                    SolrMonitorTask task = new SolrMonitorTask(configuration, server, helper);
+                    SolrMonitorTask task = new SolrMonitorTask(configuration, server);
                     configuration.getExecutorService().execute(task);
                 }
             }
@@ -82,6 +82,13 @@ public class SolrMonitor extends AManagedMonitor {
 
     private static String getImplementationVersion() {
         return SolrMonitor.class.getPackage().getImplementationVersion();
+    }
+
+    public static void main(String [] args) throws TaskExecutionException {
+        SolrMonitor solrMonitor = new SolrMonitor();
+        Map<String, String> argsMap = new HashMap<String, String>();
+        argsMap.put("config-file", "/Users/adityajagtiani/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/config.yml");
+        solrMonitor.execute(argsMap, null);
     }
 }
 

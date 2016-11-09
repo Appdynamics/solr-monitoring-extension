@@ -1,8 +1,8 @@
 #prefix used to show up metrics in AppDynamics
-metricPrefix: "Custom Metrics|Solr"
+#metricPrefix: "Custom Metrics|Solr"
 
 #This will create it in specific Tier. Replace <TIER_ID>
-#metricPrefix:  "Server|Component:<TIER_ID>|Custom Metrics|Solr Monitor|"
+metricPrefix: "Server|Component:11|Custom Metrics|Solr Monitor|"
 
 servers:
    - host: "localhost"
@@ -17,6 +17,18 @@ servers:
      proxyPort: ""
      proxyUsername: ""
      proxyPassword: ""
+   - host: "localhost"
+     port: 8983
+     name: "Solr Monitor 2" #optional if only one server
+     # Optional Parameters. Configure if any required
+#     username: ""
+#     password: ""
+#     contextRoot: ""
+#     usessl: ""
+#    proxyHost: ""
+#     proxyPort: ""
+#     proxyUsername: ""
+#     proxyPassword: ""
 
 # Example
 # cores
@@ -27,12 +39,9 @@ servers:
 #     pingHandler: "/admin/ping"
 #     queryHandlers: ["/admin/ping"]
 cores:
-    - name: "gettingstarted"
-      pingHandler: "/admin/ping"
-      queryHandlers: ["/select", "/update"]
-    - name: ""
-      pingHandler: "/admin/ping"
-      queryHandlers: []
+   - name: "gettingstarted"
+     pingHandler: "/admin/ping"
+     queryHandlers: ["/select", "/update"]
 
 numberOfThreads: 5
 
