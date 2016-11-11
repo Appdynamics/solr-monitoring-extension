@@ -1,6 +1,5 @@
-package com.appdynamics.extensions.solr;
+package com.appdynamics.extensions.solr.core;
 
-import com.appdynamics.extensions.solr.config.Core;
 import com.appdynamics.extensions.solr.helpers.SolrUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,8 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CoreContextStats {
-
-    public static final Logger logger = LoggerFactory.getLogger(CoreContextStats.class);
+    private static final Logger logger = LoggerFactory.getLogger(CoreContextStats.class);
     private static String context_root = "/solr";
     private static final String CORE_URI = "/admin/cores?action=STATUS&wt=json";
 
@@ -55,10 +53,10 @@ public class CoreContextStats {
             JsonNode node = SolrUtils.getJsonNode(response);
             if (node != null) {
                 defaultCore = node.path("defaultCoreName").asText();
-                if (logger.isDebugEnabled()) logger.debug("Default Core name is " + defaultCore);
+                if (logger.isDebugEnabled()) logger.debug("Default core name is " + defaultCore);
             }
         } catch (Exception e) {
-            logger.error("Error while fetching default Core name " + uri, e);
+            logger.error("Error while fetching default core name " + uri, e);
             throw new RuntimeException();
         } finally {
             if (response != null) {

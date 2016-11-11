@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.appdynamics.extensions.solr.Query;
+package com.appdynamics.extensions.solr.query;
 
 import com.appdynamics.extensions.solr.helpers.SolrUtils;
 import com.appdynamics.extensions.solr.SolrMonitor;
@@ -25,31 +25,30 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class QueryStatsPopulator {
+public class QueryMetricsPopulator {
     private static final String METRIC_SEPARATOR = "|";
     public static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
-    private Map<String, String> queryMetrics;
+    private Map<String, Long> queryMetrics;
     private String collection;
 
-    public QueryStatsPopulator(String collection) {
+    public QueryMetricsPopulator (String collection) {
         this.collection = collection;
     }
-    public Map<String, String> populateStats (Map<String, JsonNode> solrMBeansHandlersMap, String handler) {
+    public Map<String, Long> populateStats (Map<String, JsonNode> solrMBeansHandlersMap, String handler) {
 
         JsonNode node = solrMBeansHandlersMap.get("QUERYHANDLER");
         if (node != null) {
-            queryMetrics = new HashMap<String, String>();
+            queryMetrics = new HashMap<String, Long>();
             JsonNode searchStats = node.path(handler).path("stats");
             String metricPath = METRIC_SEPARATOR + "Cores" + METRIC_SEPARATOR + collection + METRIC_SEPARATOR + "QUERYHANDLER|" + handler + METRIC_SEPARATOR;
             if (!searchStats.isMissingNode()) {
-                queryMetrics.put(metricPath + "Requests", String.valueOf(Math.round(searchStats.path("requests").asDouble())));
-                queryMetrics.put(metricPath + "Errors", String.valueOf(Math.round(searchStats.path("errors").asDouble())));
-                queryMetrics.put(metricPath + "Timeouts", String.valueOf(Math.round(searchStats.path("timeouts").asDouble())));
-                queryMetrics.put(metricPath + "Average Requests Per Minute", String.valueOf(Math.round(SolrUtils.multipyBy(searchStats.path("avgRequestsPerMinute").asDouble(), 60))));
-                queryMetrics.put(metricPath + "Average Requests Per Second", String.valueOf(Math.round(searchStats.path("avgRequestsPerSecond").asDouble())));
-                queryMetrics.put(metricPath + "5 min Rate Requests Per Minute", String.valueOf(Math.round(SolrUtils.multipyBy(searchStats.path("5minRateReqsPerSecond").asDouble(), 60))));
-                queryMetrics.put(metricPath + "Average Time Per Request (milliseconds)", String.valueOf(Math.round(searchStats.path("avgTimePerRequest").asDouble())));
-
+                queryMetrics.put(metricPath + "Requests", SolrUtils.convertDoubleToLong(searchStats.path("requests").asDouble()));
+                queryMetrics.put(metricPath + "Errors", SolrUtils.convertDoubleToLong(searchStats.path("errors").asDouble()));
+                queryMetrics.put(metricPath + "Timeouts", SolrUtils.convertDoubleToLong(searchStats.path("timeouts").asDouble()));
+                queryMetrics.put(metricPath + "Average Requests Per Minute", SolrUtils.convertDoubleToLong(SolrUtils.multipyBy(searchStats.path("avgRequestsPerMinute").asDouble(), 60)));
+                queryMetrics.put(metricPath + "Average Requests Per Second", SolrUtils.convertDoubleToLong(searchStats.path("avgRequestsPerSecond").asDouble()));
+                queryMetrics.put(metricPath + "5 min Rate Requests Per Minute", SolrUtils.convertDoubleToLong(SolrUtils.multipyBy(searchStats.path("5minRateReqsPerSecond").asDouble(), 60)));
+                queryMetrics.put(metricPath + "Average Time Per Request (milliseconds)", SolrUtils.convertDoubleToLong(searchStats.path("avgTimePerRequest").asDouble()));
             } else {
                 logger.warn("Missing Handler " + handler + " in this Solr");
             }

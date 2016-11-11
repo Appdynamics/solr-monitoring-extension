@@ -1,4 +1,4 @@
-package com.appdynamics.extensions.solr.Cache;
+package com.appdynamics.extensions.solr.cache;
 
 import com.appdynamics.extensions.solr.helpers.SolrUtils;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,22 +21,21 @@ public class FieldCacheMetricsPopulator {
         this.solrMBeansHandlersMap = solrMBeansHandlersMap;
     }
 
-    public Map<String, String> populate () {
+    public Map<String, Long> populate () {
         String metricPath = METRIC_SEPARATOR + "Cores" + METRIC_SEPARATOR + collection + METRIC_SEPARATOR + "CACHE" +
                 METRIC_SEPARATOR;
         String fieldCachePath = metricPath + "FieldValueCache" + METRIC_SEPARATOR;
 
         JsonNode cacheNode = solrMBeansHandlersMap.get("CACHE");
         JsonNode fieldValueCacheStats = cacheNode.path("fieldValueCache").path("stats");
-        Map<String, String> fieldCacheMetrics = new HashMap<String, String>();
+        Map<String, Long> fieldCacheMetrics = new HashMap<String, Long>();
 
         if (!fieldValueCacheStats.isMissingNode()) {
-            fieldCacheMetrics.put(fieldCachePath + "HitRatio %", String.valueOf(Math.round(SolrUtils.multipyBy
-                    (fieldValueCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER))));
-            fieldCacheMetrics.put(fieldCachePath + "HitRatioCumulative %", String.valueOf(Math.round(SolrUtils
-                    .multipyBy(fieldValueCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER))));
-            fieldCacheMetrics.put(fieldCachePath + "CacheSize (Bytes)", String.valueOf(Math.round
-                    (fieldValueCacheStats.path("size").asDouble())));
+            fieldCacheMetrics.put(fieldCachePath + "HitRatio %", SolrUtils.convertDoubleToLong(SolrUtils.multipyBy
+                            (fieldValueCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER)));
+            fieldCacheMetrics.put(fieldCachePath + "HitRatioCumulative %", SolrUtils.convertDoubleToLong(SolrUtils
+                            .multipyBy(fieldValueCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER)));
+            fieldCacheMetrics.put(fieldCachePath + "CacheSize (Bytes)", SolrUtils.convertDoubleToLong(fieldValueCacheStats.path("size").asDouble()));
 
         } else {
             logger.info("fieldValueCache is disabled in solrconfig.xml");

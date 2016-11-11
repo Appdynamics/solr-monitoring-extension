@@ -1,9 +1,9 @@
 package com.appdynamics.extensions.solr;
 
-import com.appdynamics.extensions.solr.Cache.DocumentCacheMetricsPopulator;
-import com.appdynamics.extensions.solr.Cache.FieldCacheMetricsPopulator;
-import com.appdynamics.extensions.solr.Cache.FilterCacheMetricsPopulator;
-import com.appdynamics.extensions.solr.Cache.QueryCacheMetricsPopulator;
+import com.appdynamics.extensions.solr.cache.DocumentCacheMetricsPopulator;
+import com.appdynamics.extensions.solr.cache.FieldCacheMetricsPopulator;
+import com.appdynamics.extensions.solr.cache.FilterCacheMetricsPopulator;
+import com.appdynamics.extensions.solr.cache.QueryCacheMetricsPopulator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
@@ -24,32 +24,64 @@ public class CacheMetricsPopulatorTest {
     public void setup() throws IOException {
         map = new HashMap<String, JsonNode>();
         ObjectMapper mapper = new ObjectMapper();
-        jsonNode = mapper.readValue(new File("src/test/resources/CacheJSON"), JsonNode.class);
+        jsonNode = mapper.readValue(new File("src/test/resources/Cache.json"), JsonNode.class);
         map.put("CACHE", jsonNode);
         collection = "collection";
     }
 
     @Test
     public void populateStatsTest_DocumentCacheMetrics () {
+        String documentCacheMetricPath = "|Cores|collection|CACHE|DocumentCache|";
         DocumentCacheMetricsPopulator documentCacheMetricsPopulator = new DocumentCacheMetricsPopulator(map, collection);
-        Assert.assertTrue(documentCacheMetricsPopulator.populate().size() == 3);
+        Map<String, Long> map = documentCacheMetricsPopulator.populate();
+        Assert.assertTrue(map.size() == 3);
+        Assert.assertTrue(map.containsKey(documentCacheMetricPath + "HitRatio %"));
+        Assert.assertTrue(map.containsKey(documentCacheMetricPath + "CacheSize (Bytes)"));
+        Assert.assertTrue(map.containsKey(documentCacheMetricPath + "HitRatioCumulative %"));
+        Assert.assertTrue(map.get(documentCacheMetricPath + "HitRatio %").equals(new Long(0)));
+        Assert.assertTrue(map.get(documentCacheMetricPath + "CacheSize (Bytes)").equals(new Long(0)));
+        Assert.assertTrue(map.get(documentCacheMetricPath + "HitRatioCumulative %").equals(new Long(0)));
     }
 
     @Test
     public void populateStatsTest_FieldCacheMetrics() {
+        String fieldCacheMetricPath = "|Cores|collection|CACHE|FieldValueCache|";
         FieldCacheMetricsPopulator fieldCacheMetricsPopulator = new FieldCacheMetricsPopulator(map, collection);
-        Assert.assertTrue(fieldCacheMetricsPopulator.populate().size() == 3);
+        Map<String, Long> map = fieldCacheMetricsPopulator.populate();
+        Assert.assertTrue(map.size() == 3);
+        Assert.assertTrue(map.containsKey(fieldCacheMetricPath + "HitRatio %"));
+        Assert.assertTrue(map.containsKey(fieldCacheMetricPath + "CacheSize (Bytes)"));
+        Assert.assertTrue(map.containsKey(fieldCacheMetricPath + "HitRatioCumulative %"));
+        Assert.assertTrue(map.get(fieldCacheMetricPath + "HitRatio %").equals(new Long(0)));
+        Assert.assertTrue(map.get(fieldCacheMetricPath + "CacheSize (Bytes)").equals(new Long(0)));
+        Assert.assertTrue(map.get(fieldCacheMetricPath + "HitRatioCumulative %").equals(new Long(0)));
     }
 
     @Test
     public void populateStatsTest_QueryCacheMetrics() {
+        String queryCacheMetricPath = "|Cores|collection|CACHE|QueryResultCache|";
         QueryCacheMetricsPopulator queryCacheMetricsPopulator = new QueryCacheMetricsPopulator(map, collection);
-        Assert.assertTrue(queryCacheMetricsPopulator.populate().size() == 3);
+        Map<String, Long> map = queryCacheMetricsPopulator.populate();
+        Assert.assertTrue(map.size() == 3);
+        Assert.assertTrue(map.containsKey(queryCacheMetricPath + "HitRatio %"));
+        Assert.assertTrue(map.containsKey(queryCacheMetricPath + "CacheSize (Bytes)"));
+        Assert.assertTrue(map.containsKey(queryCacheMetricPath + "HitRatioCumulative %"));
+        Assert.assertTrue(map.get(queryCacheMetricPath + "HitRatio %").equals(new Long("4634978072750194688")));
+        Assert.assertTrue(map.get(queryCacheMetricPath + "CacheSize (Bytes)").equals(new Long("4607182418800017408")));
+            Assert.assertTrue(map.get(queryCacheMetricPath + "HitRatioCumulative %").equals(new Long("4634978072750194688")));
     }
 
     @Test
     public void populateStatsTest_FilterCacheMetrics() {
+        String filterCacheMetricPath = "|Cores|collection|CACHE|FilterCache|";
         FilterCacheMetricsPopulator filterCacheMetricsPopulator = new FilterCacheMetricsPopulator(map, collection);
-        Assert.assertTrue(filterCacheMetricsPopulator.populate().size() == 3);
+        Map<String, Long> map = filterCacheMetricsPopulator.populate();
+        Assert.assertTrue(map.size() == 3);
+        Assert.assertTrue(map.containsKey(filterCacheMetricPath + "HitRatio %"));
+        Assert.assertTrue(map.containsKey(filterCacheMetricPath + "CacheSize (Bytes)"));
+        Assert.assertTrue(map.containsKey(filterCacheMetricPath + "HitRatioCumulative %"));
+        Assert.assertTrue(map.get(filterCacheMetricPath + "HitRatio %").equals(new Long(0)));
+        Assert.assertTrue(map.get(filterCacheMetricPath + "CacheSize (Bytes)").equals(new Long(0)));
+        Assert.assertTrue(map.get(filterCacheMetricPath + "HitRatioCumulative %").equals(new Long(0)));
     }
 }

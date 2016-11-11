@@ -2,7 +2,8 @@ package com.appdynamics.extensions.solr;
 
 import com.appdynamics.extensions.conf.MonitorConfiguration;
 import com.appdynamics.extensions.http.UrlBuilder;
-import com.appdynamics.extensions.solr.config.Core;
+import com.appdynamics.extensions.solr.core.Core;
+import com.appdynamics.extensions.solr.core.CoreContextStats;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SolrMonitorTask implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
+    private static final Logger logger = LoggerFactory.getLogger(SolrMonitorTask.class);
     private MonitorConfiguration configuration;
     private Map server;
 
@@ -47,7 +48,7 @@ public class SolrMonitorTask implements Runnable {
             throws IOException {
         SolrStats stats = new SolrStats(configuration, (String) server.get("name"), generateURIFromConfig());
         for (Core coreConfig : coresConfig) {
-            Map<String, String> metrics = stats.populateStats(coreConfig);
+            Map<String, Long> metrics = stats.populateStats(coreConfig);
             stats.printMetrics(metrics);
         }
     }

@@ -1,6 +1,6 @@
 package com.appdynamics.extensions.solr.helpers;
 
-import com.appdynamics.extensions.solr.config.Core;
+import com.appdynamics.extensions.solr.core.Core;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.base.Strings;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -11,11 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-/**
- * Created by adityajagtiani on 11/1/16.
- */
 public class PingHandlerHelper {
-    public static final Logger logger = LoggerFactory.getLogger(PingHandlerHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(PingHandlerHelper.class);
 
     public boolean isPingHandler (Core core, CloseableHttpClient httpClient, String uri) throws IOException {
         CloseableHttpResponse response = null;
@@ -32,7 +29,7 @@ public class PingHandlerHelper {
                     }
                 }
             } catch (Exception e) {
-                logger.error("Could not connect to Core", e.getMessage());
+                logger.error("Could not connect to core", e.getMessage());
             } finally {
                 if(response != null) {
                     response.close();

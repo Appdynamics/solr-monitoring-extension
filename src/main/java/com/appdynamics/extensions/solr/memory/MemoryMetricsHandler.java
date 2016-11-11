@@ -1,4 +1,4 @@
-package com.appdynamics.extensions.solr.Memory;
+package com.appdynamics.extensions.solr.memory;
 
 import com.appdynamics.extensions.solr.helpers.SolrUtils;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -8,9 +8,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by adityajagtiani on 11/3/16.
- */
 public class MemoryMetricsHandler {
     private CloseableHttpResponse response;
     private String collection;
@@ -20,8 +17,8 @@ public class MemoryMetricsHandler {
         this.collection = collection;
     }
 
-    public Map<String, String> populate() throws IOException {
-        Map<String, String> memoryMetrics = new HashMap<String, String>();
+    public Map<String, Long> populate() throws IOException {
+        Map<String, Long> memoryMetrics = new HashMap<String, Long>();
         JsonNode jsonNode = SolrUtils.getJsonNode(response);
         JVMMemoryMetricsPopulator jvmMemoryMetricsPopulator = new JVMMemoryMetricsPopulator(jsonNode, collection);
         SystemMemoryMetricsPopulator systemMemoryMetricsPopulator = new SystemMemoryMetricsPopulator(jsonNode, collection);

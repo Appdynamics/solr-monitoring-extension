@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package com.appdynamics.extensions.solr.Core;
+package com.appdynamics.extensions.solr.core;
 
-import com.appdynamics.extensions.solr.SolrMonitor;
+import com.appdynamics.extensions.solr.helpers.SolrUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,28 +24,28 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CoreStatsPopulator {
+public class CoreMetricsPopulator {
 
-    public static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
+    private static final Logger logger = LoggerFactory.getLogger(CoreMetricsPopulator.class);
     private static final String METRIC_SEPARATOR = "|";
-    private Map<String, String> coreMetrics;
+    private Map<String, Long> coreMetrics;
     private String collection;
 
-    public CoreStatsPopulator(String collection) {
+    public CoreMetricsPopulator (String collection) {
         this.collection = collection;
     }
 
 
-    public Map<String, String> populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
+    public Map<String, Long> populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
         JsonNode node = solrMBeansHandlersMap.get("CORE");
         if (node != null) {
-            coreMetrics = new HashMap<String, String>();
+            coreMetrics = new HashMap<String, Long>();
             JsonNode coreNode = node.path("searcher").path("stats");
             String metricPath = METRIC_SEPARATOR + "Cores" + METRIC_SEPARATOR + collection + METRIC_SEPARATOR + "CORE" + METRIC_SEPARATOR;
             if (!coreNode.isMissingNode()) {
-                coreMetrics.put(metricPath + "Number of Docs", String.valueOf(Math.round(coreNode.path("numDocs").asDouble())));
-                coreMetrics.put(metricPath + "Max Docs", String.valueOf(Math.round(coreNode.path("maxDocs").asDouble())));
-                coreMetrics.put(metricPath + "Deleted Docs", String.valueOf(Math.round(coreNode.path("deletedDocs").asDouble())));
+                coreMetrics.put(metricPath + "Number of Docs", SolrUtils.convertDoubleToLong(coreNode.path("numDocs").asDouble()));
+                coreMetrics.put(metricPath + "Max Docs", SolrUtils.convertDoubleToLong(coreNode.path("maxDocs").asDouble()));
+                coreMetrics.put(metricPath + "Deleted Docs", SolrUtils.convertDoubleToLong(coreNode.path("deletedDocs").asDouble()));
                 if (logger.isDebugEnabled()) {
                     logger.debug("Docs=" + coreMetrics.get("Number of Docs"));
                     logger.debug("Max Docs=" + coreMetrics.get("Max Docs"));

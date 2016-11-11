@@ -1,13 +1,10 @@
-package com.appdynamics.extensions.solr.Cache;
+package com.appdynamics.extensions.solr.cache;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by adityajagtiani on 11/3/16.
- */
 public class CacheMetricsHandler {
     private Map<String, JsonNode> solrMBeansHandlersMap;
     private String core;
@@ -17,8 +14,8 @@ public class CacheMetricsHandler {
         this.solrMBeansHandlersMap = solrMBeansHandlersMap;
     }
 
-    public Map<String, String> populate() {
-        Map<String, String> cacheMetrics = new HashMap<String, String>();
+    public Map<String, Long> populate() {
+        Map<String, Long> cacheMetrics = new HashMap<String, Long>();
         DocumentCacheMetricsPopulator documentCacheStatsPopulator = new DocumentCacheMetricsPopulator(solrMBeansHandlersMap, core);
         QueryCacheMetricsPopulator queryCacheMetricsPopulator = new QueryCacheMetricsPopulator(solrMBeansHandlersMap, core);
         FilterCacheMetricsPopulator filterCacheMetricsPopulator = new FilterCacheMetricsPopulator(solrMBeansHandlersMap, core);

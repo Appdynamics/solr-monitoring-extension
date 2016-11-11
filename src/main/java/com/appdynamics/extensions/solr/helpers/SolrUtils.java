@@ -7,6 +7,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -17,12 +18,18 @@ public class SolrUtils {
     private static final Logger logger = LoggerFactory.getLogger(SolrHelper.class);
 
     public static JsonNode getJsonNode(CloseableHttpResponse response) throws IOException {
-        if (response == null) {
+        String data = EntityUtils.toString(response.getEntity(), "UTF-8");
+
+        return getJsonNode(data);
+    }
+
+    private static JsonNode getJsonNode(String data) throws IOException {
+        if (data == null) {
             return null;
         }
         ObjectMapper mapper = new ObjectMapper();
 
-        return mapper.readValue(EntityUtils.toString(response.getEntity(), "UTF-8"), JsonNode.class);
+        return mapper.readValue(data, JsonNode.class);
     }
 
     /**
@@ -81,5 +88,9 @@ public class SolrUtils {
             value = value * multiplier;
         }
         return value;
+    }
+
+    public static Long convertDoubleToLong (Double value) {
+        return Double.doubleToLongBits(Math.round(value));
     }
 }
