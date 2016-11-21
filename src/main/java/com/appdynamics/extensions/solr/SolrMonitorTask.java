@@ -3,8 +3,9 @@ package com.appdynamics.extensions.solr;
 import com.appdynamics.extensions.conf.MonitorConfiguration;
 import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.solr.core.Core;
-import com.appdynamics.extensions.solr.core.CoreContextStats;
-import org.apache.http.impl.client.CloseableHttpClient;
+import com.appdynamics.extensions.solr.core.CoreContext;
+import com.appdynamics.extensions.util.MetricWriteHelper;
+import com.singularity.ee.agent.systemagent.api.MetricWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,25 +35,43 @@ public class SolrMonitorTask implements Runnable {
 
     private void runTask () {
         try {
-            CloseableHttpClient httpClient = configuration.getHttpClient();
-            CoreContextStats coreContextStats = new CoreContextStats();
-            List<Core> cores = coreContextStats.getCores(configuration.getConfigYml(), httpClient, generateURIFromConfig());
-            populateAndPrintStats(cores);
+            CoreContext coreContext = new CoreContext(configuration.getHttpClient(),server);
+            //TODO refactor the get cores method..the url building should be part of the CoreContext class
+            List<Core> cores = coreContext.getCores(configuration.getConfigYml(), generateURIFromConfig());
+            populateAndPrintStats(cores,coreContext.getContextRoot());
             logger.info("Solr monitoring task completed successfully.");
         } catch (Exception e) {
             logger.error("Exception while running Solr Monitor Task ", e);
         }
     }
 
-    private void populateAndPrintStats (List<Core> coresConfig)
+
+
+    private void populateAndPrintStats (List<Core> coresConfig,String contextRoot)
             throws IOException {
-        SolrStats stats = new SolrStats(configuration, (String) server.get("name"), generateURIFromConfig());
+        NewSolrStats solrStats = new NewSolrStats(server,contextRoot,configuration.getHttpClient());
         for (Core coreConfig : coresConfig) {
-            Map<String, Long> metrics = stats.populateStats(coreConfig);
-            stats.printMetrics(metrics);
+            Map<String, Long> metrics = solrStats.populateStats(coreConfig);
+            printMetrics(metrics);
+        }
+
+    }
+
+    void printMetrics (Map<String, Long> solrMetrics) {
+        MetricWriteHelper metricWriter = configuration.getMetricWriter();
+        String metricPrefix = configuration.getMetricPrefix();
+        String aggregation = MetricWriter.METRIC_AGGREGATION_TYPE_AVERAGE;
+        String cluster = MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_INDIVIDUAL;
+        String timeRollup = MetricWriter.METRIC_TIME_ROLLUP_TYPE_AVERAGE;
+
+        for (Map.Entry<String, Long> entry : solrMetrics.entrySet()) {
+            String metricPath = metricPrefix + "|" + server.get("name").toString() + entry.getKey();
+            String metricValue = String.valueOf(entry.getValue());
+            metricWriter.printMetric(metricPath, metricValue, aggregation, timeRollup, cluster);
         }
     }
 
+    //TODO move this code inside CoreContext as this method doesn't belong to this class.
     private String generateURIFromConfig() {
         return UrlBuilder.fromYmlServerConfig(server).build();
     }

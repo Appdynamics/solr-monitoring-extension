@@ -1,7 +1,7 @@
 package com.appdynamics.extensions.solr;
 
 
-import com.appdynamics.extensions.solr.core.CoreMetricsPopulator;
+import com.appdynamics.extensions.solr.mbeans.CoreMetrics;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
@@ -21,7 +21,7 @@ public class CoreMetricsPopulatorTest {
         JsonNode jsonNode = mapper.readValue(new File("src/test/resources/Core.json"), JsonNode.class);
         map.put("CORE", jsonNode);
         String coreMetricPath = "|Cores|collection|CORE|";
-        CoreMetricsPopulator coreMetricsPopulator = new CoreMetricsPopulator("collection");
+        CoreMetrics coreMetricsPopulator = new CoreMetrics("collection");
         Map<String, Long> coreMetrics = coreMetricsPopulator.populateStats(map);
         Assert.assertTrue(coreMetrics.size() == 3);
         Assert.assertTrue(coreMetrics.containsKey(coreMetricPath + "Number of Docs"));

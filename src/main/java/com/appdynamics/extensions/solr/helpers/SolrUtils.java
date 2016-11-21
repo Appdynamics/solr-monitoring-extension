@@ -15,11 +15,10 @@ import java.util.Locale;
 
 public class SolrUtils {
     private static final double BYTES_CONVERSION_FACTOR = 1024.0;
-    private static final Logger logger = LoggerFactory.getLogger(SolrHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(SolrUtils.class);
 
     public static JsonNode getJsonNode(CloseableHttpResponse response) throws IOException {
         String data = EntityUtils.toString(response.getEntity(), "UTF-8");
-
         return getJsonNode(data);
     }
 
@@ -28,7 +27,6 @@ public class SolrUtils {
             return null;
         }
         ObjectMapper mapper = new ObjectMapper();
-
         return mapper.readValue(data, JsonNode.class);
     }
 
@@ -67,6 +65,7 @@ public class SolrUtils {
                 }
             } catch (Exception e) {
                 // ignore
+                //TODO do logging
             }
             logger.error("Unrecognized string format: " + valueStr);
         }

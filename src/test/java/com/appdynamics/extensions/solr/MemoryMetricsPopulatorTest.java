@@ -1,7 +1,7 @@
 package com.appdynamics.extensions.solr;
 
-import com.appdynamics.extensions.solr.memory.JVMMemoryMetricsPopulator;
-import com.appdynamics.extensions.solr.memory.SystemMemoryMetricsPopulator;
+import com.appdynamics.extensions.solr.memory.JVMMemoryMetrics;
+import com.appdynamics.extensions.solr.memory.SystemMemoryMetrics;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
@@ -28,7 +28,7 @@ public class MemoryMetricsPopulatorTest {
 
     @Test
     public void populateStatsTest_JVMMemoryMetrics() throws IOException {
-        JVMMemoryMetricsPopulator jvmMemoryMetricsPopulator = new JVMMemoryMetricsPopulator(jsonNode, collection);
+        JVMMemoryMetrics jvmMemoryMetricsPopulator = new JVMMemoryMetrics(jsonNode, collection);
         String jvmMemoryMetricPath = "|Cores|Collection|MEMORY|JVM|";
         Map<String, Long> map = jvmMemoryMetricsPopulator.populate();
         Assert.assertTrue(map.size() == 3);
@@ -42,7 +42,7 @@ public class MemoryMetricsPopulatorTest {
 
     @Test
     public void populateStatsTest_SystemMemoryMetrics() throws IOException {
-        SystemMemoryMetricsPopulator systemMemoryMetricsPopulator = new SystemMemoryMetricsPopulator(jsonNode, collection);
+        SystemMemoryMetrics systemMemoryMetricsPopulator = new SystemMemoryMetrics(jsonNode, collection);
         String systemMemoryMetricPath = "|Cores|Collection|MEMORY|System|";
         Map<String, Long> map = systemMemoryMetricsPopulator.populate();
         Assert.assertTrue(map.size() == 7);

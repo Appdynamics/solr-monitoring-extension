@@ -5,23 +5,20 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SystemMemoryMetricsPopulator {
-    private String collection;
+class SystemMemoryMetrics {
+    private String coreName;
     private static final String METRIC_SEPARATOR = "|";
-    private static final Logger logger = LoggerFactory.getLogger(SystemMemoryMetricsPopulator.class);
-    private JsonNode jsonNode;
+    private static final Logger logger = LoggerFactory.getLogger(SystemMemoryMetrics.class);
 
-    public SystemMemoryMetricsPopulator (JsonNode jsonNode, String collection) {
-        this.collection = collection;
-        this.jsonNode = jsonNode;
+    SystemMemoryMetrics(String coreName) {
+        this.coreName = coreName;
     }
 
-    public Map<String, Long> populate () throws IOException {
-        String metricPath = METRIC_SEPARATOR + "Cores" + METRIC_SEPARATOR + collection + METRIC_SEPARATOR + "MEMORY"
+    Map<String, Long> populateStats(JsonNode jsonNode) {
+        String metricPath = METRIC_SEPARATOR + "Cores" + METRIC_SEPARATOR + coreName + METRIC_SEPARATOR + "MEMORY"
                 + METRIC_SEPARATOR;
         String systemPath = metricPath + "System" + METRIC_SEPARATOR;
         Map<String, Long> systemMemoryMetrics = new HashMap<String, Long>();

@@ -1,7 +1,7 @@
 package com.appdynamics.extensions.solr;
 
 import com.appdynamics.extensions.solr.core.Core;
-import com.appdynamics.extensions.solr.core.CoreContextStats;
+import com.appdynamics.extensions.solr.core.CoreContext;
 import com.appdynamics.extensions.yml.YmlReader;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -25,7 +25,7 @@ public class CoreContextStatsTest {
     private CloseableHttpClient httpClient;
     private CloseableHttpResponse httpResponse;
     private BasicHttpEntity entity;
-    private CoreContextStats coreContextStats;
+    private CoreContext coreContextStats;
 
     @Before
     public void setup() throws IOException {
@@ -37,11 +37,12 @@ public class CoreContextStatsTest {
 
         when(httpResponse.getEntity()).thenReturn(entity);
         when(httpClient.execute(Mockito.any(HttpGet.class))).thenReturn(httpResponse);
-        coreContextStats = new CoreContextStats();
+        coreContextStats = new CoreContext();
     }
 
 
     @Test
+    //#TODO fix the test
     public void getCores_whenNoCoresPresent() throws IOException {
         Map<String, ?> config = YmlReader.readFromFile(new File("src/test/resources/conf/config_with_no_cores.yml"));
         List<Core> cores = coreContextStats.getCores(config, httpClient, "dummy_uri");

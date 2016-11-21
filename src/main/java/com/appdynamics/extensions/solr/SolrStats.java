@@ -1,29 +1,8 @@
 package com.appdynamics.extensions.solr;
 
-import com.appdynamics.extensions.conf.MonitorConfiguration;
-import com.appdynamics.extensions.solr.cache.CacheMetricsHandler;
-import com.appdynamics.extensions.solr.core.Core;
-import com.appdynamics.extensions.solr.core.CoreMetricsPopulator;
-import com.appdynamics.extensions.solr.helpers.PingHandlerHelper;
-import com.appdynamics.extensions.solr.helpers.SolrHelper;
-import com.appdynamics.extensions.solr.memory.MemoryMetricsHandler;
-import com.appdynamics.extensions.solr.query.QueryMetricsPopulator;
-import com.appdynamics.extensions.util.MetricWriteHelper;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.singularity.ee.agent.systemagent.api.MetricWriter;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 public class SolrStats {
 
-    private static final Logger logger = LoggerFactory.getLogger(SolrStats.class);
+    /*private static final Logger logger = LoggerFactory.getLogger(SolrStats.class);
     private static final String METRIC_SEPARATOR = "|";
     private static String mbeansUri = "/%s/admin/mbeans?stats=true&wt=json";
     private static String context_root = "/solr";
@@ -71,7 +50,7 @@ public class SolrStats {
                 }
 
                 try {
-                    CoreMetricsPopulator coreMetricsPopulator = new CoreMetricsPopulator(core);
+                    CoreMetrics coreMetricsPopulator = new CoreMetrics(core);
                     solrMetrics.putAll(coreMetricsPopulator.populateStats(solrMBeansHandlersMap));
                 } catch (Exception e) {
                     logger.error("Error Retrieving core Stats for " + core, e);
@@ -79,7 +58,7 @@ public class SolrStats {
 
                 try {
                     for (String handler : coreConfig.getQueryHandlers()) {
-                        QueryMetricsPopulator queryStatsPopulator = new QueryMetricsPopulator(core);
+                        QueryMetrics queryStatsPopulator = new QueryMetrics(core);
                         solrMetrics.putAll(queryStatsPopulator.populateStats(solrMBeansHandlersMap,
                                 handler));
                     }
@@ -88,7 +67,7 @@ public class SolrStats {
                 }
 
                 try {
-                    CacheMetricsHandler cacheMetricsHandler = new CacheMetricsHandler(solrMBeansHandlersMap, core);
+                    CacheMetrics cacheMetricsHandler = new CacheMetrics(solrMBeansHandlersMap, core);
                     solrMetrics.putAll(cacheMetricsHandler.populate());
                 } catch (Exception e) {
                     logger.error("Error Retrieving cache Stats for " + core, e);
@@ -125,5 +104,5 @@ public class SolrStats {
             String metricValue = String.valueOf(entry.getValue());
             metricWriter.printMetric(metricPath, metricValue, aggregation, timeRollup, cluster);
         }
-    }
+    }*/
 }

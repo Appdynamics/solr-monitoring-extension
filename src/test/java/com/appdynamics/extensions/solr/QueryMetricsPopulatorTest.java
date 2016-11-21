@@ -1,6 +1,6 @@
 package com.appdynamics.extensions.solr;
 
-import com.appdynamics.extensions.solr.query.QueryMetricsPopulator;
+import com.appdynamics.extensions.solr.mbeans.QueryMetrics;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
@@ -19,7 +19,7 @@ public class QueryMetricsPopulatorTest {
         JsonNode jsonNode = mapper.readValue(new File("src/test/resources/QueryHandler.json"), JsonNode.class);
         map.put("QUERYHANDLER", jsonNode);
         String queryMetricPath = "|Cores|collection|QUERYHANDLER|/select|";
-        QueryMetricsPopulator queryMetricsPopulator = new QueryMetricsPopulator("collection");
+        QueryMetrics queryMetricsPopulator = new QueryMetrics("collection");
         Map<String, Long> queryMetrics = queryMetricsPopulator.populateStats(map, "/select");
         Assert.assertTrue(queryMetrics.size() == 7);
         Assert.assertTrue(queryMetrics.containsKey(queryMetricPath + "Average Requests Per Minute"));

@@ -1,9 +1,9 @@
 package com.appdynamics.extensions.solr;
 
-import com.appdynamics.extensions.solr.cache.DocumentCacheMetricsPopulator;
-import com.appdynamics.extensions.solr.cache.FieldCacheMetricsPopulator;
-import com.appdynamics.extensions.solr.cache.FilterCacheMetricsPopulator;
-import com.appdynamics.extensions.solr.cache.QueryCacheMetricsPopulator;
+import com.appdynamics.extensions.solr.mbeans.cache.DocumentCacheMetrics;
+import com.appdynamics.extensions.solr.mbeans.cache.FieldCacheMetrics;
+import com.appdynamics.extensions.solr.mbeans.cache.FilterCacheMetrics;
+import com.appdynamics.extensions.solr.mbeans.cache.QueryCacheMetrics;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
@@ -32,8 +32,8 @@ public class CacheMetricsPopulatorTest {
     @Test
     public void populateStatsTest_DocumentCacheMetrics () {
         String documentCacheMetricPath = "|Cores|collection|CACHE|DocumentCache|";
-        DocumentCacheMetricsPopulator documentCacheMetricsPopulator = new DocumentCacheMetricsPopulator(map, collection);
-        Map<String, Long> map = documentCacheMetricsPopulator.populate();
+        DocumentCacheMetrics documentCacheMetricsPopulator = new DocumentCacheMetrics(map, collection);
+        Map<String, Long> map = documentCacheMetricsPopulator.populateStats();
         Assert.assertTrue(map.size() == 3);
         Assert.assertTrue(map.containsKey(documentCacheMetricPath + "HitRatio %"));
         Assert.assertTrue(map.containsKey(documentCacheMetricPath + "CacheSize (Bytes)"));
@@ -46,7 +46,7 @@ public class CacheMetricsPopulatorTest {
     @Test
     public void populateStatsTest_FieldCacheMetrics() {
         String fieldCacheMetricPath = "|Cores|collection|CACHE|FieldValueCache|";
-        FieldCacheMetricsPopulator fieldCacheMetricsPopulator = new FieldCacheMetricsPopulator(map, collection);
+        FieldCacheMetrics fieldCacheMetricsPopulator = new FieldCacheMetrics(map, collection);
         Map<String, Long> map = fieldCacheMetricsPopulator.populate();
         Assert.assertTrue(map.size() == 3);
         Assert.assertTrue(map.containsKey(fieldCacheMetricPath + "HitRatio %"));
@@ -60,7 +60,7 @@ public class CacheMetricsPopulatorTest {
     @Test
     public void populateStatsTest_QueryCacheMetrics() {
         String queryCacheMetricPath = "|Cores|collection|CACHE|QueryResultCache|";
-        QueryCacheMetricsPopulator queryCacheMetricsPopulator = new QueryCacheMetricsPopulator(map, collection);
+        QueryCacheMetrics queryCacheMetricsPopulator = new QueryCacheMetrics(map, collection);
         Map<String, Long> map = queryCacheMetricsPopulator.populate();
         Assert.assertTrue(map.size() == 3);
         Assert.assertTrue(map.containsKey(queryCacheMetricPath + "HitRatio %"));
@@ -74,7 +74,7 @@ public class CacheMetricsPopulatorTest {
     @Test
     public void populateStatsTest_FilterCacheMetrics() {
         String filterCacheMetricPath = "|Cores|collection|CACHE|FilterCache|";
-        FilterCacheMetricsPopulator filterCacheMetricsPopulator = new FilterCacheMetricsPopulator(map, collection);
+        FilterCacheMetrics filterCacheMetricsPopulator = new FilterCacheMetrics(map, collection);
         Map<String, Long> map = filterCacheMetricsPopulator.populate();
         Assert.assertTrue(map.size() == 3);
         Assert.assertTrue(map.containsKey(filterCacheMetricPath + "HitRatio %"));

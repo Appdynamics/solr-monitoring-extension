@@ -1,27 +1,26 @@
-package com.appdynamics.extensions.solr.cache;
+package com.appdynamics.extensions.solr.mbeans.cache;
 
 import com.appdynamics.extensions.solr.helpers.SolrUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class FilterCacheMetricsPopulator {
+class FilterCacheMetrics {
+    private String coreName;
     private static final String METRIC_SEPARATOR = "|";
     private static final int PERCENT_MULTIPLIER = 100;
-    private static final Logger logger = LoggerFactory.getLogger(FilterCacheMetricsPopulator.class);
-    private Map<String, JsonNode> solrMBeansHandlersMap;
-    private String collection;
+    private static final Logger logger = LoggerFactory.getLogger(FilterCacheMetrics.class);
 
-    public FilterCacheMetricsPopulator (Map<String, JsonNode> solrMBeansHandlersMap, String collection) {
-        this.solrMBeansHandlersMap = solrMBeansHandlersMap;
-        this.collection = collection;
+    FilterCacheMetrics(String coreName) {
+        this.coreName = coreName;
     }
 
-    public Map<String, Long> populate() {
+    Map<String, Long> populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
         Map<String, Long> filterCacheMetrics = new HashMap<String, Long>();
-        String metricPath = METRIC_SEPARATOR + "Cores" + METRIC_SEPARATOR + collection + METRIC_SEPARATOR + "CACHE" +
+        String metricPath = METRIC_SEPARATOR + "Cores" + METRIC_SEPARATOR + coreName + METRIC_SEPARATOR + "CACHE" +
                 METRIC_SEPARATOR;
         String filterCachePath = metricPath + "FilterCache" + METRIC_SEPARATOR;
         JsonNode cacheNode = solrMBeansHandlersMap.get("CACHE");
