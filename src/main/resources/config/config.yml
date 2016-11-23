@@ -1,8 +1,8 @@
 #prefix used to show up metrics in AppDynamics
-#metricPrefix: "Custom Metrics|Solr"
+metricPrefix: "Custom Metrics|Solr"
 
 #This will create it in specific Tier. Replace <TIER_ID>
-metricPrefix: "Server|Component:13|Custom Metrics|Solr Monitor|"
+#metricPrefix: "Server|Component:<TierID>|Custom Metrics|Solr Monitor|"
 
 servers:
    - host: "localhost"
