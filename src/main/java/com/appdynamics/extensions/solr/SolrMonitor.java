@@ -75,8 +75,7 @@ public class SolrMonitor extends AManagedMonitor {
                 }
             }
             else {
-                //TODO this error message doesn't make sense.
-                logger.error("The stats read from the metric xml is empty. Please make sure that the metrics xml is correct");
+                logger.error("Error encountered while running the Solr Monitoring task");
             }
         }
     }

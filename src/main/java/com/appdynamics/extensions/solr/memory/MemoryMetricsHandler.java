@@ -4,6 +4,7 @@ import com.appdynamics.extensions.solr.core.Core;
 import com.appdynamics.extensions.solr.helpers.HttpHelper;
 import com.appdynamics.extensions.solr.helpers.SolrUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -22,6 +23,7 @@ public class MemoryMetricsHandler {
         this.httpClient = httpClient;
     }
 
+
     public Map<String, Long> populateStats(Core core, String contextRoot, String serverUrl) {
         Map<String, Long> memoryMetrics = Maps.newHashMap();
         try{
@@ -36,7 +38,7 @@ public class MemoryMetricsHandler {
         return memoryMetrics;
     }
 
-    JsonNode getData(Core core,String url){
+    private JsonNode getData(Core core,String url){
         CloseableHttpResponse response = null;
         JsonNode jsonNode = null;
         try {

@@ -21,7 +21,7 @@ import java.util.Map;
 
 public class MBeansHandler {
 
-    CloseableHttpClient httpClient;
+    private CloseableHttpClient httpClient;
     private static String MBEANS_PATH = "/%s/admin/mbeans?stats=true&wt=json";
     private static final Logger logger = LoggerFactory.getLogger(MBeansHandler.class);
 
@@ -31,8 +31,8 @@ public class MBeansHandler {
 
     public Map<String, Long> populateStats(Core core, String contextRoot, String serverUrl) {
         Map<String,Long> mBeansMetrics = Maps.newHashMap();
-        String url = buildUrl(core,contextRoot,serverUrl);
-        Map<String, JsonNode> solrStatsMap = buildSolrMBeansMap(core,url);
+        String url = buildUrl(core, contextRoot, serverUrl);
+        Map<String, JsonNode> solrStatsMap = buildSolrMBeansMap(core, url);
         //core metrics
         mBeansMetrics.putAll(new CoreMetrics(core.getName()).populateStats(solrStatsMap));
         //query metrics
@@ -44,12 +44,12 @@ public class MBeansHandler {
         return mBeansMetrics;
     }
 
-    Map<String,JsonNode> buildSolrMBeansMap(Core core,String url){
+    private Map<String,JsonNode> buildSolrMBeansMap(Core core,String url){
         CloseableHttpResponse response = null;
         Map<String, JsonNode> solrStatsMap = null;
         try {
             logger.debug("fetching solr mbean handler map from {}",url);
-            response = HttpHelper.doGet(httpClient,url);
+            response = HttpHelper.doGet(httpClient, url);
             solrStatsMap = parseResponse(core, response);
         } catch (Exception e) {
             logger.error("Unable to get solr mbean handler map.", e.getMessage());
@@ -94,5 +94,4 @@ public class MBeansHandler {
         url.append(contextRoot).append(String.format(MBEANS_PATH, core.getName()));
         return url.toString();
     }
-
 }

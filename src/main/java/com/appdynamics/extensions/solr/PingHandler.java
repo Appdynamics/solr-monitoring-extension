@@ -1,10 +1,10 @@
 package com.appdynamics.extensions.solr;
 
-
 import com.appdynamics.extensions.solr.core.Core;
 import com.appdynamics.extensions.solr.helpers.HttpHelper;
 import com.appdynamics.extensions.solr.helpers.SolrUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -14,27 +14,26 @@ import org.slf4j.LoggerFactory;
 
 class PingHandler {
 
-    CloseableHttpClient httpClient;
+    private CloseableHttpClient httpClient;
     static final Long ONE = new Long(1);
     static final Long ZERO = new Long(0);
 
     private static final String PING_STATUS = "Ping Status";
     private static final Logger logger = LoggerFactory.getLogger(PingHandler.class);
 
-
-    PingHandler(CloseableHttpClient httpClient) {
+    PingHandler (CloseableHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
-    boolean isReachable(Core core, String contextRoot, String serverUrl) {
-        if(Strings.isNullOrEmpty(core.getPingHandler())){
+    boolean isReachable (Core core, String contextRoot, String serverUrl) {
+        if (Strings.isNullOrEmpty(core.getPingHandler())) {
             return false;
         }
-        String url = buildUrl(core,contextRoot,serverUrl);
-        logger.debug("get ping handler status from {}",url);
+        String url = buildUrl(core, contextRoot, serverUrl);
+        logger.debug("get ping handler status from {}", url);
         CloseableHttpResponse response = null;
         try {
-            response = HttpHelper.doGet(httpClient,url);
+            response = HttpHelper.doGet(httpClient, url);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 JsonNode pingResponseNode = SolrUtils.getJsonNode(response);
                 if (pingResponseNode != null && "OK".equals(pingResponseNode.path("status").asText())) {
@@ -49,13 +48,13 @@ class PingHandler {
         return false;
     }
 
-    private String buildUrl(Core core, String contextRoot, String serverUrl){
+    private String buildUrl (Core core, String contextRoot, String serverUrl) {
         StringBuilder url = new StringBuilder(serverUrl);
         url.append(contextRoot).append(core.getName()).append(core.getPingHandler()).append("?wt=json");
         return url.toString();
     }
 
-    String getPingStatus(Core core) {
+    String getPingStatus (Core core) {
         return "|" + "Cores" + "|" + core.getName() + "|" + PING_STATUS;
     }
 }

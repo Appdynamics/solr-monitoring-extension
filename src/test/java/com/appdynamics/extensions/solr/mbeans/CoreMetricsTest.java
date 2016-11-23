@@ -1,4 +1,4 @@
-package com.appdynamics.extensions.solr;
+package com.appdynamics.extensions.solr.mbeans;
 
 
 import com.appdynamics.extensions.solr.mbeans.CoreMetrics;
@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CoreMetricsPopulatorTest {
+public class CoreMetricsTest {
 
     @Test
     public void populateStatsTest() throws IOException {
@@ -30,6 +30,5 @@ public class CoreMetricsPopulatorTest {
         Assert.assertTrue(coreMetrics.get(coreMetricPath + "Number of Docs").equals(new Long("0")));
         Assert.assertTrue(coreMetrics.get(coreMetricPath + "Deleted Docs").equals(new Long("0")));
         Assert.assertTrue(coreMetrics.get(coreMetricPath + "Max Docs").equals(new Long("0")));
-
     }
 }

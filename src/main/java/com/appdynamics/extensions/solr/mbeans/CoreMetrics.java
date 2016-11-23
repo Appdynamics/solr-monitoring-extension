@@ -34,7 +34,6 @@ class CoreMetrics {
         this.coreName = coreName;
     }
 
-
     Map<String, Long> populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
         Map<String, Long> coreMetrics = new HashMap<String, Long>();
         try {

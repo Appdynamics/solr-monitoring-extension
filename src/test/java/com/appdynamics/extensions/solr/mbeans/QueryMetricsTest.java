@@ -1,4 +1,5 @@
-package com.appdynamics.extensions.solr;
+
+package com.appdynamics.extensions.solr.mbeans;
 
 import com.appdynamics.extensions.solr.mbeans.QueryMetrics;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -11,7 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class QueryMetricsPopulatorTest {
+public class QueryMetricsTest {
     @Test
     public void populateStatsTest() throws IOException {
         Map<String, JsonNode> map = new HashMap<String, JsonNode>();
@@ -39,3 +40,4 @@ public class QueryMetricsPopulatorTest {
         Assert.assertTrue(queryMetrics.get(queryMetricPath + "Requests").equals(new Long("4607182418800017408")));
     }
 }
+

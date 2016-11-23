@@ -17,12 +17,12 @@ public class SolrUtils {
     private static final double BYTES_CONVERSION_FACTOR = 1024.0;
     private static final Logger logger = LoggerFactory.getLogger(SolrUtils.class);
 
-    public static JsonNode getJsonNode(CloseableHttpResponse response) throws IOException {
+    public static JsonNode getJsonNode (CloseableHttpResponse response) throws IOException {
         String data = EntityUtils.toString(response.getEntity(), "UTF-8");
         return getJsonNode(data);
     }
 
-    private static JsonNode getJsonNode(String data) throws IOException {
+    private static JsonNode getJsonNode (String data) throws IOException {
         if (data == null) {
             return null;
         }
@@ -36,7 +36,7 @@ public class SolrUtils {
      * @param d
      * @return
      */
-    public static double convertBytesToMB(Double d) {
+    public static double convertBytesToMB (Double d) {
         if (d != null) {
             d = d / (BYTES_CONVERSION_FACTOR * BYTES_CONVERSION_FACTOR);
         }
@@ -49,7 +49,7 @@ public class SolrUtils {
      * @param valueStr
      * @return
      */
-    public static Double convertMemoryStringToDouble(String valueStr) {
+    public static Double convertMemoryStringToDouble (String valueStr) {
         if (!Strings.isNullOrEmpty(valueStr)) {
             String strippedValueStr = null;
             try {
@@ -64,15 +64,13 @@ public class SolrUtils {
                     return unLocalizeStrValue(strippedValueStr) * BYTES_CONVERSION_FACTOR;
                 }
             } catch (Exception e) {
-                // ignore
-                //TODO do logging
+                logger.error("Unrecognized string format: " + valueStr);
             }
-            logger.error("Unrecognized string format: " + valueStr);
         }
         return null;
     }
 
-    private static Double unLocalizeStrValue(String valueStr) {
+    private static Double unLocalizeStrValue (String valueStr) {
         try {
             Locale loc = Locale.getDefault();
             return Double.valueOf(NumberFormat.getInstance(loc).parse(valueStr).doubleValue());
@@ -82,7 +80,7 @@ public class SolrUtils {
         return null;
     }
 
-    public static Double multipyBy(Double value, int multiplier) {
+    public static Double multipyBy (Double value, int multiplier) {
         if (value != null) {
             value = value * multiplier;
         }

@@ -1,4 +1,4 @@
-package com.appdynamics.extensions.solr;
+package com.appdynamics.extensions.solr.memory;
 
 import com.appdynamics.extensions.solr.memory.JVMMemoryMetrics;
 import com.appdynamics.extensions.solr.memory.SystemMemoryMetrics;
@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * Created by adityajagtiani on 11/8/16.
  */
-public class MemoryMetricsPopulatorTest {
+public class MemoryMetricsTest {
     private JsonNode jsonNode;
     private String collection;
 
@@ -28,9 +28,9 @@ public class MemoryMetricsPopulatorTest {
 
     @Test
     public void populateStatsTest_JVMMemoryMetrics() throws IOException {
-        JVMMemoryMetrics jvmMemoryMetricsPopulator = new JVMMemoryMetrics(jsonNode, collection);
+        JVMMemoryMetrics jvmMemoryMetricsPopulator = new JVMMemoryMetrics(collection);
         String jvmMemoryMetricPath = "|Cores|Collection|MEMORY|JVM|";
-        Map<String, Long> map = jvmMemoryMetricsPopulator.populate();
+        Map<String, Long> map = jvmMemoryMetricsPopulator.populateStats(jsonNode);
         Assert.assertTrue(map.size() == 3);
         Assert.assertTrue(map.containsKey(jvmMemoryMetricPath + "Total (MB)"));
         Assert.assertTrue(map.containsKey(jvmMemoryMetricPath + "Used (MB)"));
@@ -42,9 +42,9 @@ public class MemoryMetricsPopulatorTest {
 
     @Test
     public void populateStatsTest_SystemMemoryMetrics() throws IOException {
-        SystemMemoryMetrics systemMemoryMetricsPopulator = new SystemMemoryMetrics(jsonNode, collection);
+        SystemMemoryMetrics systemMemoryMetricsPopulator = new SystemMemoryMetrics(collection);
         String systemMemoryMetricPath = "|Cores|Collection|MEMORY|System|";
-        Map<String, Long> map = systemMemoryMetricsPopulator.populate();
+        Map<String, Long> map = systemMemoryMetricsPopulator.populateStats(jsonNode);
         Assert.assertTrue(map.size() == 7);
         Assert.assertTrue(map.containsKey(systemMemoryMetricPath + "Committed Virtual memory (MB)"));
         Assert.assertTrue(map.containsKey(systemMemoryMetricPath + "Total Physical memory (MB)"));

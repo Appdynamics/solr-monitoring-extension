@@ -8,18 +8,17 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-class DocumentCacheMetrics {
+public class DocumentCacheMetrics {
     private String coreName;
     private static final String METRIC_SEPARATOR = "|";
     private static final int PERCENT_MULTIPLIER = 100;
     private static final Logger logger = LoggerFactory.getLogger(DocumentCacheMetrics.class);
 
-
-    DocumentCacheMetrics(String coreName) {
+    public DocumentCacheMetrics(String coreName) {
         this.coreName = coreName;
     }
 
-    Map<String, Long> populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
+    public Map<String, Long> populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
         Map<String, Long> documentCacheMetrics = new HashMap<String, Long>();
         String metricPath = METRIC_SEPARATOR + "Cores" + METRIC_SEPARATOR + coreName + METRIC_SEPARATOR + "CACHE" +
                 METRIC_SEPARATOR;

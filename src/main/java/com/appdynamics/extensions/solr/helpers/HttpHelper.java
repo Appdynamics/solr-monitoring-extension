@@ -25,15 +25,13 @@ public class HttpHelper {
         return response;
     }
 
-    public static void closeHttpResponse(CloseableHttpResponse response){
+    public static void closeHttpResponse (CloseableHttpResponse response) {
         try {
-            if(response != null) {
+            if (response != null) {
                 response.close();
             }
         } catch (IOException e) {
             logger.error("Error encountered while fetching an HTTP response");
         }
     }
-
-
 }

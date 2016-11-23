@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 class PluginsVerifier {
 
-    CloseableHttpClient httpClient;
+    private CloseableHttpClient httpClient;
     private static String PLUGINS_PATH = "/%s/admin/plugins?wt=json";
     private static final Logger logger = LoggerFactory.getLogger(PluginsVerifier.class);
 
@@ -25,7 +25,7 @@ class PluginsVerifier {
         CloseableHttpResponse response = null;
         boolean mbeanSupport = false;
         try {
-            logger.debug("checking if plugins are enabled from {}",url);
+            logger.debug("Checking if plugins are enabled from {}",url);
             response = HttpHelper.doGet(httpClient,url);
             JsonNode jsonNode = SolrUtils.getJsonNode(response);
             if (jsonNode != null) {
@@ -51,7 +51,7 @@ class PluginsVerifier {
         return mbeanSupport;
     }
 
-    private String buildUrl(Core core, String contextRoot, String serverUrl){
+    String buildUrl(Core core, String contextRoot, String serverUrl){
         StringBuilder url = new StringBuilder(serverUrl);
         url.append(contextRoot).append(String.format(PLUGINS_PATH, core.getName()));
         return url.toString();

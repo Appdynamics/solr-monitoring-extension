@@ -8,17 +8,17 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
-class FieldCacheMetrics {
+public class FieldCacheMetrics {
     private String coreName;
     private static final String METRIC_SEPARATOR = "|";
     private static final int PERCENT_MULTIPLIER = 100;
     private static final Logger logger = LoggerFactory.getLogger(FieldCacheMetrics.class);
 
-    FieldCacheMetrics(String coreName) {
+    public FieldCacheMetrics(String coreName) {
         this.coreName = coreName;
     }
 
-    Map<String, Long> populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
+    public Map<String, Long> populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
         String metricPath = METRIC_SEPARATOR + "Cores" + METRIC_SEPARATOR + coreName + METRIC_SEPARATOR + "CACHE" +
                 METRIC_SEPARATOR;
         String fieldCachePath = metricPath + "FieldValueCache" + METRIC_SEPARATOR;
