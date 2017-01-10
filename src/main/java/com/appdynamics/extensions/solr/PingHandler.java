@@ -50,7 +50,7 @@ class PingHandler {
 
     private String buildUrl (Core core, String contextRoot, String serverUrl) {
         StringBuilder url = new StringBuilder(serverUrl);
-        url.append(contextRoot).append(core.getName()).append(core.getPingHandler()).append("?wt=json");
+        url.append(contextRoot).append('/').append(core.getName()).append(core.getPingHandler()).append("?wt=json");
         return url.toString();
     }
 
