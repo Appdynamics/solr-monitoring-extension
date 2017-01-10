@@ -41,7 +41,7 @@ class SystemMemoryMetrics {
                 systemMemoryMetrics.put(systemPath + "Max File Descriptor Count", SolrUtils.convertDoubleToLong(memoryMBeansNode.path
                         ("maxFileDescriptorCount").asDouble()));
             } else {
-                logger.error("Missing json node while retrieving system memory stats");
+                logger.error("Missing json context while retrieving system memory stats");
             }
         }
         return systemMemoryMetrics;

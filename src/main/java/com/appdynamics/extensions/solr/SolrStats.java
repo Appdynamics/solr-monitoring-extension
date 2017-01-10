@@ -13,7 +13,7 @@ import java.util.Map;
 class SolrStats {
     private CloseableHttpClient httpClient;
     private String serverUrl;
-    private String contextRoot = "/solr/";
+    private String contextRoot = "/solr";
 
     SolrStats (Map server, String contextRoot, CloseableHttpClient httpClient) {
         this.httpClient = httpClient;

@@ -80,7 +80,7 @@ public class MBeansHandler {
         if (jsonNode != null) {
             JsonNode solrMBeansNode = jsonNode.path("solr-mbeans");
             if (solrMBeansNode.isMissingNode()) {
-                throw new IllegalArgumentException("Missing node while parsing solr-mbeans node json string for core " + core.getName());
+                throw new IllegalArgumentException("Missing context while parsing solr-mbeans context json string for core " + core.getName());
             }
             for (int i = 1; i <= solrMBeansNode.size(); i += 2) {
                 solrStatsMap.put(solrMBeansNode.get(i - 1).asText(), solrMBeansNode.get(i));

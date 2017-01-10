@@ -19,7 +19,7 @@ public class CoreContext {
     private CloseableHttpClient httpClient;
     private String contextRoot;
     private Map server;
-    private static final String SOLR_CONTEXT_ROOT = "/solr/";
+    private static final String SOLR_CONTEXT_ROOT = "/solr";
     private static final Logger logger = LoggerFactory.getLogger(CoreContext.class);
     private static final String CORE_URI = "/admin/cores?action=STATUS&wt=json";
 

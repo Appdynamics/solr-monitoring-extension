@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.appdynamics.extensions</groupId>
     <artifactId>solr-monitoring-extension</artifactId>
-    <version>1.1.0</version>
+    <version>1.0.9</version>
     <packaging>jar</packaging>
     <name>solr-monitoring-extension</name>
     <url>http://maven.apache.org</url>
