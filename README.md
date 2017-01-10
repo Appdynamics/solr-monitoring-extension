@@ -1,4 +1,4 @@
-# AppDynamics Solr Monitoring Extension
+# AppDynamics Monitoring Extension for use with Solr
 
 ##Use Case
 
