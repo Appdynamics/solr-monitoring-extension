@@ -23,6 +23,26 @@ This extension requires an AppDynamics Java Machine Agent installed and running.
 
 In the AppDynamics Metric Browser, look for: Application Infrastructure Performance  | \<Tier\> | Custom Metrics | Solr for default metric-path.
 
+##Smart Dashboards
+We now provide new, smart dashboards with this extension. These dashboards can be configured by users to include metrics at any level along the metric tree hierarchy. Metrics can be displayed in a number of different charts and graphs.  
+
+The following is an example of the new smart dashboards for this extension:
+
+<P><A href="https://cloud.githubusercontent.com/assets/21226110/23718607/f5cdfa68-03ec-11e7-8f25-44990d3facc1.png"><IMG style="max-width: 100%;" src="https://cloud.githubusercontent.com/assets/21226110/23718607/f5cdfa68-03ec-11e7-8f25-44990d3facc1.png" border="0" alt="" /></A></P>
+
+Please run the following command to start the process
+
+```
+java -jar smart-dashboard-(version).jar
+ 
+ Replace the (version) with the version that you see in the directory where you unzipped smart-dashboard-webspheremq.zip.
+ 
+```
+
+If the dashboard needs to be modified, please refer to [this](https://github.com/abeytom/smart-dashboard/blob/master/README.md) page for detailed documentation, instructions and screenshots of the various chart types available. 
+
+
+
 ##Configuration
 Note : Please make sure to not use tab (\t) while editing yaml files. You may want to validate the yaml file using a [yaml validator](http://yamllint.com/)
 
