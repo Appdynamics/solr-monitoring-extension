@@ -34,7 +34,7 @@ public class SolrMonitor extends AManagedMonitor {
     private static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
     private MonitorConfiguration configuration;
     public SolrMonitor () {
-        logger.info("Using SolrMonitor Version [%s]", getImplementationVersion());
+        logger.info("Using SolrMonitor Version ["+ getImplementationVersion() +"]");
     }
 
     protected void initialize(Map<String, String> argsMap) {
