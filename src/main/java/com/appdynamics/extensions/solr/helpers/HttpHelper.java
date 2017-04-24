@@ -12,7 +12,7 @@ public class HttpHelper {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpHelper.class);
 
-    public static CloseableHttpResponse doGet (CloseableHttpClient httpClient, String uri) {
+    public static CloseableHttpResponse doGet(CloseableHttpClient httpClient, String uri) {
         CloseableHttpResponse response;
         try {
             HttpGet get = new HttpGet(uri);
@@ -25,7 +25,7 @@ public class HttpHelper {
         return response;
     }
 
-    public static void closeHttpResponse (CloseableHttpResponse response) {
+    public static void closeHttpResponse(CloseableHttpResponse response) {
         try {
             if (response != null) {
                 response.close();

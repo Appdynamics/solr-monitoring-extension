@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,13 +23,13 @@ public class CoreMetricsTest {
         map.put("CORE", jsonNode);
         String coreMetricPath = "|Cores|collection|CORE|";
         CoreMetrics coreMetricsPopulator = new CoreMetrics("collection");
-        Map<String, Long> coreMetrics = coreMetricsPopulator.populateStats(map);
+        Map<String, BigDecimal> coreMetrics = coreMetricsPopulator.populateStats(map);
         Assert.assertTrue(coreMetrics.size() == 3);
         Assert.assertTrue(coreMetrics.containsKey(coreMetricPath + "Number of Docs"));
         Assert.assertTrue(coreMetrics.containsKey(coreMetricPath + "Deleted Docs"));
         Assert.assertTrue(coreMetrics.containsKey(coreMetricPath + "Max Docs"));
-        Assert.assertTrue(coreMetrics.get(coreMetricPath + "Number of Docs").equals(new Long("0")));
-        Assert.assertTrue(coreMetrics.get(coreMetricPath + "Deleted Docs").equals(new Long("0")));
-        Assert.assertTrue(coreMetrics.get(coreMetricPath + "Max Docs").equals(new Long("0")));
+        Assert.assertTrue(coreMetrics.get(coreMetricPath + "Number of Docs").equals(new BigDecimal("0")));
+        Assert.assertTrue(coreMetrics.get(coreMetricPath + "Deleted Docs").equals(new BigDecimal("0")));
+        Assert.assertTrue(coreMetrics.get(coreMetricPath + "Max Docs").equals(new BigDecimal("0")));
     }
 }

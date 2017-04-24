@@ -1,12 +1,12 @@
 /**
  * Copyright 2016 AppDynamics, Inc.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,12 +33,13 @@ import java.util.Map;
 public class SolrMonitor extends AManagedMonitor {
     private static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
     private MonitorConfiguration configuration;
-    public SolrMonitor () {
-        logger.info("Using SolrMonitor Version ["+ getImplementationVersion() +"]");
+
+    public SolrMonitor() {
+        logger.info("Using SolrMonitor Version [" + getImplementationVersion() + "]");
     }
 
     protected void initialize(Map<String, String> argsMap) {
-        if(configuration == null) {
+        if (configuration == null) {
             MetricWriteHelper metricWriter = MetricWriteHelperFactory.create(this);
             MonitorConfiguration conf = new MonitorConfiguration("Custom Metrics|Solr|", new TaskRunner(), metricWriter);
             final String configFilePath = argsMap.get("config-file");
@@ -49,14 +50,13 @@ public class SolrMonitor extends AManagedMonitor {
         }
     }
 
-    public TaskOutput execute (Map<String, String> map, TaskExecutionContext taskExecutionContext) throws TaskExecutionException {
+    public TaskOutput execute(Map<String, String> map, TaskExecutionContext taskExecutionContext) throws TaskExecutionException {
         logger.debug("The raw arguments are {}", map);
         try {
             initialize(map);
             configuration.executeTask();
-        }
-        catch(Exception ex) {
-            if(configuration != null && configuration.getMetricWriter() != null) {
+        } catch (Exception ex) {
+            if (configuration != null && configuration.getMetricWriter() != null) {
                 configuration.getMetricWriter().registerError(ex.getMessage(), ex);
             }
         }
@@ -65,16 +65,15 @@ public class SolrMonitor extends AManagedMonitor {
 
     private class TaskRunner implements Runnable {
 
-        public void run () {
+        public void run() {
             Map<String, ?> config = configuration.getConfigYml();
             List<Map> servers = (List) config.get("servers");
-            if(servers != null && !servers.isEmpty()) {
-                for(Map server : servers) {
+            if (servers != null && !servers.isEmpty()) {
+                for (Map server : servers) {
                     SolrMonitorTask task = new SolrMonitorTask(configuration, server);
                     configuration.getExecutorService().execute(task);
                 }
-            }
-            else {
+            } else {
                 logger.error("Error encountered while running the Solr Monitoring task");
             }
         }
@@ -84,10 +83,10 @@ public class SolrMonitor extends AManagedMonitor {
         return SolrMonitor.class.getPackage().getImplementationVersion();
     }
 
-    public static void main(String [] args) throws TaskExecutionException {
+    public static void main(String[] args) throws TaskExecutionException {
         SolrMonitor solrMonitor = new SolrMonitor();
         Map<String, String> argsMap = new HashMap<String, String>();
-        argsMap.put("config-file", "/Users/adityajagtiani/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/config.yml");
+        argsMap.put("config-file", "/Users/aditya.jagtiani/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/config.yml");
         solrMonitor.execute(argsMap, null);
     }
 }

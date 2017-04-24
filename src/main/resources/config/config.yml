@@ -41,7 +41,7 @@ servers:
 cores:
    - name: "gettingstarted"
      pingHandler: "/admin/ping"
-     queryHandlers: ["/select", "/update"]
+     queryHandlers: ["/select", "/get"]
 
 numberOfThreads: 5
 

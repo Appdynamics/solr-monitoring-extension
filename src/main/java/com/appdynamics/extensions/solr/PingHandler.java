@@ -12,20 +12,22 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+
 class PingHandler {
 
     private CloseableHttpClient httpClient;
-    static final Long ONE = new Long(1);
-    static final Long ZERO = new Long(0);
+    static final BigDecimal ONE = BigDecimal.ONE;
+    static final BigDecimal ZERO = BigDecimal.ZERO;
 
     private static final String PING_STATUS = "Ping Status";
     private static final Logger logger = LoggerFactory.getLogger(PingHandler.class);
 
-    PingHandler (CloseableHttpClient httpClient) {
+    PingHandler(CloseableHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
-    boolean isReachable (Core core, String contextRoot, String serverUrl) {
+    boolean isReachable(Core core, String contextRoot, String serverUrl) {
         if (Strings.isNullOrEmpty(core.getPingHandler())) {
             return false;
         }
@@ -48,13 +50,13 @@ class PingHandler {
         return false;
     }
 
-    private String buildUrl (Core core, String contextRoot, String serverUrl) {
+    private String buildUrl(Core core, String contextRoot, String serverUrl) {
         StringBuilder url = new StringBuilder(serverUrl);
         url.append(contextRoot).append('/').append(core.getName()).append(core.getPingHandler()).append("?wt=json");
         return url.toString();
     }
 
-    String getPingStatus (Core core) {
+    String getPingStatus(Core core) {
         return "|" + "Cores" + "|" + core.getName() + "|" + PING_STATUS;
     }
 }

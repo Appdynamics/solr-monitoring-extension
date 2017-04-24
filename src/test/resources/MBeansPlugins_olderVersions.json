@@ -1,10 +1,16 @@
 {
   "responseHeader":{
     "status":0,
-    "QTime":0
+    "QTime":1
   },
   "plugins":{
     "CORE":{
+      "Searcher@53746503[gettingstarted_shard2_replica2] main":{
+        "name":"org.apache.solr.search.SolrIndexSearcher",
+        "version":"1.0",
+        "description":"index searcher",
+        "source":"Not Declared"
+      },
       "searcher":{
         "name":"org.apache.solr.search.SolrIndexSearcher",
         "version":"1.0",
@@ -12,15 +18,9 @@
         "source":"Not Declared"
       },
       "core":{
-        "name":"gettingstarted_shard2_replica1",
+        "name":"gettingstarted_shard2_replica2",
         "version":"1.0",
         "description":"SolrCore",
-        "source":"Not Declared"
-      },
-      "Searcher@7e62078d[gettingstarted_shard2_replica1] main":{
-        "name":"org.apache.solr.search.SolrIndexSearcher",
-        "version":"1.0",
-        "description":"index searcher",
         "source":"Not Declared"
       }
     },
@@ -55,7 +55,7 @@
       "/select":{
         "name":"org.apache.solr.handler.component.SearchHandler",
         "version":"6.2.1",
-        "description":"Search using components: query,facet,facet_module,mlt,highlight,stats,expand,terms,debug,",
+        "description":"Search using components: ",
         "source":"Not Declared"
       },
       "/admin/segments":{
@@ -197,7 +197,7 @@
       "perSegFilter":{
         "name":"org.apache.solr.search.LRUCache",
         "version":"1.0",
-        "description":"LRU Cache(maxSize=10, initialSize=0, autowarmCount=10, regenerator=org.apache.solr.search.NoOpRegenerator@59756d3c)",
+        "description":"LRU Cache(maxSize=10, initialSize=0, autowarmCount=10, regenerator=org.apache.solr.search.NoOpRegenerator@134a88f9)",
         "source":"Not Declared"
       },
       "queryResultCache":{

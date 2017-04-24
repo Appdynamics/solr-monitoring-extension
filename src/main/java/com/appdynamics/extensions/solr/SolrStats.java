@@ -7,6 +7,8 @@ import com.appdynamics.extensions.solr.mbeans.MBeansHandler;
 import com.appdynamics.extensions.solr.memory.MemoryMetricsHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,14 +17,14 @@ class SolrStats {
     private String serverUrl;
     private String contextRoot = "/solr";
 
-    SolrStats (Map server, String contextRoot, CloseableHttpClient httpClient) {
+    SolrStats(Map server, String contextRoot, CloseableHttpClient httpClient) {
         this.httpClient = httpClient;
         this.contextRoot = contextRoot;
         this.serverUrl = UrlBuilder.fromYmlServerConfig(server).build();
     }
 
-    Map<String, Long> populateStats (Core core) {
-        Map<String, Long> solrMetrics = new HashMap<String, Long>();
+    Map<String, BigDecimal> populateStats(Core core) throws IOException{
+        Map<String, BigDecimal> solrMetrics = new HashMap<String, BigDecimal>();
         PingHandler pingHandler = new PingHandler(httpClient);
         if (pingHandler.isReachable(core, contextRoot, serverUrl)) {
             solrMetrics.put(pingHandler.getPingStatus(core), PingHandler.ONE);

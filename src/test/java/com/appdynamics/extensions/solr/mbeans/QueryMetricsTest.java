@@ -1,4 +1,3 @@
-
 package com.appdynamics.extensions.solr.mbeans;
 
 import com.appdynamics.extensions.solr.mbeans.QueryMetrics;
@@ -9,6 +8,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +21,7 @@ public class QueryMetricsTest {
         map.put("QUERYHANDLER", jsonNode);
         String queryMetricPath = "|Cores|collection|QUERYHANDLER|/select|";
         QueryMetrics queryMetricsPopulator = new QueryMetrics("collection");
-        Map<String, Long> queryMetrics = queryMetricsPopulator.populateStats(map, "/select");
+        Map<String, BigDecimal> queryMetrics = queryMetricsPopulator.populateStats(map, "/select");
         Assert.assertTrue(queryMetrics.size() == 7);
         Assert.assertTrue(queryMetrics.containsKey(queryMetricPath + "Average Requests Per Minute"));
         Assert.assertTrue(queryMetrics.containsKey(queryMetricPath + "Average Requests Per Second"));
@@ -31,13 +31,12 @@ public class QueryMetricsTest {
         Assert.assertTrue(queryMetrics.containsKey(queryMetricPath + "Average Time Per Request (milliseconds)"));
         Assert.assertTrue(queryMetrics.containsKey(queryMetricPath + "Requests"));
 
-        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Average Requests Per Minute").equals(new Long(0)));
-        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Average Requests Per Second").equals(new Long(0)));
-        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Errors").equals(new Long(0)));
-        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Timeouts").equals(new Long(0)));
-        Assert.assertTrue(queryMetrics.get(queryMetricPath + "5 min Rate Requests Per Minute").equals(new Long(0)));
-        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Average Time Per Request (milliseconds)").equals(new Long("4630967054332067840")));
-        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Requests").equals(new Long("4607182418800017408")));
+        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Average Requests Per Minute").equals(new BigDecimal("0")));
+        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Average Requests Per Second").equals(new BigDecimal("0")));
+        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Errors").equals(new BigDecimal("0")));
+        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Timeouts").equals(new BigDecimal("0")));
+        Assert.assertTrue(queryMetrics.get(queryMetricPath + "5 min Rate Requests Per Minute").equals(new BigDecimal("0")));
+        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Average Time Per Request (milliseconds)").equals(new BigDecimal("41")));
+        Assert.assertTrue(queryMetrics.get(queryMetricPath + "Requests").equals(new BigDecimal("1")));
     }
 }
-

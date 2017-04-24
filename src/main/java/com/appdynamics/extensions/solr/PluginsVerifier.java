@@ -10,6 +10,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 class PluginsVerifier {
 
     private CloseableHttpClient httpClient;
@@ -20,18 +22,23 @@ class PluginsVerifier {
         this.httpClient = httpClient;
     }
 
-    boolean arePluginsEnabled(Core core, String contextRoot,String serverUrl) {
-        String url = buildUrl(core,contextRoot,serverUrl);
+    boolean arePluginsEnabled(Core core, String contextRoot, String serverUrl) throws IOException {
+        String url = buildUrl(core, contextRoot, serverUrl);
         CloseableHttpResponse response = null;
+        JsonNode node = null;
         boolean mbeanSupport = false;
         try {
-            logger.debug("Checking if plugins are enabled from {}",url);
-            response = HttpHelper.doGet(httpClient,url);
+            logger.debug("Checking if plugins are enabled from {}", url);
+            response = HttpHelper.doGet(httpClient, url);
             JsonNode jsonNode = SolrUtils.getJsonNode(response);
             if (jsonNode != null) {
-                JsonNode node = jsonNode.findValue("QUERYHANDLER");
+                if (jsonNode.findValue("ADMIN") != null) {
+                    node = jsonNode.findValue("ADMIN");
+                } else if (jsonNode.findValue("QUERYHANDLER") != null) {
+                    node = jsonNode.findValue("QUERYHANDLER");
+                }
                 if (node == null) {
-                    logger.error("Missing 'QUERYHANDLER' while parsing response");
+                    logger.error("Missing 'ADMIN' or 'QUERYHANDLER' while parsing response");
                     return false;
                 }
                 mbeanSupport = node.has("/admin/mbeans");
@@ -44,14 +51,14 @@ class PluginsVerifier {
                 return false;
             }
         } catch (Exception e) {
-            logger.error("Could not connect to core to check plugins availability.", e.getMessage());
+            logger.error("Could not connect to core to check plugins availability.", e);
         } finally {
             HttpHelper.closeHttpResponse(response);
         }
         return mbeanSupport;
     }
 
-    String buildUrl(Core core, String contextRoot, String serverUrl){
+    String buildUrl(Core core, String contextRoot, String serverUrl) {
         StringBuilder url = new StringBuilder(serverUrl);
         url.append(contextRoot).append(String.format(PLUGINS_PATH, core.getName()));
         return url.toString();

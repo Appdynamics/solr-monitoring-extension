@@ -33,8 +33,8 @@ public class PluginsVerifierTest {
     }
 
     @Test
-    public void arePluginsEnabled_whenNodeIsFound () throws IOException {
-        entity.setContent(new FileInputStream("src/test/resources/MBeansPlugins.json"));
+    public void arePluginsEnabled_whenNodeIsFound_newerSolrVersions () throws IOException {
+        entity.setContent(new FileInputStream("src/test/resources/MBeansPlugins_newerVersions.json"));
         when(httpResponse.getEntity()).thenReturn(entity);
         when(httpClient.execute(Mockito.any(HttpGet.class))).thenReturn(httpResponse);
         pluginsVerifier = new PluginsVerifier(httpClient);
@@ -48,5 +48,14 @@ public class PluginsVerifierTest {
         when(httpClient.execute(Mockito.any(HttpGet.class))).thenReturn(httpResponse);
         pluginsVerifier = new PluginsVerifier(httpClient);
         Assert.assertFalse(pluginsVerifier.arePluginsEnabled(core, "contextRoot", "serverUrl"));
+    }
+
+    @Test
+    public void arePluginsEnabled_whenNodeIsFound_olderSolrVersions () throws IOException {
+        entity.setContent(new FileInputStream("src/test/resources/MBeansPlugins_olderVersions.json"));
+        when(httpResponse.getEntity()).thenReturn(entity);
+        when(httpClient.execute(Mockito.any(HttpGet.class))).thenReturn(httpResponse);
+        pluginsVerifier = new PluginsVerifier(httpClient);
+        Assert.assertTrue(pluginsVerifier.arePluginsEnabled(core, "contextRoot", "serverUrl"));
     }
 }

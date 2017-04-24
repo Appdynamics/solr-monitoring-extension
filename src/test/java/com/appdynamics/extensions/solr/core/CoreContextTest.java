@@ -1,7 +1,6 @@
+
 package com.appdynamics.extensions.solr.core;
 
-import com.appdynamics.extensions.solr.core.Core;
-import com.appdynamics.extensions.solr.core.CoreContext;
 import com.appdynamics.extensions.yml.YmlReader;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -70,3 +69,4 @@ public class CoreContextTest {
         Assert.assertTrue(cores.get(0).getPingHandler() == null);
     }
 }
+

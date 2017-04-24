@@ -34,7 +34,7 @@ public class CoreContext {
     }
 
     private void setContextRoot (Map server) {
-        this.contextRoot = (server.get("contextRoot") == null) ? SOLR_CONTEXT_ROOT : server.get("contextRoot")
+        this.contextRoot = (server.get("contextRoot") == null || server.get("contextRoot").toString().equals("")) ? SOLR_CONTEXT_ROOT : server.get("contextRoot")
                 .toString();
     }
 

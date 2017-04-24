@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,8 +19,8 @@ public class QueryCacheMetrics {
         this.coreName = coreName;
     }
 
-    public Map<String, Long> populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
-        Map<String, Long> queryCacheMetrics = new HashMap<String, Long>();
+    public Map<String, BigDecimal> populateStats(Map<String, JsonNode> solrMBeansHandlersMap) {
+        Map<String, BigDecimal> queryCacheMetrics = new HashMap<String, BigDecimal>();
         String metricPath = METRIC_SEPARATOR + "Cores" + METRIC_SEPARATOR + coreName + METRIC_SEPARATOR + "CACHE" +
                 METRIC_SEPARATOR;
         String queryCachePath = metricPath + "QueryResultCache" + METRIC_SEPARATOR;
@@ -27,11 +28,11 @@ public class QueryCacheMetrics {
         JsonNode queryResultCacheStats = cacheNode.path("queryResultCache").path("stats");
 
         if (!queryResultCacheStats.isMissingNode()) {
-            queryCacheMetrics.put(queryCachePath + "HitRatio %", SolrUtils.convertDoubleToLong(SolrUtils.multipyBy
+            queryCacheMetrics.put(queryCachePath + "HitRatio %", SolrUtils.convertDoubleToBigDecimal(SolrUtils.multipyBy
                     (queryResultCacheStats.path("hitratio").asDouble(), PERCENT_MULTIPLIER)));
-            queryCacheMetrics.put(queryCachePath + "HitRatioCumulative %", SolrUtils.convertDoubleToLong(SolrUtils
+            queryCacheMetrics.put(queryCachePath + "HitRatioCumulative %", SolrUtils.convertDoubleToBigDecimal(SolrUtils
                     .multipyBy(queryResultCacheStats.path("cumulative_hitratio").asDouble(), PERCENT_MULTIPLIER)));
-            queryCacheMetrics.put(queryCachePath + "CacheSize (Bytes)", SolrUtils.convertDoubleToLong(queryResultCacheStats.path("size").asDouble()));
+            queryCacheMetrics.put(queryCachePath + "CacheSize (Bytes)", SolrUtils.convertDoubleToBigDecimal(queryResultCacheStats.path("size").asDouble()));
         } else {
             logger.info("queryResultCache is disabled in solrconfig.xml");
         }

@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +18,12 @@ public class SolrMonitorTask implements Runnable {
     private MonitorConfiguration configuration;
     private Map server;
 
-    public SolrMonitorTask (MonitorConfiguration configuration, Map server) {
+    public SolrMonitorTask(MonitorConfiguration configuration, Map server) {
         this.configuration = configuration;
         this.server = server;
     }
 
-    public void run () {
+    public void run() {
         try {
             runTask();
             logger.info("Solr Metric Upload Complete");
@@ -32,7 +33,7 @@ public class SolrMonitorTask implements Runnable {
         }
     }
 
-    private void runTask () {
+    private void runTask() {
         try {
             CoreContext coreContext = new CoreContext(configuration.getHttpClient(), server);
             List<Core> cores = coreContext.getCores(configuration.getConfigYml());
@@ -43,23 +44,23 @@ public class SolrMonitorTask implements Runnable {
         }
     }
 
-    private void populateAndPrintStats (List<Core> coresConfig, String contextRoot) throws IOException {
+    private void populateAndPrintStats(List<Core> coresConfig, String contextRoot) throws IOException {
         SolrStats solrStats = new SolrStats(server, contextRoot, configuration.getHttpClient());
         for (Core coreConfig : coresConfig) {
-            Map<String, Long> metrics = solrStats.populateStats(coreConfig);
+            Map<String, BigDecimal> metrics = solrStats.populateStats(coreConfig);
             printMetrics(metrics);
         }
 
     }
 
-    private void printMetrics (Map<String, Long> solrMetrics) {
+    private void printMetrics(Map<String, BigDecimal> solrMetrics) {
         MetricWriteHelper metricWriter = configuration.getMetricWriter();
         String metricPrefix = configuration.getMetricPrefix();
         String aggregation = MetricWriter.METRIC_AGGREGATION_TYPE_AVERAGE;
         String cluster = MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_INDIVIDUAL;
         String timeRollup = MetricWriter.METRIC_TIME_ROLLUP_TYPE_AVERAGE;
 
-        for (Map.Entry<String, Long> entry : solrMetrics.entrySet()) {
+        for (Map.Entry<String, BigDecimal> entry : solrMetrics.entrySet()) {
             String metricPath = metricPrefix + "|" + server.get("name").toString() + entry.getKey();
             String metricValue = String.valueOf(entry.getValue());
             metricWriter.printMetric(metricPath, metricValue, aggregation, timeRollup, cluster);

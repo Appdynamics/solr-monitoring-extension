@@ -13,7 +13,9 @@ import org.mockito.Mockito;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +42,7 @@ public class MBeansHandlerTest {
         Core core = createTestCore();
         MBeansHandler mBeansHandler = new MBeansHandler(httpClient);
 
-        Map<String, Long> metrics = mBeansHandler.populateStats(core, "contextroot", "serverurl");
+        Map<String, BigDecimal> metrics = mBeansHandler.populateStats(core, "contextroot", "serverurl");
         String coreMetricPath = "|Cores|" + core.getName() + "|CORE|";
         String queryCacheMetricPath = "|Cores|" + core.getName() + "|CACHE|QueryResultCache|";
         String documentCacheMetricPath = "|Cores|" + core.getName() + "|CACHE|DocumentCache|";
@@ -51,37 +53,37 @@ public class MBeansHandlerTest {
         Assert.assertTrue(metrics.containsKey(fieldCacheMetricPath + "HitRatio %"));
         Assert.assertTrue(metrics.containsKey(fieldCacheMetricPath + "CacheSize (Bytes)"));
         Assert.assertTrue(metrics.containsKey(fieldCacheMetricPath + "HitRatioCumulative %"));
-        Assert.assertTrue(metrics.get(fieldCacheMetricPath + "HitRatio %").equals(new Long(0)));
-        Assert.assertTrue(metrics.get(fieldCacheMetricPath + "CacheSize (Bytes)").equals(new Long(0)));
-        Assert.assertTrue(metrics.get(fieldCacheMetricPath + "HitRatioCumulative %").equals(new Long(0)));
+        Assert.assertTrue(metrics.get(fieldCacheMetricPath + "HitRatio %").equals(new BigDecimal(0)));
+        Assert.assertTrue(metrics.get(fieldCacheMetricPath + "CacheSize (Bytes)").equals(new BigDecimal(0)));
+        Assert.assertTrue(metrics.get(fieldCacheMetricPath + "HitRatioCumulative %").equals(new BigDecimal(0)));
 
         Assert.assertTrue(metrics.containsKey(queryCacheMetricPath + "HitRatio %"));
         Assert.assertTrue(metrics.containsKey(queryCacheMetricPath + "CacheSize (Bytes)"));
         Assert.assertTrue(metrics.containsKey(queryCacheMetricPath + "HitRatioCumulative %"));
-        Assert.assertTrue(metrics.get(queryCacheMetricPath + "HitRatio %").equals(new Long("4636315078889570304")));
-        Assert.assertTrue(metrics.get(queryCacheMetricPath + "CacheSize (Bytes)").equals(new Long("4607182418800017408")));
-        Assert.assertTrue(metrics.get(queryCacheMetricPath + "HitRatioCumulative %").equals(new Long("4636315078889570304")));
+        Assert.assertTrue(metrics.get(queryCacheMetricPath + "HitRatio %").equals(new BigDecimal("94")));
+        Assert.assertTrue(metrics.get(queryCacheMetricPath + "CacheSize (Bytes)").equals(new BigDecimal("1")));
+        Assert.assertTrue(metrics.get(queryCacheMetricPath + "HitRatioCumulative %").equals(new BigDecimal("94")));
 
         Assert.assertTrue(metrics.containsKey(filterCacheMetricPath + "HitRatio %"));
         Assert.assertTrue(metrics.containsKey(filterCacheMetricPath + "CacheSize (Bytes)"));
         Assert.assertTrue(metrics.containsKey(filterCacheMetricPath + "HitRatioCumulative %"));
-        Assert.assertTrue(metrics.get(filterCacheMetricPath + "HitRatio %").equals(new Long(0)));
-        Assert.assertTrue(metrics.get(filterCacheMetricPath + "CacheSize (Bytes)").equals(new Long(0)));
-        Assert.assertTrue(metrics.get(filterCacheMetricPath + "HitRatioCumulative %").equals(new Long(0)));
+        Assert.assertTrue(metrics.get(filterCacheMetricPath + "HitRatio %").equals(new BigDecimal(0)));
+        Assert.assertTrue(metrics.get(filterCacheMetricPath + "CacheSize (Bytes)").equals(new BigDecimal(0)));
+        Assert.assertTrue(metrics.get(filterCacheMetricPath + "HitRatioCumulative %").equals(new BigDecimal(0)));
 
         Assert.assertTrue(metrics.containsKey(documentCacheMetricPath + "HitRatio %"));
         Assert.assertTrue(metrics.containsKey(documentCacheMetricPath + "CacheSize (Bytes)"));
         Assert.assertTrue(metrics.containsKey(documentCacheMetricPath + "HitRatioCumulative %"));
-        Assert.assertTrue(metrics.get(documentCacheMetricPath + "HitRatio %").equals(new Long(0)));
-        Assert.assertTrue(metrics.get(documentCacheMetricPath + "CacheSize (Bytes)").equals(new Long(0)));
-        Assert.assertTrue(metrics.get(documentCacheMetricPath + "HitRatioCumulative %").equals(new Long(0)));
+        Assert.assertTrue(metrics.get(documentCacheMetricPath + "HitRatio %").equals(new BigDecimal(0)));
+        Assert.assertTrue(metrics.get(documentCacheMetricPath + "CacheSize (Bytes)").equals(new BigDecimal(0)));
+        Assert.assertTrue(metrics.get(documentCacheMetricPath + "HitRatioCumulative %").equals(new BigDecimal(0)));
 
         Assert.assertTrue(metrics.containsKey(coreMetricPath + "Number of Docs"));
         Assert.assertTrue(metrics.containsKey(coreMetricPath + "Deleted Docs"));
         Assert.assertTrue(metrics.containsKey(coreMetricPath + "Max Docs"));
-        Assert.assertTrue(metrics.get(coreMetricPath + "Number of Docs").equals(new Long("0")));
-        Assert.assertTrue(metrics.get(coreMetricPath + "Deleted Docs").equals(new Long("0")));
-        Assert.assertTrue(metrics.get(coreMetricPath + "Max Docs").equals(new Long("0")));
+        Assert.assertTrue(metrics.get(coreMetricPath + "Number of Docs").equals(new BigDecimal("0")));
+        Assert.assertTrue(metrics.get(coreMetricPath + "Deleted Docs").equals(new BigDecimal("0")));
+        Assert.assertTrue(metrics.get(coreMetricPath + "Max Docs").equals(new BigDecimal("0")));
 
         Assert.assertTrue(metrics.containsKey(queryMetricPath + "Average Requests Per Minute"));
         Assert.assertTrue(metrics.containsKey(queryMetricPath + "Average Requests Per Second"));
@@ -91,13 +93,13 @@ public class MBeansHandlerTest {
         Assert.assertTrue(metrics.containsKey(queryMetricPath + "Average Time Per Request (milliseconds)"));
         Assert.assertTrue(metrics.containsKey(queryMetricPath + "Requests"));
 
-        Assert.assertTrue(metrics.get(queryMetricPath + "Average Requests Per Minute").equals(new Long(0)));
-        Assert.assertTrue(metrics.get(queryMetricPath + "Average Requests Per Second").equals(new Long(0)));
-        Assert.assertTrue(metrics.get(queryMetricPath + "Errors").equals(new Long(0)));
-        Assert.assertTrue(metrics.get(queryMetricPath + "Timeouts").equals(new Long(0)));
-        Assert.assertTrue(metrics.get(queryMetricPath + "5 min Rate Requests Per Minute").equals(new Long("4613937818241073152")));
-        Assert.assertTrue(metrics.get(queryMetricPath + "Average Time Per Request (milliseconds)").equals(new Long("4611686018427387904")));
-        Assert.assertTrue(metrics.get(queryMetricPath + "Requests").equals(new Long("4629841154425225216")));
+        Assert.assertTrue(metrics.get(queryMetricPath + "Average Requests Per Minute").equals(new BigDecimal(0)));
+        Assert.assertTrue(metrics.get(queryMetricPath + "Average Requests Per Second").equals(new BigDecimal(0)));
+        Assert.assertTrue(metrics.get(queryMetricPath + "Errors").equals(new BigDecimal(0)));
+        Assert.assertTrue(metrics.get(queryMetricPath + "Timeouts").equals(new BigDecimal(0)));
+        Assert.assertTrue(metrics.get(queryMetricPath + "5 min Rate Requests Per Minute").equals(new BigDecimal("3")));
+        Assert.assertTrue(metrics.get(queryMetricPath + "Average Time Per Request (milliseconds)").equals(new BigDecimal("2")));
+        Assert.assertTrue(metrics.get(queryMetricPath + "Requests").equals(new BigDecimal("33")));
     }
 
     private Core createTestCore() {
