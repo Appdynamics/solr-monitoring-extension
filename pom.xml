@@ -18,9 +18,7 @@
             <groupId>com.appdynamics</groupId>
             <artifactId>machine-agent</artifactId>
             <version>3.7.11</version>
-<!--
             <scope>provided</scope>
--->
         </dependency>
         <dependency>
             <groupId>com.appdynamics</groupId>
