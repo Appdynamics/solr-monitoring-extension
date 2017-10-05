@@ -35,7 +35,7 @@ public class SolrMonitor extends AManagedMonitor {
     private MonitorConfiguration configuration;
 
     public SolrMonitor() {
-        logger.info("Using SolrMonitor Version [" + getImplementationVersion() + "]");
+        logger.info("Using [" + getImplementationVersion() + "]");
     }
 
     protected void initialize(Map<String, String> argsMap) {
