@@ -80,7 +80,7 @@ public class SolrMonitor extends AManagedMonitor {
     }
 
     private static String getImplementationVersion() {
-        return SolrMonitor.class.getPackage().getImplementationVersion();
+        return SolrMonitor.class.getPackage().getImplementationTitle();
     }
 
     public static void main(String[] args) throws TaskExecutionException {

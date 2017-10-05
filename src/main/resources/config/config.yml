@@ -43,5 +43,3 @@ cores:
      queryHandlers: ["/select", "/get"]
 
 numberOfThreads: 5
-
-
