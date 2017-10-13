@@ -1,6 +1,6 @@
 # AppDynamics Monitoring Extension for use with Solr
 
-##Use Case
+#### Use Case
 
 Solr is a popular open source enterprise search platform from the Apache Lucene project.
 Its major features include powerful full-text search, hit highlighting, faceted search, near real-time indexing, dynamic clustering, database integration, rich document (e.g., Word, PDF) handling, and geospatial search.
@@ -10,11 +10,11 @@ Solr statistics (Core, Query, Cache) are obtained through an HTTP request to the
 
 Memory statistics are collected through an HTTP request SystemInfoHandler at `http://<host>:<port>/solr/admin/system`
 
-##Prerequisites
+#### Prerequisites
 
 This extension requires an AppDynamics Java Machine Agent installed and running. 
 
-##Installation
+#### Installation
 
 1. Run 'mvn clean install' from the solr-monitoring-extension directory and find the SolrMonitor.zip in the 'target' directory.
 2. Unzip SolrMonitor.zip and copy the "SolrMonitor" directory to `<MACHINE_AGENT_HOME>/monitors`
@@ -23,7 +23,7 @@ This extension requires an AppDynamics Java Machine Agent installed and running.
 
 In the AppDynamics Metric Browser, look for: Application Infrastructure Performance  | \<Tier\> | Custom Metrics | Solr for default metric-path.
 
-##Configuration
+#### Configuration
 Note : Please make sure to not use tab (\t) while editing yaml files. You may want to validate the yaml file using a [yaml validator](http://yamllint.com/)
 
 1. Configure the Solr instance, Cores and Request handlers to monitor by editing the config.yml file in `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/`.
@@ -90,7 +90,7 @@ The Solr extension now includes support for multiple instances. You can specify 
      </task-arguments>
     ```
 
-## Metrics
+#### Metrics
 Note : By default, a Machine agent or a AppServer agent can send a fixed number of metrics to the controller. To change this limit, please follow the instructions mentioned [here](http://docs.appdynamics.com/display/PRO14S/Metrics+Limits).
 For eg.  
 ```    
@@ -110,7 +110,7 @@ Metrics will now be seen under the following metric tree:
 ```Application Infrastructure Performance|$TIER|Custom Metrics|$SERVERNAME|Solr Monitor```
 
 The following metrics are available for each core under Cores
-###Core Metrics
+#### Core Metrics
 
 The following metrics are reported under CORE
 
@@ -121,7 +121,7 @@ The following metrics are reported under CORE
 |Deleted Docs			|
 
 
-###Query Statistics
+#### Query Statistics
 
 The following metrics are reported under QUERYHANDLER for SearchHandler and UpdateHandler
 
@@ -135,7 +135,7 @@ The following metrics are reported under QUERYHANDLER for SearchHandler and Upda
 |5 min Rate Requests Per Minute	|
 |Average Time Per Request (milliseconds)	|
 
-###Memory Statistics
+#### Memory Statistics
 
 The following metrics are reported under MEMORY/JVM
 
@@ -157,7 +157,7 @@ The following metrics are reported under MEMORY/System
 |Open File Descriptor Count	|
 |Max File Descriptor Count	|
 
-###Cache Statistics
+#### Cache Statistics
 
 The following metrics are reported under Cache /QueryResultCache
 
@@ -191,7 +191,7 @@ The following metrics are reported under Cache/FilterCache
 |HitRatioCumulative	%	| 
 |CacheSize (Bytes)		|
 
-## Troubleshooting
+#### Troubleshooting
 1. Verify Machine Agent Data: Please start the Machine Agent without the extension and make sure that it reports data. Verify that the machine agent status is UP and it is reporting Hardware Metrics.
 2. config.yml: Validate the file [here](http://www.yamllint.com/) 
 3. Metric Limit: Please start the machine agent with the argument -Dappdynamics.agent.maxMetrics=5000 if there is a metric limit reached error in the logs. If you don't see the expected metrics, this could be the cause.
@@ -201,7 +201,7 @@ The following metrics are reported under Cache/FilterCache
 6. Collect Debug Logs: Edit the file, <MachineAgent>/conf/logging/log4j.xml and update the level of the appender com.appdynamics to debug Let it run for 5-10 minutes and attach the logs to a support ticket
 7. You may see in the logs that all metrics have a value of 0. This usually happens when your Solr instance is corrupt or offline. Please restart your Solr instance in this situation and then restart the machine agent. The 'Ping Status' is a quick way to check whether or not the current Solr instance is up. 
 
-## Custom Dashboard
+#### Custom Dashboards
 ![](https://github.com/Appdynamics/solr-monitoring-extension/raw/master/SolrDashboard.png)
 
 ##Contributing
