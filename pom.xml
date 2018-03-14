@@ -13,7 +13,7 @@
 
     <groupId>com.appdynamics.extensions</groupId>
     <artifactId>solr-monitoring-extension</artifactId>
-    <version>1.1.4</version>
+    <version>1.2.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -145,6 +145,10 @@
                                 <copy todir="${target.dir}">
                                     <fileset dir="${project.basedir}" includes="Notice.txt"/>
                                 </copy>
+                                <copy todir="${target.dir}">
+                                    <fileset dir="${project.basedir}" includes="License.txt"/>
+                                </copy>
+
                                 <zip destfile="${target.dir}-${project.version}.zip">
                                     <zipfileset dir="${target.dir}" filemode="755" prefix="SolrMonitor/"/>
                                 </zip>
