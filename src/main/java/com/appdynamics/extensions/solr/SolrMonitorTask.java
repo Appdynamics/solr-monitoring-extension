@@ -14,6 +14,7 @@ import com.appdynamics.extensions.solr.core.Core;
 import com.appdynamics.extensions.solr.core.CoreContext;
 import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.solr.input.Stat;
+import com.appdynamics.extensions.solr.metrics.MetricCollector;
 import com.singularity.ee.agent.systemagent.api.MetricWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +48,14 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
         try {
             Phaser phaser = new Phaser();
             Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
+
             for (Stat stat : metricConfiguration.getStats()) {
                 phaser.register();
-                runTask();
+                MetricCollector metricCollector = new MetricCollector(stat,  monitorContextConfiguration,server, phaser, metricWriteHelper);
+//                runTask();
+                monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask", metricCollector);
+                logger.debug("Registering MetricCollectorTask phaser for {}", server.get("name"));
+
             }
             phaser.arriveAndAwaitAdvance();
             logger.info("Completed the Solr Metric Monitoring task");
