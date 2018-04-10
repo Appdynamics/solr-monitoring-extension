@@ -1,0 +1,39 @@
+#prefix used to show up metrics in AppDynamics (not recommended)
+#metricPrefix: "Custom Metrics|Solr"
+
+#This will create it in specific Tier. Replace <TIER_ID>
+metricPrefix: "Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|"
+
+servers:
+    # mandatory parameters
+   - host: "localhost"
+     port: 8983
+     name: "Solr Monitor 1"
+   - host: "localhost"
+     port: 7574
+     name: "Solr Monitor 2"
+
+     # Optional Parameters. Configure if any required
+#     username: ""
+#     password: ""
+#     contextRoot: ""
+#     usessl: ""
+#    proxyHost: ""
+#     proxyPort: ""
+#     proxyUsername: ""
+#     proxyPassword: ""
+
+# Example
+# cores
+# - name: "collection1"
+#     pingHandler: "/admin/ping"
+#     queryHandlers: ["/select", "/update"]
+#   - name: "collection2"
+#     pingHandler: "/admin/ping"
+#     queryHandlers: ["/admin/ping"]
+cores:
+   - name: "techproducts"
+     pingHandler: "/admin/ping"
+     queryHandlers: ["/select", "/get"]
+
+numberOfThreads: 5
