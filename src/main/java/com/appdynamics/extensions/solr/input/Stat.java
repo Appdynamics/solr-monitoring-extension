@@ -33,16 +33,6 @@ public class Stat {
     public Stat[] stats;
     @XmlElement(name="mBeanGroup")
     public MbeanGroup mbeanGroup;
-//    @XmlElement(name="keyGroup")
-//    public KeyGroup keyGroup;
-
-//    public KeyGroup getKeyGroup() {
-//        return keyGroup;
-//    }
-//
-//    public void setKeyGroup(KeyGroup keyGroup) {
-//        this.keyGroup = keyGroup;
-//    }
 
     public MbeanGroup getMbeanGroup() {
         return mbeanGroup;

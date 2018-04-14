@@ -35,25 +35,29 @@ public class MetricDataParser {
             JsonNode newNode = nodes.get(root);
 
             if(newNode != null){
-                String mbean = stat.getMbeanGroup().getName();
+                if(stat.getMbeanGroup() != null) {
+                    String mbean = stat.getMbeanGroup().getCategory();
+                    String mBeanSub = stat.getMbeanGroup().getSubcategory();
+                    String metricSection = stat.getMbeanGroup().getMetricSection();
+                } else {
 
+                    if(!newNode.isArray()){
+                        for(MetricConfig metricConfig : stat.getMetricConfig()){
+                            metrics.add(parseAndRetrieveMetric(metricConfig, stat, newNode, objectMapper, serverName));
+
+                        }
+                    } else {
+                        for(JsonNode node: newNode){
+                            for(MetricConfig metricConfig: stat.getMetricConfig()){
+                                metrics.add(parseAndRetrieveMetric(metricConfig, stat, node, objectMapper, serverName));
+                            }
+                        }
+                    }
+
+                }
             }
 
-//            if(newNode != null)
-//            {
-//                if(!newNode.isArray()){
-//                    for(MetricConfig metricConfig : stat.getMetricConfig()){
-//                        metrics.add(parseAndRetrieveMetric(metricConfig, stat, newNode, objectMapper, serverName));
-//
-//                    }
-//                } else {
-//                    for(JsonNode node: newNode){
-//                        for(MetricConfig metricConfig: stat.getMetricConfig()){
-//                            metrics.add(parseAndRetrieveMetric(metricConfig, stat, node, objectMapper, serverName));
-//                        }
-//                    }
-//                }
-//            }
+
 //            for(JsonNode currentNode: nodes){
 //                if(currentNode != null){
 //                    if(!currentNode.isArray()){
@@ -102,10 +106,14 @@ public class MetricDataParser {
             metricValue = currentNode.findValue(metricConfig.getAttr()).asText();
             if(metricValue != null){
                 String prefix = StringUtils.trim(stat.getAlias(), "|");
-                String name = (currentNode.has("name")) ? currentNode.get("name").asText() + "|" : "";
+                if(stat.getMbeanGroup() != null) {
+                    prefix += stat.getMbeanGroup().getCategory()+"|"+stat.getMbeanGroup().getSubcategory();
+                }
                 Map<String, String > propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
-                metric = new Metric(metricConfig.getAlias(), String.valueOf(metricValue), monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|" + prefix + "|" + name + metricConfig.getAlias(), propertiesMap);
+                metric = new Metric(metricConfig.getAlias(), String.valueOf(metricValue), monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|" + prefix + "|" +
+                        metricConfig.getAlias(), propertiesMap);
                 logger.info("Adding metric {} to the queue for publishing", metric.getMetricPath());
+
             }
         }
         return metric;

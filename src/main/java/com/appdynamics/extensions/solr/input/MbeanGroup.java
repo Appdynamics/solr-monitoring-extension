@@ -10,32 +10,28 @@ import java.util.ArrayList;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MbeanGroup {
     @XmlAttribute
-    private String name;
+    private String category;
+
+    @XmlAttribute
+    private String subCategory;
 
     @XmlAttribute
     private String metricSection;
 
-//    @XmlElement
-//    private KeyGroup keyGroup;
-
-    @XmlElement(name="keyGroup")
-    public KeyGroup keyGroup;
-
-    public KeyGroup getKeyGroup() {
-        return keyGroup;
+    public String getCategory() {
+        return category;
     }
 
-    public void setKeyGroup(KeyGroup keyGroup) {
-        this.keyGroup = keyGroup;
+    public void setCategory(String category) {
+        this.category = category;
     }
 
-
-    public String getName() {
-        return name;
+    public String getSubcategory() {
+        return subCategory;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSubcategory(String subcategory) {
+        this.subCategory = subcategory;
     }
 
 
@@ -46,11 +42,4 @@ public class MbeanGroup {
     public void setMetricSection(String metricSection) {
         this.metricSection = metricSection;
     }
-//    public KeyGroup getKeyGroup() {
-//        return keyGroup;
-//    }
-//
-//    public void setKeyGroup(KeyGroup keyGroup) {
-//        this.keyGroup = keyGroup;
-//    }
 }

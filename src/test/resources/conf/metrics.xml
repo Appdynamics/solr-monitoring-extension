@@ -33,24 +33,22 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
 
 <stats>
 
-    <stat url="/solr/techproducts/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans"  >
-        <mBeanGroup name="CACHE"  metricSection="stats">
-            <keyGroup name="perSegFilter" >
-                <metric alias="CACHE.searcher.perSegFilter.lookups" attr="CACHE.searcher.perSegFilter.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="CACHE.searcher.perSegFilter.hits" attr="CACHE.searcher.perSegFilter.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="CACHE.searcher.perSegFilter.hitratio" attr="CACHE.searcher.perSegFilter.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="CACHE.searcher.perSegFilter.warmupTime" attr="CACHE.searcher.perSegFilter.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="CACHE.searcher.perSegFilter.cumulative_lookups" attr="CACHE.searcher.perSegFilter.cumulative_lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="CACHE.searcher.perSegFilter.size" attr="CACHE.searcher.perSegFilter.size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="CACHE.searcher.perSegFilter.evictions" attr="CACHE.searcher.perSegFilter.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            </keyGroup>
-            <keyGroup name="queryResultCache" >
-                <metric alias="CACHE.searcher.queryResultCache.cumulative_inserts" attr="CACHE.searcher.queryResultCache.cumulative_inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="CACHE.searcher.queryResultCache.evictions" attr="CACHE.searcher.queryResultCache.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="CACHE.searcher.queryResultCache.lookups" attr="CACHE.searcher.queryResultCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            </keyGroup>
-        </mBeanGroup>
-    </stat>
+    <!--<stat url="/solr/techproducts/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans"  >-->
+        <!--<mBeanGroup category="CACHE" subCategory="perSegFilter" metricSection="stats">-->
+                <!--<metric alias="CACHE.searcher.perSegFilter.lookups" attr="CACHE.searcher.perSegFilter.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+                <!--<metric alias="CACHE.searcher.perSegFilter.hits" attr="CACHE.searcher.perSegFilter.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+                <!--<metric alias="CACHE.searcher.perSegFilter.hitratio" attr="CACHE.searcher.perSegFilter.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+                <!--<metric alias="CACHE.searcher.perSegFilter.warmupTime" attr="CACHE.searcher.perSegFilter.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+                <!--<metric alias="CACHE.searcher.perSegFilter.cumulative_lookups" attr="CACHE.searcher.perSegFilter.cumulative_lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+                <!--<metric alias="CACHE.searcher.perSegFilter.size" attr="CACHE.searcher.perSegFilter.size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+                <!--<metric alias="CACHE.searcher.perSegFilter.evictions" attr="CACHE.searcher.perSegFilter.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--</mBeanGroup>-->
+        <!--<mBeanGroup category="CACHE" subCategory="queryResultCache" metricSection="stats">-->
+                <!--<metric alias="CACHE.searcher.queryResultCache.cumulative_inserts" attr="CACHE.searcher.queryResultCache.cumulative_inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+                <!--<metric alias="CACHE.searcher.queryResultCache.evictions" attr="CACHE.searcher.queryResultCache.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+                <!--<metric alias="CACHE.searcher.queryResultCache.lookups" attr="CACHE.searcher.queryResultCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--</mBeanGroup>-->
+    <!--</stat>-->
 
 
         <!--</stat>-->
