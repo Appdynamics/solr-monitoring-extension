@@ -90,7 +90,7 @@ public class SolrMonitor extends ABaseMonitor {
         SolrMonitor solrMonitor = new SolrMonitor();
         Map<String, String> argsMap = new HashMap<String, String>();
         argsMap.put("config-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config_test1.yml");
-        argsMap.put("metric-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/metrics.yml");
+        argsMap.put("metric-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/metrics.xml");
 
         solrMonitor.execute(argsMap, null);
     }

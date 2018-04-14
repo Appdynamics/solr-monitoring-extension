@@ -29,27 +29,68 @@ public class MetricDataParser {
     }
 
     List<Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName){
-        JsonNode currentNode;
-
+//        JsonNode currentNode;
+        String root = stat.getRootElement();
         if(nodes != null){
-            currentNode = nodes.get(stat.getRootElement());
-            if(currentNode != null){
-                if(!currentNode.isArray()){
-                    for(MetricConfig metricConfig : stat.getMetricConfig()){
-                        metrics.add(parseAndRetrieveMetric(metricConfig, stat, currentNode, objectMapper, serverName));
+            JsonNode newNode = nodes.get(root);
 
-                    }
-                } else {
-                    for(JsonNode node: currentNode){
-                        for(MetricConfig metricConfig: stat.getMetricConfig()){
-                            metrics.add(parseAndRetrieveMetric(metricConfig, stat, node, objectMapper, serverName));
-                        }
-                    }
-                }
+            if(newNode != null){
+                String mbean = stat.getMbeanGroup().getName();
+
             }
-        }else {
-            logger.debug("{} metrics are not available for server: {}. Skipping.", stat.getRootElement(), serverName);
+
+//            if(newNode != null)
+//            {
+//                if(!newNode.isArray()){
+//                    for(MetricConfig metricConfig : stat.getMetricConfig()){
+//                        metrics.add(parseAndRetrieveMetric(metricConfig, stat, newNode, objectMapper, serverName));
+//
+//                    }
+//                } else {
+//                    for(JsonNode node: newNode){
+//                        for(MetricConfig metricConfig: stat.getMetricConfig()){
+//                            metrics.add(parseAndRetrieveMetric(metricConfig, stat, node, objectMapper, serverName));
+//                        }
+//                    }
+//                }
+//            }
+//            for(JsonNode currentNode: nodes){
+//                if(currentNode != null){
+//                    if(!currentNode.isArray()){
+//                        for(MetricConfig metricConfig : stat.getMetricConfig()){
+//                            metrics.add(parseAndRetrieveMetric(metricConfig, stat, currentNode, objectMapper, serverName));
+//
+//                        }
+//                    } else {
+//                        for(JsonNode node: currentNode){
+//                            for(MetricConfig metricConfig: stat.getMetricConfig()){
+//                                metrics.add(parseAndRetrieveMetric(metricConfig, stat, node, objectMapper, serverName));
+//                            }
+//                        }
+//                    }
+//                }
+//            }
         }
+
+//        if(nodes != null){
+//            currentNode = nodes.get(stat.getRootElement());
+//            if(currentNode != null){
+//                if(!currentNode.isArray()){
+//                    for(MetricConfig metricConfig : stat.getMetricConfig()){
+//                        metrics.add(parseAndRetrieveMetric(metricConfig, stat, currentNode, objectMapper, serverName));
+//
+//                    }
+//                } else {
+//                    for(JsonNode node: currentNode){
+//                        for(MetricConfig metricConfig: stat.getMetricConfig()){
+//                            metrics.add(parseAndRetrieveMetric(metricConfig, stat, node, objectMapper, serverName));
+//                        }
+//                    }
+//                }
+//            }
+//        }else {
+//            logger.debug("{} metrics are not available for server: {}. Skipping.", stat.getRootElement(), serverName);
+//        }
         return metrics;
     }
 
