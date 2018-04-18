@@ -19,12 +19,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Phaser;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MetricCollector implements Runnable{
@@ -61,9 +59,8 @@ public class MetricCollector implements Runnable{
             serverName = server.get("name").toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
             JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
-            metrics.addAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName));
 
-            processChildStats(stat);
+            processStats(stat,jsonNode);
 
             metrics.add(new Metric("Heart Beat", String.valueOf(BigInteger.ONE), monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|Heart Beat"));
 
@@ -84,12 +81,20 @@ public class MetricCollector implements Runnable{
 
     }
 
-    private void processChildStats(Stat stat){
+
+    private void processStats(Stat stat, JsonNode jsonNode){
         if(!childStatNull(stat.getStats())){
-            collectChildStats(stat);
+            collectChildStats(stat, jsonNode);
+        }else {
+            collectStats(stat,jsonNode);
         }
 
     }
+    private void collectStats(Stat stat, JsonNode jsonNode){
+        metrics.addAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName));
+
+    }
+
 
     private boolean childStatNull(Stat[] stat){
 
@@ -101,16 +106,31 @@ public class MetricCollector implements Runnable{
         }
     }
 
-    private void collectChildStats(Stat stat){
+    private void collectChildStats(Stat stat, JsonNode jsonNode){
+
         for(Stat childStat : stat.getStats()){
             if(childStat != null){
-                endpoint = buildUrl(server,childStat.getUrl());
-                JsonNode childNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
-                metrics.addAll(metricDataParser.parseNodeData(childStat, childNode, new ObjectMapper(), serverName));
+                //#TODO Implement this
+                // get the root element from childstat and convert json node for that and then go from there
 
+            } else {
+                collectStats(stat, jsonNode);
             }
         }
 
+    }
+
+    private Map mapOfArrayList (ArrayList<?> arrayOfNodes ){
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        for(int i= 0; i< arrayOfNodes.size(); i=i+2){
+            String name= (String) arrayOfNodes.get(i);
+            if(arrayOfNodes.get(i+1) != null){
+                map.put(name, arrayOfNodes.get(i+1));
+            }
+        }
+
+        return map;
     }
 
 

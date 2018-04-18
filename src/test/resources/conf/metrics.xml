@@ -33,22 +33,22 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
 
 <stats>
 
-    <!--<stat url="/solr/techproducts/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans"  >-->
-        <!--<mBeanGroup category="CACHE" subCategory="perSegFilter" metricSection="stats">-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.lookups" attr="CACHE.searcher.perSegFilter.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.hits" attr="CACHE.searcher.perSegFilter.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.hitratio" attr="CACHE.searcher.perSegFilter.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.warmupTime" attr="CACHE.searcher.perSegFilter.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.cumulative_lookups" attr="CACHE.searcher.perSegFilter.cumulative_lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.size" attr="CACHE.searcher.perSegFilter.size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.evictions" attr="CACHE.searcher.perSegFilter.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-        <!--</mBeanGroup>-->
-        <!--<mBeanGroup category="CACHE" subCategory="queryResultCache" metricSection="stats">-->
-                <!--<metric alias="CACHE.searcher.queryResultCache.cumulative_inserts" attr="CACHE.searcher.queryResultCache.cumulative_inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.queryResultCache.evictions" attr="CACHE.searcher.queryResultCache.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.queryResultCache.lookups" attr="CACHE.searcher.queryResultCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-        <!--</mBeanGroup>-->
-    <!--</stat>-->
+    <stat url="/solr/techproducts/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans"  >
+        <mBeanGroup category="CACHE" subCategory="perSegFilter" metricSection="stats">
+                <metric alias="CACHE.searcher.perSegFilter.lookups" attr="CACHE.searcher.perSegFilter.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="CACHE.searcher.perSegFilter.hits" attr="CACHE.searcher.perSegFilter.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="CACHE.searcher.perSegFilter.hitratio" attr="CACHE.searcher.perSegFilter.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="CACHE.searcher.perSegFilter.warmupTime" attr="CACHE.searcher.perSegFilter.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="CACHE.searcher.perSegFilter.cumulative_lookups" attr="CACHE.searcher.perSegFilter.cumulative_lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="CACHE.searcher.perSegFilter.size" attr="CACHE.searcher.perSegFilter.size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="CACHE.searcher.perSegFilter.evictions" attr="CACHE.searcher.perSegFilter.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        </mBeanGroup>
+        <mBeanGroup category="CACHE" subCategory="queryResultCache" metricSection="stats">
+                <metric alias="CACHE.searcher.queryResultCache.cumulative_inserts" attr="CACHE.searcher.queryResultCache.cumulative_inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="CACHE.searcher.queryResultCache.evictions" attr="CACHE.searcher.queryResultCache.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="CACHE.searcher.queryResultCache.lookups" attr="CACHE.searcher.queryResultCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        </mBeanGroup>
+    </stat>
 
 
         <!--</stat>-->
@@ -61,19 +61,19 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
             <!--</stat>-->
     <!--</stat>-->
 
-    <stat url="/solr/techproducts/admin/system?stats=true" alias="System" rootElement="system">
-        <metric alias="availableProcessors" attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-        <metric alias="systemLoadAverage" attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-        <metric alias="committedVirtualMemorySize" attr="committedVirtualMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-        <metric alias="freePhysicalMemorySize" attr="freePhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-        <metric alias="freeSwapSpaceSize" attr="freeSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-        <metric alias="processCpuTime" attr="processCpuTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-        <metric alias="totalPhysicalMemorySize" attr="totalPhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-        <metric alias="totalSwapSpaceSize" attr="totalSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-        <metric alias="maxFileDescriptorCount" attr="maxFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-        <metric alias="openFileDescriptorCount" attr="openFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-        <metric alias="processCpuLoad" attr="processCpuLoad" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
-    </stat>
+    <!--<stat url="/solr/techproducts/admin/system?stats=true" alias="System" rootElement="system">-->
+        <!--<metric alias="availableProcessors" attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--<metric alias="systemLoadAverage" attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--<metric alias="committedVirtualMemorySize" attr="committedVirtualMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--<metric alias="freePhysicalMemorySize" attr="freePhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--<metric alias="freeSwapSpaceSize" attr="freeSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--<metric alias="processCpuTime" attr="processCpuTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--<metric alias="totalPhysicalMemorySize" attr="totalPhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--<metric alias="totalSwapSpaceSize" attr="totalSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--<metric alias="maxFileDescriptorCount" attr="maxFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--<metric alias="openFileDescriptorCount" attr="openFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <!--<metric alias="processCpuLoad" attr="processCpuLoad" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />-->
+    <!--</stat>-->
 
 
 </stats>

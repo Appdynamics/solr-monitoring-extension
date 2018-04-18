@@ -10,8 +10,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,12 +33,15 @@ public class MetricDataParser {
         String root = stat.getRootElement();
         if(nodes != null){
             JsonNode newNode = nodes.get(root);
+            ArrayList<?> arrayOfNodes = (ArrayList<?>) objectMapper.convertValue(nodes, Map.class).get(root);
 
+            Map<String, Object > mapOfNodes = mapOfArrayList(arrayOfNodes);
             if(newNode != null){
                 if(stat.getMbeanGroup() != null) {
                     String mbean = stat.getMbeanGroup().getCategory();
                     String mBeanSub = stat.getMbeanGroup().getSubcategory();
                     String metricSection = stat.getMbeanGroup().getMetricSection();
+
                 } else {
 
                     if(!newNode.isArray()){
@@ -57,47 +60,24 @@ public class MetricDataParser {
                 }
             }
 
-
-//            for(JsonNode currentNode: nodes){
-//                if(currentNode != null){
-//                    if(!currentNode.isArray()){
-//                        for(MetricConfig metricConfig : stat.getMetricConfig()){
-//                            metrics.add(parseAndRetrieveMetric(metricConfig, stat, currentNode, objectMapper, serverName));
-//
-//                        }
-//                    } else {
-//                        for(JsonNode node: currentNode){
-//                            for(MetricConfig metricConfig: stat.getMetricConfig()){
-//                                metrics.add(parseAndRetrieveMetric(metricConfig, stat, node, objectMapper, serverName));
-//                            }
-//                        }
-//                    }
-//                }
-//            }
         }
 
-//        if(nodes != null){
-//            currentNode = nodes.get(stat.getRootElement());
-//            if(currentNode != null){
-//                if(!currentNode.isArray()){
-//                    for(MetricConfig metricConfig : stat.getMetricConfig()){
-//                        metrics.add(parseAndRetrieveMetric(metricConfig, stat, currentNode, objectMapper, serverName));
-//
-//                    }
-//                } else {
-//                    for(JsonNode node: currentNode){
-//                        for(MetricConfig metricConfig: stat.getMetricConfig()){
-//                            metrics.add(parseAndRetrieveMetric(metricConfig, stat, node, objectMapper, serverName));
-//                        }
-//                    }
-//                }
-//            }
-//        }else {
-//            logger.debug("{} metrics are not available for server: {}. Skipping.", stat.getRootElement(), serverName);
-//        }
+
         return metrics;
     }
 
+    private Map mapOfArrayList (ArrayList<?> arrayOfNodes ){
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        for(int i= 0; i< arrayOfNodes.size(); i=i+2){
+            String name= (String) arrayOfNodes.get(i);
+            if(arrayOfNodes.get(i+1) != null){
+                map.put(name, arrayOfNodes.get(i+1));
+            }
+        }
+
+        return map;
+    }
 
     private Metric parseAndRetrieveMetric(MetricConfig metricConfig, Stat stat, JsonNode currentNode, ObjectMapper objectMapper, String serverName){
         Metric metric = null;
