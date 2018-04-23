@@ -30,39 +30,27 @@ public class MetricDataParser {
 
     List<Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName){
 //        JsonNode currentNode;
-        String root = stat.getRootElement();
-        if(nodes != null){
-            JsonNode newNode = nodes.get(root);
-            ArrayList<?> arrayOfNodes = (ArrayList<?>) objectMapper.convertValue(nodes, Map.class).get(root);
+        if(nodes != null) {
+//            JsonNode newNode = nodes.findValue(stat.getCategory());
+//            JsonNode subNewNode = newNode.findValue(stat.getSubcategory());
 
-            Map<String, Object > mapOfNodes = mapOfArrayList(arrayOfNodes);
-            if(newNode != null){
-                if(stat.getMbeanGroup() != null) {
-                    String mbean = stat.getMbeanGroup().getCategory();
-                    String mBeanSub = stat.getMbeanGroup().getSubcategory();
-                    String metricSection = stat.getMbeanGroup().getMetricSection();
+            if (stat.getStructure().toString().equals("jsonMap")) {
+                ArrayList<?> arrayOfNodes = (ArrayList<?>) objectMapper.convertValue(nodes, List.class);
+                Map<String, Object> mapOfNodes = mapOfArrayList(arrayOfNodes);
 
-                } else {
-
-                    if(!newNode.isArray()){
-                        for(MetricConfig metricConfig : stat.getMetricConfig()){
-                            metrics.add(parseAndRetrieveMetric(metricConfig, stat, newNode, objectMapper, serverName));
-
-                        }
-                    } else {
-                        for(JsonNode node: newNode){
-                            for(MetricConfig metricConfig: stat.getMetricConfig()){
-                                metrics.add(parseAndRetrieveMetric(metricConfig, stat, node, objectMapper, serverName));
-                            }
-                        }
-                    }
+                for(MetricConfig metricConfig: stat.getMetricConfig()){
+                    metrics.add(getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper));
+                }
+            } else if(stat.getStructure().toString().equals("jsonList")) {
+                JsonNode newNode = nodes.get(stat.getRootElement());
+                    for (MetricConfig metricConfig : stat.getMetricConfig()) {
+                        metrics.add(parseAndRetrieveMetric(metricConfig, stat, newNode, objectMapper, serverName));
 
                 }
+
             }
 
         }
-
-
         return metrics;
     }
 
@@ -79,6 +67,23 @@ public class MetricDataParser {
         return map;
     }
 
+    private Metric getMetricFromMap(Map<String, Object> mapOfNodes, MetricConfig metricConfig, Stat stat, String serverName, ObjectMapper objectMapper){
+        Metric metric = null;
+        Map<String, ?> catergoryMap = (Map<String, ?>) mapOfNodes.get(stat.getCategory());
+        Map<String, ?> subCategoryMap = ((Map<String, ?>) catergoryMap.get(stat.getSubcategory()));
+        Map<String, ?> metricSectionMap = (Map<String, ?>) subCategoryMap.get(stat.getMetricSection());
+        String metricValue = metricSectionMap.get(metricConfig.getAttr()).toString();
+        String value = (((Map<String, ?>) (((Map<String, ?>)(((Map<String, ?>) mapOfNodes.get(stat.getCategory())).get(stat.getSubcategory()))).get(stat.getMetricSection()))).get(metricConfig.getAttr())).toString();
+        Map<String, String > propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
+        String metricPrefix = monitorContextConfiguration.getMetricPrefix() + "|" + serverName ;
+        if(stat.getAlias() != null){
+           metricPrefix += "|" + stat.getAlias();
+        }
+        metricPrefix += "|" + stat.getCategory() + "|" + stat.getSubcategory() + "|" + metricConfig.getAlias();
+        metric = new Metric(metricConfig.getAlias(), value, metricPrefix, propertiesMap);
+        return metric;
+
+    }
     private Metric parseAndRetrieveMetric(MetricConfig metricConfig, Stat stat, JsonNode currentNode, ObjectMapper objectMapper, String serverName){
         Metric metric = null;
         String metricValue;
@@ -86,8 +91,8 @@ public class MetricDataParser {
             metricValue = currentNode.findValue(metricConfig.getAttr()).asText();
             if(metricValue != null){
                 String prefix = StringUtils.trim(stat.getAlias(), "|");
-                if(stat.getMbeanGroup() != null) {
-                    prefix += stat.getMbeanGroup().getCategory()+"|"+stat.getMbeanGroup().getSubcategory();
+                if(stat.getCategory() != null && stat.getSubcategory()!=null) {
+                    prefix += stat.getCategory()+"|"+stat.getSubcategory();
                 }
                 Map<String, String > propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
                 metric = new Metric(metricConfig.getAlias(), String.valueOf(metricValue), monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|" + prefix + "|" +

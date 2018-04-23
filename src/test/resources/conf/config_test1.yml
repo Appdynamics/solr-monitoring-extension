@@ -8,10 +8,10 @@ servers:
     # mandatory parameters
    - host: "localhost"
      port: 8983
-     name: "Solr Monitor 1"
+     name: "Server 1"
    - host: "localhost"
      port: 7574
-     name: "Solr Monitor 2"
+     name: "Server 2"
 
      # Optional Parameters. Configure if any required
 #     username: ""

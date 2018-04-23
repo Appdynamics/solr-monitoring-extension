@@ -59,6 +59,7 @@ public class MetricCollector implements Runnable{
             serverName = server.get("name").toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
             JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
+//            metrics.addAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName));
 
             processStats(stat,jsonNode);
 
@@ -83,6 +84,7 @@ public class MetricCollector implements Runnable{
 
 
     private void processStats(Stat stat, JsonNode jsonNode){
+
         if(!childStatNull(stat.getStats())){
 //            Stat stat1 = stat.getStats();
             collectChildStats(stat, jsonNode);
@@ -93,6 +95,8 @@ public class MetricCollector implements Runnable{
     }
     private void collectStats(Stat stat, JsonNode jsonNode){
         if(stat.getMetricConfig()!= null) {
+
+
             metrics.addAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName));
         }
     }
@@ -109,13 +113,14 @@ public class MetricCollector implements Runnable{
     }
 
     private void collectChildStats(Stat stat, JsonNode jsonNode){
-
         for(Stat childStat : stat.getStats()){
             if(childStat != null){
                 //#TODO Implement this
                 // get the root element from childstat and convert json node for that and then go from there
-                collectStats(stat,jsonNode);
-                collectChildStats(childStat, jsonNode);
+                JsonNode newNode = jsonNode.get(stat.getRootElement());
+                processStats(childStat, newNode);
+
+//                collectStats(stat,jsonNode);
 
             } else {
                 collectStats(stat, jsonNode);

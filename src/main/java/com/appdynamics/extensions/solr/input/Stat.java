@@ -8,9 +8,6 @@
 
 package com.appdynamics.extensions.solr.input;
 
-/**
- * Created by aditya.jagtiani on 3/26/18.
- */
 
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
@@ -19,28 +16,64 @@ import java.util.ArrayList;
 public class Stat {
     @XmlAttribute
     private String url;
+
     @XmlAttribute
     private String alias;
+
     @XmlAttribute(name = "rootElement")
     private String rootElement;
-    @XmlAttribute(name = "metric-type")
-    private String metricType;
+
     @XmlAttribute
-    public String children;
+    private String structure;
+
+
     @XmlElement(name = "metric")
     private ArrayList<MetricConfig> metricConfig;
+
     @XmlElement(name = "stat")
     public Stat[] stats;
-    @XmlElement(name="mBeanGroup")
-    public MbeanGroup mbeanGroup;
+    @XmlAttribute
+    private String category;
 
-    public MbeanGroup getMbeanGroup() {
-        return mbeanGroup;
+    @XmlAttribute
+    private String subCategory;
+
+    @XmlAttribute
+    private String metricSection;
+
+    public String getStructure() {
+        return structure;
     }
 
-    public void setMbeanGroup(MbeanGroup mbeanGroup) {
-        this.mbeanGroup = mbeanGroup;
+    public void setStructure(String structure) {
+        this.structure = structure;
     }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getSubcategory() {
+        return subCategory;
+    }
+
+    public void setSubcategory(String subcategory) {
+        this.subCategory = subcategory;
+    }
+
+
+    public String getMetricSection() {
+        return metricSection;
+    }
+
+    public void setMetricSection(String metricSection) {
+        this.metricSection = metricSection;
+    }
+
 
     public String getRootElement() {
         return rootElement;
@@ -66,14 +99,6 @@ public class Stat {
         this.metricConfig = metricConfig;
     }
 
-    public String getMetricType() {
-        return metricType;
-    }
-
-    public void setMetricType(String metricType) {
-        this.metricType = metricType;
-    }
-
     public String getUrl() {
         return url;
     }
@@ -90,13 +115,6 @@ public class Stat {
         this.stats = stats;
     }
 
-    public String getChildren() {
-        return children;
-    }
-
-    public void setChildren(String children) {
-        this.children = children;
-    }
 
 
     @XmlRootElement

@@ -66,16 +66,6 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
         }
     }
 
-//    public void run() {
-//        try {
-//            runTask();
-//            logger.info("Solr Metric Upload Complete");
-//        } catch (Exception ex) {
-//            configuration.getMetricWriter().registerError(ex.getMessage(), ex);
-//            logger.error("Error while running the task", ex);
-//        }
-//    }
-//
     private void runTask() {
         try {
             CoreContext coreContext = new CoreContext(monitorContextConfiguration.getContext().getHttpClient(), server);
@@ -96,17 +86,4 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
 
     }
 
-//    private void printMetrics(Map<String, BigDecimal> solrMetrics) {
-//        MetricWriteHelper metricWriter = configuration.getMetricWriter();
-//        String metricPrefix = configuration.getMetricPrefix();
-//        String aggregation = MetricWriter.METRIC_AGGREGATION_TYPE_AVERAGE;
-//        String cluster = MetricWriter.METRIC_CLUSTER_ROLLUP_TYPE_INDIVIDUAL;
-//        String timeRollup = MetricWriter.METRIC_TIME_ROLLUP_TYPE_AVERAGE;
-//
-//        for (Map.Entry<String, BigDecimal> entry : solrMetrics.entrySet()) {
-//            String metricPath = metricPrefix + "|" + server.get("name").toString() + entry.getKey();
-//            String metricValue = String.valueOf(entry.getValue());
-//            metricWriter.printMetric(metricPath, metricValue, aggregation, timeRollup, cluster);
-//        }
-//    }
 }
