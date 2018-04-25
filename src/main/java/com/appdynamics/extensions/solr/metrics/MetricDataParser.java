@@ -69,41 +69,82 @@ public class MetricDataParser {
 
     private Metric getMetricFromMap(Map<String, Object> mapOfNodes, MetricConfig metricConfig, Stat stat, String serverName, ObjectMapper objectMapper){
         Metric metric = null;
-        Map<String, ?> catergoryMap = (Map<String, ?>) mapOfNodes.get(stat.getCategory());
-        Map<String, ?> subCategoryMap = ((Map<String, ?>) catergoryMap.get(stat.getSubcategory()));
-        Map<String, ?> metricSectionMap = (Map<String, ?>) subCategoryMap.get(stat.getMetricSection());
-        String metricValue = metricSectionMap.get(metricConfig.getAttr()).toString();
+
+//        Map<String, ?> catergoryMap = (Map<String, ?>) mapOfNodes.get(stat.getCategory());
+//        Map<String, ?> subCategoryMap = ((Map<String, ?>) catergoryMap.get(stat.getSubcategory()));
+//        Map<String, ?> metricSectionMap = (Map<String, ?>) subCategoryMap.get(stat.getMetricSection());
+//        String metricValue = metricSectionMap.get(metricConfig.getAttr()).toString();
+
         String value = (((Map<String, ?>) (((Map<String, ?>)(((Map<String, ?>) mapOfNodes.get(stat.getCategory())).get(stat.getSubcategory()))).get(stat.getMetricSection()))).get(metricConfig.getAttr())).toString();
         Map<String, String > propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
-        String metricPrefix = monitorContextConfiguration.getMetricPrefix() + "|" + serverName ;
-        if(stat.getAlias() != null){
-           metricPrefix += "|" + stat.getAlias();
-        }
-        metricPrefix += "|" + stat.getCategory() + "|" + stat.getSubcategory() + "|" + metricConfig.getAlias();
+
+        String metricPrefix = getMetricPrefix(metricConfig, stat, serverName);
         metric = new Metric(metricConfig.getAlias(), value, metricPrefix, propertiesMap);
         return metric;
 
     }
+
+
     private Metric parseAndRetrieveMetric(MetricConfig metricConfig, Stat stat, JsonNode currentNode, ObjectMapper objectMapper, String serverName){
         Metric metric = null;
         String metricValue;
+
+        String metricPrefix = getMetricPrefix(metricConfig, stat, serverName);
+
         if(currentNode.has(metricConfig.getAttr())){
             metricValue = currentNode.findValue(metricConfig.getAttr()).asText();
             if(metricValue != null){
-                String prefix = StringUtils.trim(stat.getAlias(), "|");
-                if(stat.getCategory() != null && stat.getSubcategory()!=null) {
-                    prefix += stat.getCategory()+"|"+stat.getSubcategory();
-                }
+
+
+//                String prefix = StringUtils.trim(stat.getAlias(), "|");
+//                if(stat.getCategory() != null && stat.getSubcategory()!=null) {
+//                    prefix += stat.getCategory()+"|"+stat.getSubcategory();
+//                }
+//                metric = new Metric(metricConfig.getAlias(), String.valueOf(metricValue), monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|" + prefix + "|" +
+//                        metricConfig.getAlias(), propertiesMap);
+
+
                 Map<String, String > propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
-                metric = new Metric(metricConfig.getAlias(), String.valueOf(metricValue), monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|" + prefix + "|" +
-                        metricConfig.getAlias(), propertiesMap);
+                metric = new Metric(metricConfig.getAlias(), String.valueOf(metricValue), metricPrefix, propertiesMap);
                 logger.info("Adding metric {} to the queue for publishing", metric.getMetricPath());
 
             }
         }
+
         return metric;
     }
 
+    private String getMetricPrefix(MetricConfig metricConfig, Stat stat, String serverName) {
+        String metricPrefix = "";
+
+        if(monitorContextConfiguration.getMetricPrefix() != null){
+            metricPrefix += monitorContextConfiguration.getMetricPrefix();
+        }
+
+        if(serverName != null){
+            metricPrefix += "|" + serverName ;
+        }
+
+        if(stat.getAlias() != null){
+            metricPrefix += "|" + stat.getAlias();
+        }
+
+        if(stat.getCategory() != null){
+            metricPrefix += "|" + stat.getCategory();
+
+        }
+
+        if(stat.getSubcategory() != null){
+            metricPrefix += "|" + stat.getSubcategory();
+
+        }
+
+        if(metricConfig.getAlias() != null){
+            metricPrefix += "|" + metricConfig.getAlias();
+
+        }
+        return metricPrefix;
+    }
 
 
 }

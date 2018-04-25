@@ -29,25 +29,92 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
 
 &amp;wt=json&amp;indent=true
 
+        <stat category="" subCategory="" metricSection="stats"  >
+                <metric alias="" attr="" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="" attr="" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="" attr="" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        </stat>
+
+
 -->
 
 <stats>
 
-    <stat url="/solr/techproducts/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans" structure="jsonMap" >
-        <stat category="CACHE" subCategory="perSegFilter" metricSection="stats"  >
-                <metric alias="CACHE.searcher.perSegFilter.lookups" attr="CACHE.searcher.perSegFilter.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <!--<metric alias="CACHE.searcher.perSegFilter.hits" attr="CACHE.searcher.perSegFilter.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.hitratio" attr="CACHE.searcher.perSegFilter.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.warmupTime" attr="CACHE.searcher.perSegFilter.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.cumulative_lookups" attr="CACHE.searcher.perSegFilter.cumulative_lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.size" attr="CACHE.searcher.perSegFilter.size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.perSegFilter.evictions" attr="CACHE.searcher.perSegFilter.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+    <stat url="/solr/techproducts/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans"  >
+        <stat category="CACHE" subCategory="perSegFilter" metricSection="stats"  structure="jsonMap">
+            <metric alias="Lookups" attr="CACHE.searcher.perSegFilter.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Hits" attr="CACHE.searcher.perSegFilter.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Hit Ratio" attr="CACHE.searcher.perSegFilter.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+            <metric alias="Evictions" attr="CACHE.searcher.perSegFilter.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Inserts" attr="CACHE.searcher.perSegFilter.inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Size" attr="CACHE.searcher.perSegFilter.size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Warmup Time" attr="CACHE.searcher.perSegFilter.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Lookups" attr="CACHE.searcher.perSegFilter.cumulative_lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Inserts" attr="CACHE.searcher.perSegFilter.cumulative_inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Hits" attr="CACHE.searcher.perSegFilter.cumulative_hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Hit Ratio" attr="CACHE.searcher.perSegFilter.cumulative_hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+            <metric alias="Cumulative Evictions" attr="CACHE.searcher.perSegFilter.cumulative_evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
         </stat>
-        <stat category="CACHE" subCategory="queryResultCache" metricSection="stats">
-                <metric alias="CACHE.searcher.queryResultCache.cumulative_inserts" attr="CACHE.searcher.queryResultCache.cumulative_inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <!--<metric alias="CACHE.searcher.queryResultCache.evictions" attr="CACHE.searcher.queryResultCache.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
-                <!--<metric alias="CACHE.searcher.queryResultCache.lookups" attr="CACHE.searcher.queryResultCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />-->
+        <stat category="CACHE" subCategory="queryResultCache" metricSection="stats" structure="jsonMap">
+            <metric alias="Lookups" attr="CACHE.searcher.queryResultCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Hits" attr="CACHE.searcher.queryResultCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Hit Ratio" attr="CACHE.searcher.queryResultCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+            <metric alias="Evictions" attr="CACHE.searcher.queryResultCache.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Inserts" attr="CACHE.searcher.queryResultCache.inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Size" attr="CACHE.searcher.queryResultCache.size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Warmup Time" attr="CACHE.searcher.queryResultCache.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Lookups" attr="CACHE.searcher.queryResultCache.cumulative_lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Inserts" attr="CACHE.searcher.queryResultCache.cumulative_inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Hits" attr="CACHE.searcher.queryResultCache.cumulative_hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Hit Ratio" attr="CACHE.searcher.queryResultCache.cumulative_hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+            <metric alias="Cumulative Evictions" attr="CACHE.searcher.queryResultCache.cumulative_evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
         </stat>
+        <stat category="CACHE" subCategory="filterCache" metricSection="stats" structure="jsonMap">
+            <metric alias="Lookups" attr="CACHE.searcher.filterCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Hits" attr="CACHE.searcher.filterCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Hit Ratio" attr="CACHE.searcher.filterCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100"/>
+            <metric alias="Evictions" attr="CACHE.searcher.filterCache.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Inserts" attr="CACHE.searcher.filterCache.inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Size" attr="CACHE.searcher.filterCache.size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Warmup Time" attr="CACHE.searcher.filterCache.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Lookups" attr="CACHE.searcher.filterCache.cumulative_lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Hits" attr="CACHE.searcher.filterCache.cumulative_hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Hit Ratio" attr="CACHE.searcher.filterCache.cumulative_hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"  multiplier="100"/>
+            <metric alias="Cumulative Evictions" attr="CACHE.searcher.filterCache.cumulative_evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Inserts" attr="CACHE.searcher.filterCache.cumulative_inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        </stat>
+        <stat category="CACHE" subCategory="fieldCache" metricSection="stats" structure="jsonMap"  >
+            <metric alias="Entries Count" attr="CACHE.core.fieldCache.entries_count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="" attr="" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="" attr="" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        </stat>
+
+        <stat category="CORE" subCategory="core" metricSection="stats" structure="jsonMap" >
+            <metric alias="Total Space" attr="CORE.fs.totalSpace" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Size In Bytes" attr="INDEX.sizeInBytes" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="SEARCHER New Errors" attr="SEARCHER.new.errors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Ref Count" attr="CORE.refCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Usable Space" attr="CORE.fs.usableSpace" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        </stat>
+        <stat category="CORE" subCategory="searcher" metricSection="stats" structure="jsonMap" >
+            <metric alias="Max Docs" attr="SEARCHER.searcher.maxDoc" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Deleted Docs" attr="SEARCHER.searcher.deletedDocs" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Warmup Time" attr="SEARCHER.searcher.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Index Version" attr="SEARCHER.searcher.indexVersion" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Number Of Docs" attr="SEARCHER.searcher.numDocs" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        </stat>
+        <stat category="QUERY" subCategory="/sql" metricSection="stats" structure="jsonMap" >
+            <metric alias="Total Time" attr="QUERY./sql.totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Client Error Count" attr="QUERY./sql.clientErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Timeout" attr="QUERY./sql.timeouts.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Server Errors" attr="QUERY./sql.serverErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Request Times Mean" attr="QUERY./sql.requestTimes.meanRate" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Handlet Start" attr="QUERY./sql.handlerStart" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Error Count" attr="QUERY./sql.errors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Requests" attr="QUERY./sql.requests" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        </stat>
+
+
     </stat>
 
 
