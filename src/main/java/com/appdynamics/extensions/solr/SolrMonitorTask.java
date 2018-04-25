@@ -66,24 +66,24 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
         }
     }
 
-    private void runTask() {
-        try {
-            CoreContext coreContext = new CoreContext(monitorContextConfiguration.getContext().getHttpClient(), server);
-            List<Core> cores = coreContext.getCores(monitorContextConfiguration.getConfigYml());
-            populateAndPrintStats(cores, coreContext.getContextRoot());
-            logger.info("Solr monitoring task completed successfully.");
-        } catch (Exception e) {
-            logger.error("Exception while running Solr Monitor Task ", e);
-        }
-    }
-
-    private void populateAndPrintStats(List<Core> coresConfig, String contextRoot) throws IOException {
-        SolrStats solrStats = new SolrStats(server, contextRoot, monitorContextConfiguration.getContext().getHttpClient());
-        for (Core coreConfig : coresConfig) {
-            Map<String, BigDecimal> metrics = solrStats.populateStats(coreConfig);
-//            printMetrics(metrics);
-        }
-
-    }
+//    private void runTask() {
+//        try {
+//            CoreContext coreContext = new CoreContext(monitorContextConfiguration.getContext().getHttpClient(), server);
+//            List<Core> cores = coreContext.getCores(monitorContextConfiguration.getConfigYml());
+//            populateAndPrintStats(cores, coreContext.getContextRoot());
+//            logger.info("Solr monitoring task completed successfully.");
+//        } catch (Exception e) {
+//            logger.error("Exception while running Solr Monitor Task ", e);
+//        }
+//    }
+//
+//    private void populateAndPrintStats(List<Core> coresConfig, String contextRoot) throws IOException {
+//        SolrStats solrStats = new SolrStats(server, contextRoot, monitorContextConfiguration.getContext().getHttpClient());
+//        for (Core coreConfig : coresConfig) {
+//            Map<String, BigDecimal> metrics = solrStats.populateStats(coreConfig);
+////            printMetrics(metrics);
+//        }
+//
+//    }
 
 }

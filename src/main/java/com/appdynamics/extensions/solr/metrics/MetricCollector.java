@@ -86,7 +86,6 @@ public class MetricCollector implements Runnable{
     private void processStats(Stat stat, JsonNode jsonNode){
 
         if(!childStatNull(stat.getStats())){
-//            Stat stat1 = stat.getStats();
             collectChildStats(stat, jsonNode);
         }else {
             collectStats(stat,jsonNode);
@@ -95,8 +94,6 @@ public class MetricCollector implements Runnable{
     }
     private void collectStats(Stat stat, JsonNode jsonNode){
         if(stat.getMetricConfig()!= null) {
-
-
             metrics.addAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName));
         }
     }
@@ -115,33 +112,14 @@ public class MetricCollector implements Runnable{
     private void collectChildStats(Stat stat, JsonNode jsonNode){
         for(Stat childStat : stat.getStats()){
             if(childStat != null){
-                //#TODO Implement this
-                // get the root element from childstat and convert json node for that and then go from there
                 JsonNode newNode = jsonNode.get(stat.getRootElement());
                 processStats(childStat, newNode);
-
-//                collectStats(stat,jsonNode);
-
-            } else {
+            }
+            else{
                 collectStats(stat, jsonNode);
             }
         }
     }
-
-    private Map mapOfArrayList (ArrayList<?> arrayOfNodes ){
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        for(int i= 0; i< arrayOfNodes.size(); i=i+2){
-            String name= (String) arrayOfNodes.get(i);
-            if(arrayOfNodes.get(i+1) != null){
-                map.put(name, arrayOfNodes.get(i+1));
-            }
-        }
-
-        return map;
-    }
-
-
 
 
 }

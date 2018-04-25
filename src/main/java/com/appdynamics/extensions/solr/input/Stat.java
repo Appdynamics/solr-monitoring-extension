@@ -26,7 +26,6 @@ public class Stat {
     @XmlAttribute
     private String structure;
 
-
     @XmlElement(name = "metric")
     private ArrayList<MetricConfig> metricConfig;
 
@@ -114,8 +113,6 @@ public class Stat {
     public void setStats(Stat[] stats) {
         this.stats = stats;
     }
-
-
 
     @XmlRootElement
     @XmlAccessorType(XmlAccessType.FIELD)
