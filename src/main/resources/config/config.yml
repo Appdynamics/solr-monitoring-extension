@@ -19,15 +19,12 @@ servers:
      proxyPort: ""
      proxyUsername: ""
      proxyPassword: ""
-     # Optional Parameters. Configure if any required
-#     username: ""
-#     password: ""
-#     contextRoot: ""
-#     usessl: ""
-#    proxyHost: ""
-#     proxyPort: ""
-#     proxyUsername: ""
-#     proxyPassword: ""
+
+     metricCharacterReplacer:
+        - replace: "%"
+          replaceWith: ""
+        - replace: ","
+          replaceWith: "-"
 
 # Example
 # cores

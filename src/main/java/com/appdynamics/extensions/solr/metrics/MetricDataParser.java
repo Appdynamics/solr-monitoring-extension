@@ -109,10 +109,14 @@ public class MetricDataParser {
         }
         if (metricConfig.getAlias() != null) {
             metricPrefix += "|" + metricConfig.getAlias();
+        } else{
+            metricPrefix += "|" + metricConfig.getAttr();
         }
         return metricPrefix;
     }
 
+
+    // #TODO use from MetricUtils
     private Map mapOfArrayList(ArrayList<?> arrayOfNodes) {
         Map<String, Object> map = new HashMap<String, Object>();
 

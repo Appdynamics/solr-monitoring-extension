@@ -59,8 +59,6 @@ public class MetricCollector implements Runnable{
             serverName = server.get("name").toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
             JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
-//            metrics.addAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName));
-
             processStats(stat,jsonNode);
 
             metrics.add(new Metric("Heart Beat", String.valueOf(BigInteger.ONE), monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|Heart Beat"));
