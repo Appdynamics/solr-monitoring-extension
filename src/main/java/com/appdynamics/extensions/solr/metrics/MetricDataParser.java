@@ -14,6 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.appdynamics.extensions.solr.metrics.MetricUtils;
+
+import static com.appdynamics.extensions.solr.metrics.MetricUtils.*;
+
 /**
  * Created by bhuvnesh.kumar on 4/10/18.
  */
@@ -27,14 +31,14 @@ public class MetricDataParser {
         this.monitorContextConfiguration = monitorContextConfiguration;
     }
 
-    List<Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName) {
+    List<Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
         if (nodes != null) {
             if (stat.getStructure().toString().equals("jsonMap")) {
                 ArrayList<?> arrayOfNodes = (ArrayList<?>) objectMapper.convertValue(nodes, List.class);
-                Map<String, Object> mapOfNodes = mapOfArrayList(arrayOfNodes);
+                Map<String, Object> mapOfNodes = MetricUtils.mapOfArrayList(arrayOfNodes);
 
                 for (MetricConfig metricConfig : stat.getMetricConfig()) {
-                    metrics.add(getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper));
+                    metrics.add(getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper, metricReplacer));
                 }
             } else if (stat.getStructure().toString().equals("jsonList")) {
                 JsonNode newNode = nodes.get(stat.getRootElement());
@@ -58,25 +62,25 @@ public class MetricDataParser {
         return result;
     }
 
-    private Metric getMetricFromMap(Map<String, Object> mapOfNodes, MetricConfig metricConfig, Stat stat, String serverName, ObjectMapper objectMapper) {
+    private Metric getMetricFromMap(Map<String, Object> mapOfNodes, MetricConfig metricConfig, Stat stat, String serverName, ObjectMapper objectMapper, List<Map<String, String>> metricReplacer) {
         Metric metric = null;
         if(!checkForEmptyAttribute(metricConfig)) {
 
             String value = (((Map<String, ?>) (((Map<String, ?>) (((Map<String, ?>) mapOfNodes.get(stat.getCategory())).get(stat.getSubcategory()))).get(stat.getMetricSection()))).get(metricConfig.getAttr())).toString();
             Map<String, String> propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
 
-            String metricPrefix = getMetricPrefix(metricConfig, stat, serverName);
+            String metricPrefix = getMetricPrefix(metricConfig, stat, serverName, metricReplacer);
             metric = new Metric(metricConfig.getAlias(), value, metricPrefix, propertiesMap);
         }
         return metric;
 
     }
 
-    private Metric getMetricFromJson(MetricConfig metricConfig, Stat stat, JsonNode currentNode, ObjectMapper objectMapper, String serverName) {
+    private Metric getMetricFromJson(MetricConfig metricConfig, Stat stat, JsonNode currentNode, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
         Metric metric = null;
         String metricValue;
 
-        String metricPrefix = getMetricPrefix(metricConfig, stat, serverName);
+        String metricPrefix = getMetricPrefix(metricConfig, stat, serverName, metricReplacer);
 
         if (currentNode.has(metricConfig.getAttr())) {
             metricValue = currentNode.findValue(metricConfig.getAttr()).asText();
@@ -90,7 +94,7 @@ public class MetricDataParser {
         return metric;
     }
 
-    private String getMetricPrefix(MetricConfig metricConfig, Stat stat, String serverName) {
+    private String getMetricPrefix(MetricConfig metricConfig, Stat stat, String serverName, List<Map<String, String>> metricReplacer) {
         String metricPrefix = "";
         if (monitorContextConfiguration.getMetricPrefix() != null) {
             metricPrefix += monitorContextConfiguration.getMetricPrefix();
@@ -112,20 +116,11 @@ public class MetricDataParser {
         } else{
             metricPrefix += "|" + metricConfig.getAttr();
         }
+
+        metricPrefix = MetricUtils.replaceCharacter(metricPrefix, metricReplacer);
+
         return metricPrefix;
     }
 
 
-    // #TODO use from MetricUtils
-    private Map mapOfArrayList(ArrayList<?> arrayOfNodes) {
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        for (int i = 0; i < arrayOfNodes.size(); i = i + 2) {
-            String name = (String) arrayOfNodes.get(i);
-            if (arrayOfNodes.get(i + 1) != null) {
-                map.put(name, arrayOfNodes.get(i + 1));
-            }
-        }
-        return map;
-    }
 }

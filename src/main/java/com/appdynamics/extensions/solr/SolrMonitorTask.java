@@ -29,14 +29,14 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
     private Map server;
     private MetricWriteHelper metricWriteHelper;
     private MonitorContextConfiguration monitorContextConfiguration;
-
+    private List<Map<String, String>> metricReplacer;
 
     public SolrMonitorTask(MonitorContextConfiguration monitorContextConfiguration,  MetricWriteHelper metricWriteHelper,
-                           Map<String, String> server) {
+                           Map<String, String> server, List<Map<String, String>> metricReplacer) {
         this.monitorContextConfiguration = monitorContextConfiguration;
         this.server = server;
         this.metricWriteHelper = metricWriteHelper;
-
+        this.metricReplacer = metricReplacer;
     }
 
     public void onTaskComplete() {
@@ -51,7 +51,7 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
 
             for (Stat stat : metricConfiguration.getStats()) {
                 phaser.register();
-                MetricCollector metricCollector = new MetricCollector(stat,  monitorContextConfiguration, server, phaser, metricWriteHelper);
+                MetricCollector metricCollector = new MetricCollector(stat,  monitorContextConfiguration, server, phaser, metricWriteHelper, metricReplacer);
 //                runTask();
                 monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask", metricCollector);
                 logger.debug("Registering MetricCollectorTask phaser for {}", server.get("name"));

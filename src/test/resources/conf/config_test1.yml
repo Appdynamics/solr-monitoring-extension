@@ -36,7 +36,6 @@ cores:
      pingHandler: "/admin/ping"
      queryHandlers: ["/select", "/get"]
 
-#TODO IMPLEMENT METRIC REPLACER IN THE CODE
 metricCharacterReplacer:
    - replace: "%"
      replaceWith: ""

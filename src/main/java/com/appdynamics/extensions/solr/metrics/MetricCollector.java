@@ -37,9 +37,11 @@ public class MetricCollector implements Runnable{
     private String endpoint;
     private String serverName;
     private List<Metric> metrics = new ArrayList<Metric>();
+    private List<Map<String, String>> metricReplacer;
+
 
     public MetricCollector(Stat stat, MonitorContextConfiguration monitorContextConfiguration, Map<String, String> server,
-                           Phaser phaser, MetricWriteHelper metricWriteHelper){
+                           Phaser phaser, MetricWriteHelper metricWriteHelper , List<Map<String, String>> metricReplacer){
         this.stat = stat;
         this.monitorContextConfiguration = monitorContextConfiguration;
         this.server = server;
@@ -47,11 +49,15 @@ public class MetricCollector implements Runnable{
         this.metricWriteHelper = metricWriteHelper;
         this.metricDataParser = new MetricDataParser(monitorContextConfiguration);
         this.endpoint = buildUrl(server, stat.getUrl());
+        this.metricReplacer = metricReplacer;
     }
 
     private String buildUrl(Map<String, String> server, String statEndpoint) {
         return UrlBuilder.fromYmlServerConfig(server).build() + statEndpoint;
     }
+
+
+
 
     public void run(){
         try {
@@ -92,7 +98,7 @@ public class MetricCollector implements Runnable{
     }
     private void collectStats(Stat stat, JsonNode jsonNode){
         if(stat.getMetricConfig()!= null) {
-            metrics.addAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName));
+            metrics.addAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName, metricReplacer));
         }
     }
 

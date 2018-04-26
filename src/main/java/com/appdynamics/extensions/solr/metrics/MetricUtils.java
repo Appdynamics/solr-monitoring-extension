@@ -10,7 +10,7 @@ import java.util.Map;
  */
 public class MetricUtils {
 
-    private String replaceCharacter(String metricPath, List<Map<String, String>> metricReplacer) {
+    public static String replaceCharacter(String metricPath, List<Map<String, String>> metricReplacer) {
 
         for (Map chars : metricReplacer) {
             String replace = (String) chars.get("replace");
@@ -23,7 +23,7 @@ public class MetricUtils {
         return metricPath;
     }
 
-    private Map mapOfArrayList(ArrayList<?> arrayOfNodes) {
+    public static Map mapOfArrayList(ArrayList<?> arrayOfNodes) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         for (int i = 0; i < arrayOfNodes.size(); i = i + 2) {
@@ -34,7 +34,6 @@ public class MetricUtils {
         }
         return map;
     }
-
 
 
 }
