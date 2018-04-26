@@ -64,7 +64,12 @@ public class MetricCollector implements Runnable{
 
             serverName = server.get("name").toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
-            JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
+            JsonNode jsonNode = null;
+            try {
+                 jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
+            } catch (Exception e){
+                logger.error("Unable to establish connection and get data from endpoint: {}", endpoint);
+            }
             processStats(stat,jsonNode);
 
             metrics.add(new Metric("Heart Beat", String.valueOf(BigInteger.ONE), monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|Heart Beat"));
