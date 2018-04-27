@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.appdynamics.extensions.solr.metrics.MetricUtils;
 
 import static com.appdynamics.extensions.solr.metrics.MetricUtils.*;
 
@@ -42,11 +41,7 @@ public class MetricDataParser {
                         metrics.add(getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper, metricReplacer));
                     }
                 } else if (stat.getStructure().toString().equals("jsonList")) {
-                    JsonNode newNode = nodes;
-
-                    if(stat.getRootElement() != null){
-                         newNode = nodes.get(stat.getRootElement());
-                    }
+                    JsonNode newNode = MetricUtils.getJsonNode(stat, nodes);
 
                     for (MetricConfig metricConfig : stat.getMetricConfig()) {
                         metrics.add(getMetricFromJson(metricConfig, stat, newNode, objectMapper, serverName, metricReplacer));
@@ -54,8 +49,10 @@ public class MetricDataParser {
 
                 }
             } else{
-                logger.error("No structure defined in the stat. ");
+                logger.debug("No structure defined in the stat. ");
             }
+        } else {
+            logger.debug("Empty JSON Node returned for server: {} and url: {}", serverName, stat.getUrl());
         }
         return metrics;
     }
@@ -64,20 +61,9 @@ public class MetricDataParser {
 
     private Metric getMetricFromMap(Map<String, Object> mapOfNodes, MetricConfig metricConfig, Stat stat, String serverName, ObjectMapper objectMapper, List<Map<String, String>> metricReplacer) {
         Metric metric = null;
-        boolean check = false;
         if(!MetricUtils.checkForEmptyAttribute(metricConfig)) {
-
             String metricValue = getValueFromMap(mapOfNodes, metricConfig, stat);
-
-
-//            String value = (((Map<String, ?>) (((Map<String, ?>) (((Map<String, ?>) mapOfNodes.get(stat.getCategory())).get(stat.getSubcategory()))).get(stat.getMetricSection()))).get(metricConfig.getAttr())).toString();
-//
-//            if(metricValue.equals(value)){
-//                check = true;
-//            }
-
             Map<String, String> propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
-
             String metricPrefix = getMetricPrefix(metricConfig, stat, serverName, metricReplacer);
             metric = new Metric(metricConfig.getAlias(), metricValue, metricPrefix, propertiesMap);
         }
@@ -105,17 +91,11 @@ public class MetricDataParser {
             }
         }
 
-//        Map<String, ?> categoryMap = (Map<String, ?>) mapOfNodes.get(stat.getCategory());
-//        Map<String, ?> subCategoryMap = (Map<String, ?>) categoryMap.get(stat.getSubcategory());
-//        Map<String, ?> metricSectionMap = (Map<String, ?>) subCategoryMap.get(stat.getMetricSection());
-//        return metricSectionMap.get(metricConfig.getAttr()).toString();
-
         if(metricConfig.getAttr() != null){
             if(mapOfNodes.get(metricConfig.getAttr()) != null){
                 value = mapOfNodes.get(metricConfig.getAttr()).toString();
             }
         }
-
         return value;
     }
 

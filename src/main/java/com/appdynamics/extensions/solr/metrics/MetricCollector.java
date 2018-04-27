@@ -53,7 +53,7 @@ public class MetricCollector implements Runnable{
     }
 
     private String buildUrl(Map<String, String> server, String statEndpoint) {
-        return UrlBuilder.fromYmlServerConfig(server).build() + statEndpoint;
+        return UrlBuilder.fromYmlServerConfig(server).build() + "/solr/" + server.get("collectionName")+ statEndpoint;
     }
 
 

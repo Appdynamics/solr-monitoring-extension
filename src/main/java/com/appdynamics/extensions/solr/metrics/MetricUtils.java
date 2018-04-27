@@ -1,7 +1,9 @@
 package com.appdynamics.extensions.solr.metrics;
 
 import com.appdynamics.extensions.solr.input.MetricConfig;
+import com.appdynamics.extensions.solr.input.Stat;
 import com.google.common.base.Strings;
+import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +17,18 @@ import java.util.*;
 public class MetricUtils {
     private static final Logger logger = LoggerFactory.getLogger(MetricUtils.class);
     private static final double BYTES_CONVERSION_FACTOR = 1024.0;
+
+    public static JsonNode getJsonNode(Stat stat, JsonNode nodes) {
+        JsonNode newNode = nodes;
+
+        if(stat.getRootElement() != null){
+            if(nodes.get(stat.getRootElement()) != null) {
+                newNode = nodes.get(stat.getRootElement());
+            }
+        }
+        return newNode;
+    }
+
 
     public static String replaceCharacter(String metricPath, List<Map<String, String>> metricReplacer) {
 

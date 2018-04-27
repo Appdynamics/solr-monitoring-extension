@@ -9,9 +9,12 @@ servers:
    - host: "localhost"
      port: 8983
      name: "Server 1"
+     collectionName : "techproducts"
+
    - host: "localhost"
      port: 7574
      name: "Server 2"
+     collectionName : "techproducts"
 
      # Optional Parameters. Configure if any required
 #     username: ""
