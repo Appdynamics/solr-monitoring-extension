@@ -25,11 +25,41 @@ public class MetricDataParser {
     private static final Logger logger = LoggerFactory.getLogger(MetricCollector.class);
     private MonitorContextConfiguration monitorContextConfiguration;
     private List<Metric> metrics = new ArrayList<Metric>();
-
+    private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
     MetricDataParser(MonitorContextConfiguration monitorContextConfiguration) {
         this.monitorContextConfiguration = monitorContextConfiguration;
     }
 
+    Map<String, Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
+        if (nodes != null) {
+            if(stat.getStructure() != null) {
+                if (stat.getStructure().toString().equals("jsonMap")) {
+                    ArrayList<?> arrayOfNodes = (ArrayList<?>) objectMapper.convertValue(nodes, List.class);
+                    Map<String, Object> mapOfNodes = MetricUtils.mapOfArrayList(arrayOfNodes);
+
+                    for (MetricConfig metricConfig : stat.getMetricConfig()) {
+                        metrics.add(getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper, metricReplacer));
+                    }
+                } else if (stat.getStructure().toString().equals("jsonList")) {
+                    JsonNode newNode = MetricUtils.getJsonNode(stat, nodes);
+
+                    for (MetricConfig metricConfig : stat.getMetricConfig()) {
+                        metrics.add(getMetricFromJson(metricConfig, stat, newNode, objectMapper, serverName, metricReplacer));
+                    }
+
+                }
+            } else{
+                logger.debug("No structure defined in the stat. ");
+            }
+        } else {
+
+               logger.debug("Empty JSON Node returned for server: {} and alias: {}", serverName, stat.getAlias());
+        }
+        return allMetrics;
+    }
+
+/*
+*
     List<Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
         if (nodes != null) {
             if(stat.getStructure() != null) {
@@ -52,12 +82,13 @@ public class MetricDataParser {
                 logger.debug("No structure defined in the stat. ");
             }
         } else {
-            logger.debug("Empty JSON Node returned for server: {} and url: {}", serverName, stat.getUrl());
+
+               logger.debug("Empty JSON Node returned for server: {} and alias: {}", serverName, stat.getAlias());
         }
         return metrics;
     }
 
-
+* */
 
     private Metric getMetricFromMap(Map<String, Object> mapOfNodes, MetricConfig metricConfig, Stat stat, String serverName, ObjectMapper objectMapper, List<Map<String, String>> metricReplacer) {
         Metric metric = null;
@@ -67,6 +98,8 @@ public class MetricDataParser {
             String metricPrefix = getMetricPrefix(metricConfig, stat, serverName, metricReplacer);
             metric = new Metric(metricConfig.getAlias(), metricValue, metricPrefix, propertiesMap);
         }
+
+        allMetrics.put(metric.getMetricPath(), metric);
         return metric;
 
     }
@@ -116,6 +149,7 @@ public class MetricDataParser {
                 logger.info("Adding metric {} to the queue for publishing", metric.getMetricPath());
             }
         }
+        allMetrics.put(metric.getMetricPath(), metric);
 
         return metric;
     }

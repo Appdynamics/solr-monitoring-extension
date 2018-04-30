@@ -16,6 +16,7 @@ import com.singularity.ee.agent.systemagent.api.AManagedMonitor;
 import com.singularity.ee.agent.systemagent.api.TaskExecutionContext;
 import com.singularity.ee.agent.systemagent.api.TaskOutput;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
+import org.apache.log4j.FileAppender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.log4j.ConsoleAppender;
@@ -23,6 +24,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
 
 
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.List;
@@ -80,7 +82,7 @@ public class SolrMonitor extends ABaseMonitor {
 
 
 
-    public static void main(String[] args) throws TaskExecutionException {
+    public static void main(String[] args) throws TaskExecutionException, IOException {
         ConsoleAppender ca = new ConsoleAppender();
         ca.setWriter(new OutputStreamWriter(System.out));
         ca.setLayout(new PatternLayout("%-5p [%t]: %m%n"));
@@ -89,9 +91,9 @@ public class SolrMonitor extends ABaseMonitor {
         org.apache.log4j.Logger.getRootLogger().addAppender(ca);
 
 
-    /*FileAppender fa = new FileAppender(new PatternLayout("%-5p [%t]: %m%n"), "cache.log");
-    fa.setThreshold(Level.DEBUG);
-    LOGGER.getRootLogger().addAppender(fa);*/
+//    FileAppender fa = new FileAppender(new PatternLayout("%-5p [%t]: %m%n"), "cache.log");
+//    fa.setThreshold(Level.DEBUG);
+//    logger.getRootLogger().addAppender(fa);
 
 
         SolrMonitor solrMonitor = new SolrMonitor();
@@ -102,56 +104,6 @@ public class SolrMonitor extends ABaseMonitor {
         solrMonitor.execute(argsMap, null);
     }
 
-    //    private MonitorConfiguration configuration;
-//
-//    public SolrMonitor() {
-//        logger.info("Using [" + getImplementationVersion() + "]");
-//    }
-//
-//    protected void initialize(Map<String, String> argsMap) {
-//        if (configuration == null) {
-//            MetricWriteHelper metricWriter = MetricWriteHelperFactory.create(this);
-//            MonitorConfiguration conf = new MonitorConfiguration("Custom Metrics|Solr|", new TaskRunner(), metricWriter);
-//            final String configFilePath = argsMap.get("config-file");
-//            conf.setConfigYml(configFilePath);
-//            conf.checkIfInitialized(MonitorConfiguration.ConfItem.METRIC_PREFIX, MonitorConfiguration.ConfItem.CONFIG_YML, MonitorConfiguration.ConfItem.HTTP_CLIENT
-//                    , MonitorConfiguration.ConfItem.EXECUTOR_SERVICE);
-//            this.configuration = conf;
-//        }
-//    }
-//
-//    public TaskOutput execute(Map<String, String> map, TaskExecutionContext taskExecutionContext) throws TaskExecutionException {
-//        logger.debug("The raw arguments are {}", map);
-//        try {
-//            initialize(map);
-//            configuration.executeTask();
-//        } catch (Exception ex) {
-//            if (configuration != null && configuration.getMetricWriter() != null) {
-//                configuration.getMetricWriter().registerError(ex.getMessage(), ex);
-//            }
-//        }
-//        return null;
-//    }
-//
-//    private class TaskRunner implements Runnable {
-//
-//        public void run() {
-//            Map<String, ?> config = configuration.getConfigYml();
-//            List<Map> servers = (List) config.get("servers");
-//            if (servers != null && !servers.isEmpty()) {
-//                for (Map server : servers) {
-//                    SolrMonitorTask task = new SolrMonitorTask(configuration, server);
-//                    configuration.getExecutorService().execute(task);
-//                }
-//            } else {
-//                logger.error("Error encountered while running the Solr Monitoring task");
-//            }
-//        }
-//    }
-
-//    private static String getImplementationVersion() {
-//        return SolrMonitor.class.getPackage().getImplementationTitle();
-//    }
 
 }
 

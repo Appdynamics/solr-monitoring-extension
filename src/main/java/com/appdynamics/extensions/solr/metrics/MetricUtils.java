@@ -1,5 +1,6 @@
 package com.appdynamics.extensions.solr.metrics;
 
+import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.MetricConfig;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.google.common.base.Strings;
@@ -83,7 +84,7 @@ public class MetricUtils {
                 logger.error("Unrecognized string format: " + valueStr);
             }
         }
-        return null;
+        return unLocalizeStrValue(valueStr);
     }
 
 
@@ -97,5 +98,12 @@ public class MetricUtils {
         return null;
     }
 
+    public static List<Metric> getListMetrics(Map<String, Metric> metricMap) {
+        List<Metric> metricList = new ArrayList<Metric>();
+        for (String path : metricMap.keySet()) {
+            metricList.add(metricMap.get(path));
+        }
+        return metricList;
 
+    }
 }
