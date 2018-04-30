@@ -32,6 +32,7 @@ import java.util.Map;
 
 import static com.appdynamics.extensions.solr.utils.Constants.DEFAULT_METRIC_PREFIX;
 import static com.appdynamics.extensions.solr.utils.Constants.MONITOR_NAME;
+import static com.appdynamics.extensions.solr.utils.Constants.NAME;
 
 
 public class SolrMonitor extends ABaseMonitor {
@@ -55,9 +56,9 @@ public class SolrMonitor extends ABaseMonitor {
         AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialised");
         AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
         for (Map<String, String> server : servers) {
-            logger.debug("Starting the Solr Monitoring Task for server : " + server.get("name"));
+            logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
             SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server, getMetricReplacer());
-            taskExecutor.submit(server.get("name"), task);
+            taskExecutor.submit(server.get(NAME), task);
         }
     }
 

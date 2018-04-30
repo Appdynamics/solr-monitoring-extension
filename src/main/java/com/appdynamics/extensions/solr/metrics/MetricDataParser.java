@@ -15,10 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 import static com.appdynamics.extensions.solr.metrics.MetricUtils.convertMemoryStringToDouble;
+import static com.appdynamics.extensions.solr.utils.Constants.JSONMAP;
+import static com.appdynamics.extensions.solr.utils.Constants.JSONLIST;
 
 /**
  * Created by bhuvnesh.kumar on 4/10/18.
  */
+
 public class MetricDataParser {
 
     private static final Logger logger = LoggerFactory.getLogger(MetricCollector.class);
@@ -33,14 +36,14 @@ public class MetricDataParser {
     Map<String, Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
         if (nodes != null) {
             if (stat.getStructure() != null) {
-                if (stat.getStructure().toString().equals("jsonMap")) {
+                if (stat.getStructure().toString().equals(JSONMAP)) {
                     ArrayList<?> arrayOfNodes = (ArrayList<?>) objectMapper.convertValue(nodes, List.class);
                     Map<String, Object> mapOfNodes = MetricUtils.mapOfArrayList(arrayOfNodes);
 
                     for (MetricConfig metricConfig : stat.getMetricConfig()) {
                         metrics.add(getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper, metricReplacer));
                     }
-                } else if (stat.getStructure().toString().equals("jsonList")) {
+                } else if (stat.getStructure().toString().equals(JSONLIST)) {
                     JsonNode newNode = MetricUtils.getJsonNode(stat, nodes);
 
                     for (MetricConfig metricConfig : stat.getMetricConfig()) {

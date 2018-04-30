@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
+import static com.appdynamics.extensions.solr.utils.Constants.NAME;
 
 public class SolrMonitorTask implements AMonitorTaskRunnable {
     private static final Logger logger = LoggerFactory.getLogger(SolrMonitorTask.class);
@@ -36,7 +37,7 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
     }
 
     public void onTaskComplete() {
-        logger.info("Completed the NetScaler Monitoring Task for server {}", server.get("name"));
+        logger.info("Completed the Solr Monitoring Task for server {}", server.get(NAME));
     }
 
 
@@ -50,13 +51,13 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
                 MetricCollector metricCollector = new MetricCollector(stat, monitorContextConfiguration, server, phaser, metricWriteHelper, metricReplacer);
 //                runTask();
                 monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask", metricCollector);
-                logger.debug("Registering MetricCollectorTask phaser for {}", server.get("name"));
+                logger.debug("Registering MetricCollectorTask phaser for {}", server.get(NAME));
 
             }
             phaser.arriveAndAwaitAdvance();
             logger.info("Completed the Solr Metric Monitoring task");
         } catch (Exception e) {
-            logger.error("An error was encountered during the Solr Monitoring Task for server : " + server.get("name"), e.getMessage());
+            logger.error("An error was encountered during the Solr Monitoring Task for server : " + server.get(NAME), e.getMessage());
 
         }
     }

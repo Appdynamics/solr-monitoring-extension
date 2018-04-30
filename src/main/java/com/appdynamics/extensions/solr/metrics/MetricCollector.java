@@ -20,6 +20,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
+import static com.appdynamics.extensions.solr.utils.Constants.NAME;
+import static com.appdynamics.extensions.solr.utils.Constants.SOLR_WITH_SLASH;
+import static com.appdynamics.extensions.solr.utils.Constants.COLLECTIONNAME;
+import static com.appdynamics.extensions.solr.utils.Constants.METRIC_SEPARATOR;
+import static com.appdynamics.extensions.solr.utils.Constants.HEART_BEAT;
 
 public class MetricCollector implements Runnable {
 
@@ -50,24 +55,24 @@ public class MetricCollector implements Runnable {
     }
 
     private String buildUrl(Map<String, String> server, String statEndpoint) {
-        return UrlBuilder.fromYmlServerConfig(server).build() + "/solr/" + server.get("collectionName") + statEndpoint;
+        return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + statEndpoint;
     }
 
     public void run() {
         try {
 
-            serverName = server.get("name").toString();
+            serverName = server.get(NAME).toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
             JsonNode jsonNode = null;
             try {
                 jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
             } catch (Exception e) {
                 logger.error("Unable to establish connection and get data from endpoint: {}", endpoint);
-                metrics.add(new Metric("Heart Beat", String.valueOf(BigInteger.ZERO),
-                        monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|Heart Beat"));
+                metrics.add(new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO),
+                        monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT));
 
-                String prefix = monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|Heart Beat";
-                Metric heartBeat = new Metric("Heart Beat", String.valueOf(BigInteger.ZERO), prefix);
+                String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
+                Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO), prefix);
                 allMetrics.put(prefix, heartBeat);
 
             }
@@ -77,8 +82,8 @@ public class MetricCollector implements Runnable {
 
         } catch (Exception e) {
             logger.error("Error encountered while collecting metrics from endpoint: " + endpoint, e.getMessage());
-            metrics.add(new Metric("Heart Beat", String.valueOf(BigInteger.ZERO),
-                    monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|Heart Beat"));
+            metrics.add(new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO),
+                    monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT));
 
         } finally {
             logger.debug("Completing metric collection from endpoint: " + endpoint);
@@ -88,9 +93,9 @@ public class MetricCollector implements Runnable {
     }
 
     private void printMetrics() {
-        metrics.add(new Metric("Heart Beat", String.valueOf(BigInteger.ONE), monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|Heart Beat"));
-        String prefix = monitorContextConfiguration.getMetricPrefix() + "|" + serverName + "|Heart Beat";
-        Metric heartBeat = new Metric("Heart Beat", String.valueOf(BigInteger.ONE), prefix);
+        metrics.add(new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT));
+        String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
+        Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), prefix);
         allMetrics.put(prefix, heartBeat);
 
         List<Metric> metricList = MetricUtils.getListMetrics(allMetrics);
