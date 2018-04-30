@@ -98,11 +98,16 @@ public class MetricCollector implements Runnable{
         allMetrics.put(prefix,heartBeat);
 
         // #TODO instead of doing the following method, move it to use the map, get the list and send it to transform and print metrics.
-//        List<Metric> metricList = MetricUtils.getListMetrics(allMetrics);
+        List<Metric> metricList = MetricUtils.getListMetrics(allMetrics);
 
-        if (metrics != null && metrics.size() > 0) {
-            logger.debug("Printing {} metrics for stat: {}", metrics.size(), stat.getAlias());
-            metricWriteHelper.transformAndPrintMetrics(metrics);
+//        if (metrics != null && metrics.size() > 0) {
+//            logger.debug("Printing {} metrics for stat: {}", metrics.size(), stat.getAlias());
+//            metricWriteHelper.transformAndPrintMetrics(metrics);
+//        }
+
+        if (metricList != null && metricList.size() > 0) {
+            logger.debug("Printing {} metrics for stat: {}", metricList.size(), stat.getAlias());
+            metricWriteHelper.transformAndPrintMetrics(metricList);
         }
     }
 
@@ -119,8 +124,9 @@ public class MetricCollector implements Runnable{
     private void collectStats(Stat stat, JsonNode jsonNode){
         if(stat.getMetricConfig()!= null) {
             //#TODO this overrides the current data in the all metrics
-            allMetrics = metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName, metricReplacer);
+//            allMetrics = metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName, metricReplacer);
 //            metrics.addAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName, metricReplacer));
+            allMetrics.putAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName, metricReplacer));
 
         }
     }
