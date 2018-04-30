@@ -14,8 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-import static com.appdynamics.extensions.solr.metrics.MetricUtils.*;
+import static com.appdynamics.extensions.solr.metrics.MetricUtils.convertMemoryStringToDouble;
 
 /**
  * Created by bhuvnesh.kumar on 4/10/18.
@@ -26,13 +25,14 @@ public class MetricDataParser {
     private MonitorContextConfiguration monitorContextConfiguration;
     private List<Metric> metrics = new ArrayList<Metric>();
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
+
     MetricDataParser(MonitorContextConfiguration monitorContextConfiguration) {
         this.monitorContextConfiguration = monitorContextConfiguration;
     }
 
     Map<String, Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
         if (nodes != null) {
-            if(stat.getStructure() != null) {
+            if (stat.getStructure() != null) {
                 if (stat.getStructure().toString().equals("jsonMap")) {
                     ArrayList<?> arrayOfNodes = (ArrayList<?>) objectMapper.convertValue(nodes, List.class);
                     Map<String, Object> mapOfNodes = MetricUtils.mapOfArrayList(arrayOfNodes);
@@ -48,51 +48,20 @@ public class MetricDataParser {
                     }
 
                 }
-            } else{
+            } else {
                 logger.debug("No structure defined in the stat. ");
             }
         } else {
 
-               logger.debug("Empty JSON Node returned for server: {} and alias: {}", serverName, stat.getAlias());
+            logger.debug("Empty JSON Node returned for server: {} and alias: {}", serverName, stat.getAlias());
         }
         return allMetrics;
     }
 
-/*
-*
-    List<Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
-        if (nodes != null) {
-            if(stat.getStructure() != null) {
-                if (stat.getStructure().toString().equals("jsonMap")) {
-                    ArrayList<?> arrayOfNodes = (ArrayList<?>) objectMapper.convertValue(nodes, List.class);
-                    Map<String, Object> mapOfNodes = MetricUtils.mapOfArrayList(arrayOfNodes);
-
-                    for (MetricConfig metricConfig : stat.getMetricConfig()) {
-                        metrics.add(getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper, metricReplacer));
-                    }
-                } else if (stat.getStructure().toString().equals("jsonList")) {
-                    JsonNode newNode = MetricUtils.getJsonNode(stat, nodes);
-
-                    for (MetricConfig metricConfig : stat.getMetricConfig()) {
-                        metrics.add(getMetricFromJson(metricConfig, stat, newNode, objectMapper, serverName, metricReplacer));
-                    }
-
-                }
-            } else{
-                logger.debug("No structure defined in the stat. ");
-            }
-        } else {
-
-               logger.debug("Empty JSON Node returned for server: {} and alias: {}", serverName, stat.getAlias());
-        }
-        return metrics;
-    }
-
-* */
 
     private Metric getMetricFromMap(Map<String, Object> mapOfNodes, MetricConfig metricConfig, Stat stat, String serverName, ObjectMapper objectMapper, List<Map<String, String>> metricReplacer) {
         Metric metric = null;
-        if(!MetricUtils.checkForEmptyAttribute(metricConfig)) {
+        if (!MetricUtils.checkForEmptyAttribute(metricConfig)) {
             String metricValue = getValueFromMap(mapOfNodes, metricConfig, stat);
             Map<String, String> propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
             String metricPrefix = getMetricPrefix(metricConfig, stat, serverName, metricReplacer);
@@ -106,26 +75,26 @@ public class MetricDataParser {
 
     private String getValueFromMap(Map<String, Object> mapOfNodes, MetricConfig metricConfig, Stat stat) {
         String value = "";
-        if(stat.getCategory()!= null){
-            if(mapOfNodes.get(stat.getCategory()) != null){
+        if (stat.getCategory() != null) {
+            if (mapOfNodes.get(stat.getCategory()) != null) {
                 mapOfNodes = (Map<String, Object>) mapOfNodes.get(stat.getCategory());
             }
         }
 
-        if(stat.getSubcategory()!= null){
-            if (mapOfNodes.get(stat.getSubcategory()) != null){
+        if (stat.getSubcategory() != null) {
+            if (mapOfNodes.get(stat.getSubcategory()) != null) {
                 mapOfNodes = (Map<String, Object>) mapOfNodes.get(stat.getSubcategory());
             }
         }
 
-        if(stat.getMetricSection()!= null){
-            if (mapOfNodes.get(stat.getMetricSection()) != null){
+        if (stat.getMetricSection() != null) {
+            if (mapOfNodes.get(stat.getMetricSection()) != null) {
                 mapOfNodes = (Map<String, Object>) mapOfNodes.get(stat.getMetricSection());
             }
         }
 
-        if(metricConfig.getAttr() != null){
-            if(mapOfNodes.get(metricConfig.getAttr()) != null){
+        if (metricConfig.getAttr() != null) {
+            if (mapOfNodes.get(metricConfig.getAttr()) != null) {
                 value = mapOfNodes.get(metricConfig.getAttr()).toString();
             }
         }
@@ -173,7 +142,7 @@ public class MetricDataParser {
         }
         if (metricConfig.getAlias() != null) {
             metricPrefix += "|" + metricConfig.getAlias();
-        } else{
+        } else {
             metricPrefix += "|" + metricConfig.getAttr();
         }
 

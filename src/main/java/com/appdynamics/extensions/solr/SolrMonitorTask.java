@@ -9,17 +9,13 @@
 package com.appdynamics.extensions.solr;
 
 import com.appdynamics.extensions.AMonitorTaskRunnable;
-import com.appdynamics.extensions.conf.MonitorContextConfiguration;
-import com.appdynamics.extensions.solr.core.Core;
-import com.appdynamics.extensions.solr.core.CoreContext;
 import com.appdynamics.extensions.MetricWriteHelper;
+import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.metrics.MetricCollector;
-import com.singularity.ee.agent.systemagent.api.MetricWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.IOException;
-import java.math.BigDecimal;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
@@ -31,7 +27,7 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
     private MonitorContextConfiguration monitorContextConfiguration;
     private List<Map<String, String>> metricReplacer;
 
-    public SolrMonitorTask(MonitorContextConfiguration monitorContextConfiguration,  MetricWriteHelper metricWriteHelper,
+    public SolrMonitorTask(MonitorContextConfiguration monitorContextConfiguration, MetricWriteHelper metricWriteHelper,
                            Map<String, String> server, List<Map<String, String>> metricReplacer) {
         this.monitorContextConfiguration = monitorContextConfiguration;
         this.server = server;
@@ -44,14 +40,14 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
     }
 
 
-    public void run(){
+    public void run() {
         try {
             Phaser phaser = new Phaser();
             Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
 
             for (Stat stat : metricConfiguration.getStats()) {
                 phaser.register();
-                MetricCollector metricCollector = new MetricCollector(stat,  monitorContextConfiguration, server, phaser, metricWriteHelper, metricReplacer);
+                MetricCollector metricCollector = new MetricCollector(stat, monitorContextConfiguration, server, phaser, metricWriteHelper, metricReplacer);
 //                runTask();
                 monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask", metricCollector);
                 logger.debug("Registering MetricCollectorTask phaser for {}", server.get("name"));
@@ -59,8 +55,7 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
             }
             phaser.arriveAndAwaitAdvance();
             logger.info("Completed the Solr Metric Monitoring task");
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             logger.error("An error was encountered during the Solr Monitoring Task for server : " + server.get("name"), e.getMessage());
 
         }
