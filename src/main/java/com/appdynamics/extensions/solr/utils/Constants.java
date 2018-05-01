@@ -13,6 +13,13 @@ public class Constants {
     public static final String COLLECTIONNAME = "collectionName";
     public static final String METRIC_SEPARATOR = "|";
     public static final String HEART_BEAT = "Heart Beat";
+    public static final String REPLACE = "replace";
+    public static final String REPLACE_WITH = "replaceWith";
+    public static final String KB = "KB";
+    public static final String MB = "MB";
+    public static final String GB = "GB";
+
+    public static final double BYTES_CONVERSION_FACTOR = 1024.0;
 
 
 }

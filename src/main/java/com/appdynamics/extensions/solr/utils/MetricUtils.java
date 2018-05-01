@@ -11,13 +11,17 @@ import org.slf4j.LoggerFactory;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.*;
-
+import static com.appdynamics.extensions.solr.utils.Constants.REPLACE;
+import static com.appdynamics.extensions.solr.utils.Constants.REPLACE_WITH;
+import static com.appdynamics.extensions.solr.utils.Constants.BYTES_CONVERSION_FACTOR;
+import static com.appdynamics.extensions.solr.utils.Constants.KB;
+import static com.appdynamics.extensions.solr.utils.Constants.MB;
+import static com.appdynamics.extensions.solr.utils.Constants.GB;
 /**
  * Created by bhuvnesh.kumar on 4/25/18.
  */
 public class MetricUtils {
     private static final Logger logger = LoggerFactory.getLogger(MetricUtils.class);
-    private static final double BYTES_CONVERSION_FACTOR = 1024.0;
 
     public static JsonNode getJsonNode(Stat stat, JsonNode nodes) {
         JsonNode newNode = nodes;
@@ -34,8 +38,8 @@ public class MetricUtils {
     public static String replaceCharacter(String metricPath, List<Map<String, String>> metricReplacer) {
 
         for (Map chars : metricReplacer) {
-            String replace = (String) chars.get("replace");
-            String replaceWith = (String) chars.get("replaceWith");
+            String replace = (String) chars.get(REPLACE);
+            String replaceWith = (String) chars.get(REPLACE_WITH);
 
             if (metricPath.contains(replace)) {
                 metricPath = metricPath.replaceAll(replace, replaceWith);
@@ -70,14 +74,14 @@ public class MetricUtils {
         if (!Strings.isNullOrEmpty(valueStr)) {
             String strippedValueStr = null;
             try {
-                if (valueStr.contains("KB")) {
-                    strippedValueStr = valueStr.split("KB")[0].trim();
+                if (valueStr.contains(KB)) {
+                    strippedValueStr = valueStr.split(KB)[0].trim();
                     return unLocalizeStrValue(strippedValueStr) / BYTES_CONVERSION_FACTOR;
-                } else if (valueStr.contains("MB")) {
-                    strippedValueStr = valueStr.split("MB")[0].trim();
+                } else if (valueStr.contains(MB)) {
+                    strippedValueStr = valueStr.split(MB)[0].trim();
                     return unLocalizeStrValue(strippedValueStr);
-                } else if (valueStr.contains("GB")) {
-                    strippedValueStr = valueStr.split("GB")[0].trim();
+                } else if (valueStr.contains(GB)) {
+                    strippedValueStr = valueStr.split(GB)[0].trim();
                     return unLocalizeStrValue(strippedValueStr) * BYTES_CONVERSION_FACTOR;
                 }
             } catch (Exception e) {
