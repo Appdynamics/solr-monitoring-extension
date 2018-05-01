@@ -153,13 +153,10 @@
                                     <fileset dir="${build.directory}" includes="${project.artifactId}.${project.packaging}"/>
                                 </copy>
                                 <copy todir="${target.dir}">
-                                    <fileset dir="${project.basedir}" includes="LICENSE"/>
+                                    <fileset dir="${project.basedir}" includes="LICENSE.txt"/>
                                 </copy>
                                 <copy todir="${target.dir}">
-                                    <fileset dir="${project.basedir}" includes="Notice.txt"/>
-                                </copy>
-                                <copy todir="${target.dir}">
-                                    <fileset dir="${project.basedir}" includes="License.txt"/>
+                                    <fileset dir="${project.basedir}" includes="NOTICE.txt"/>
                                 </copy>
 
                                 <zip destfile="${target.dir}-${project.version}.zip">

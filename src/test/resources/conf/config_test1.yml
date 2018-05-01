@@ -22,24 +22,12 @@ servers:
 #     proxyPassword: ""
 
 
-#   - host: "localhost"
-#     port: 7574
-#     name: "Server 2"
-#     collectionName : "techproducts"
+   - host: "localhost"
+     port: 7574
+     name: "Server 2"
+     collectionName : "techproducts"
 
 
-# Example
-# cores
-# - name: "collection1"
-#     pingHandler: "/admin/ping"
-#     queryHandlers: ["/select", "/update"]
-#   - name: "collection2"
-#     pingHandler: "/admin/ping"
-#     queryHandlers: ["/admin/ping"]
-#cores:
-#   - name: "techproducts"
-#     pingHandler: "/admin/ping"
-#     queryHandlers: ["/select", "/get"]
 
 metricCharacterReplacer:
    - replace: "%"

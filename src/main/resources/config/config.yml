@@ -8,35 +8,33 @@ servers:
     # mandatory parameters
    - host: "localhost"
      port: 8983
-     name: "Solr Monitor 1"
+     name: "Server 1"
+     collectionName : "gettingStarted"
 
-     # Optional Parameters. Configure if any required
-     username: ""
-     password: ""
-     contextRoot: ""
-     usessl: ""
-     proxyHost: ""
-     proxyPort: ""
-     proxyUsername: ""
-     proxyPassword: ""
+#  Optional Parameters. Configure if any required
+#     username: ""
+#     password: ""
+#     contextRoot: ""
+#     usessl: ""
+#     proxyHost: ""
+#     proxyPort: ""
+#     proxyUsername: ""
+#     proxyPassword: ""
 
-     metricCharacterReplacer:
-        - replace: "%"
-          replaceWith: ""
-        - replace: ","
-          replaceWith: "-"
 
-# Example
-# cores
-# - name: "collection1"
-#     pingHandler: "/admin/ping"
-#     queryHandlers: ["/select", "/update"]
-#   - name: "collection2"
-#     pingHandler: "/admin/ping"
-#     queryHandlers: ["/admin/ping"]
-cores:
-   - name: "gettingstarted"
-     pingHandler: "/admin/ping"
-     queryHandlers: ["/select", "/get"]
+#   - host: "localhost"
+#     port: 7574
+#     name: "Server 2"
+#     collectionName : "techproducts"
+
+
+
+metricCharacterReplacer:
+   - replace: "%"
+     replaceWith: ""
+   - replace: ","
+     replaceWith: "-"
+   - replace: "."
+     replaceWith: "-"
 
 numberOfThreads: 5

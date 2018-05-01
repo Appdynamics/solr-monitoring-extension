@@ -46,6 +46,20 @@ Set delta = true for metric to report per-min data
             <metric alias="Cumulative Hit Ratio" attr="CACHE.searcher.queryResultCache.cumulative_hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
             <metric alias="Cumulative Evictions" attr="CACHE.searcher.queryResultCache.cumulative_evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
         </stat>
+        <stat category="CACHE" subCategory="documentCache" metricSection="stats"  >
+            <metric alias="Lookups" attr="CACHE.searcher.documentCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Hits" attr="CACHE.searcher.documentCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Hit Ratio" attr="CACHE.searcher.documentCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+            <metric alias="Evictions" attr="CACHE.searcher.documentCache.evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Inserts" attr="CACHE.searcher.documentCache.inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Size" attr="CACHE.searcher.documentCache.size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Warmup Time" attr="CACHE.searcher.documentCache.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Lookups" attr="CACHE.searcher.documentCache.cumulative_lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Inserts" attr="CACHE.searcher.documentCache.cumulative_inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Hits" attr="CACHE.searcher.documentCache.cumulative_hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Cumulative Hit Ratio" attr="CACHE.searcher.documentCache.cumulative_hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+            <metric alias="Cumulative Evictions" attr="CACHE.searcher.documentCache.cumulative_evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        </stat>
         <stat category="CACHE" subCategory="filterCache" metricSection="stats" structure="jsonMap">
             <metric alias="Lookups" attr="CACHE.searcher.filterCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             <metric alias="Hits" attr="CACHE.searcher.filterCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />

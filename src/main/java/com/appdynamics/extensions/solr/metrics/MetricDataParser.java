@@ -4,6 +4,7 @@ import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.MetricConfig;
 import com.appdynamics.extensions.solr.input.Stat;
+import com.appdynamics.extensions.solr.utils.MetricUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.appdynamics.extensions.solr.metrics.MetricUtils.convertMemoryStringToDouble;
+import static com.appdynamics.extensions.solr.utils.MetricUtils.convertMemoryStringToDouble;
 import static com.appdynamics.extensions.solr.utils.Constants.JSONMAP;
 import static com.appdynamics.extensions.solr.utils.Constants.JSONLIST;
 
@@ -45,7 +46,6 @@ public class MetricDataParser {
                     }
                 } else if (stat.getStructure().toString().equals(JSONLIST)) {
                     JsonNode newNode = MetricUtils.getJsonNode(stat, nodes);
-
                     for (MetricConfig metricConfig : stat.getMetricConfig()) {
                         metrics.add(getMetricFromJson(metricConfig, stat, newNode, objectMapper, serverName, metricReplacer));
                     }

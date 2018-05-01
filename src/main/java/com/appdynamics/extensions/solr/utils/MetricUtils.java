@@ -1,4 +1,4 @@
-package com.appdynamics.extensions.solr.metrics;
+package com.appdynamics.extensions.solr.utils;
 
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.MetricConfig;
