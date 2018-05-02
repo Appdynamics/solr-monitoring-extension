@@ -12,7 +12,7 @@ public class Constants {
     public static final String SOLR_WITH_SLASH = "/solr/";
     public static final String COLLECTIONNAME = "collectionName";
     public static final String METRIC_SEPARATOR = "|";
-    public static final String HEART_BEAT = "Heart Beat";
+    public static final String HEART_BEAT = "HeartBeat";
     public static final String REPLACE = "replace";
     public static final String REPLACE_WITH = "replaceWith";
     public static final String KB = "KB";
