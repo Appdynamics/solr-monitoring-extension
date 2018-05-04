@@ -30,7 +30,7 @@ public class MetricDataParser {
     private List<Metric> metrics = new ArrayList<Metric>();
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
 
-    MetricDataParser(MonitorContextConfiguration monitorContextConfiguration) {
+    public MetricDataParser(MonitorContextConfiguration monitorContextConfiguration) {
         this.monitorContextConfiguration = monitorContextConfiguration;
     }
 

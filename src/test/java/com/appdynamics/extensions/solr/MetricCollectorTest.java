@@ -40,6 +40,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+
 /**
  * Created by bhuvnesh.kumar on 5/2/18.
  */
@@ -76,4 +79,51 @@ public class MetricCollectorTest {
 
     private List<Metric> metrics = new ArrayList<Metric>();
 
-}
+    private Map<String, String> server = new HashMap<String, String>();
+    private List<Map<String, String>> metricReplacer = new ArrayList<Map<String, String>>();
+
+    @Before
+    public void before() {
+
+        monitorContextConfiguration.setConfigYml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
+        monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/metrics.xml", Stat.Stats.class);
+
+        Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
+
+        stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
+
+        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration));
+
+        metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter, metricReplacer));
+
+
+        PowerMockito.mockStatic(HttpClientUtils.class);
+
+        PowerMockito.when(HttpClientUtils.getResponseAsJson(any(CloseableHttpClient.class), anyString(), any(Class.class))).thenAnswer(
+                new Answer() {
+                    public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                        ObjectMapper mapper = new ObjectMapper();
+                        String url = (String) invocationOnMock.getArguments()[1];
+                        String var="ArrayNode";
+                        String file = null;
+                        if (url.contains("/nodes")) {
+                            file = "/json/nodes.json";
+                        } else if (url.contains("/channels")) {
+                            file = "/json/channels.json";
+                        } else if (url.contains("/queues")) {
+                            file = "/json/queues.json";
+                        } else if (url.contains("/overview")) {
+                            file = "/json/overview.json";
+                        }
+                        logger.info("Returning the mocked data for the api " + file);
+                        if(url.contains("/overview")){
+                            return mapper.readValue(getClass().getResourceAsStream(file), JsonNode.class);
+                        }else {
+                            return mapper.readValue(getClass().getResourceAsStream(file), ArrayNode.class);
+                        }
+                    }
+                });
+
+    }
+
+    }
