@@ -34,7 +34,7 @@ public class MetricDataParser {
         this.monitorContextConfiguration = monitorContextConfiguration;
     }
 
-    Map<String, Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
+    public Map<String, Metric> parseNodeData(Stat stat, JsonNode nodes, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
         if (nodes != null) {
             if (stat.getStructure() != null) {
                 if (stat.getStructure().toString().equals(JSONMAP)) {

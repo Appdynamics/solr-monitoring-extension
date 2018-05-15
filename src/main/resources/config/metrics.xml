@@ -115,8 +115,8 @@ Set delta = true for metric to report per-min data
             <metric alias="Total Physical Memory Size" attr="totalPhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             <metric alias="Total Swap Space Size" attr="totalSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             <metric alias="Max File Descriptor Count" attr="maxFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Open File Descriptor Count" attr="openFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Process Cpu Load" attr="processCpuLoad" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+            <metric alias="Open File Descriptor Count" attr="openFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpTye="INDIVIDUAL" />
+            <metric alias="Process CPU Load" pattr="processCpuLoad" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
         </stat>
 
         <stat alias="JVM" rootElement="jvm"  structure="jsonList">

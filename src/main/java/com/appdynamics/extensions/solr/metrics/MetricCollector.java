@@ -54,6 +54,13 @@ public class MetricCollector implements Runnable {
         this.endpoint = buildUrl(server, stat.getUrl());
         this.metricReplacer = metricReplacer;
     }
+    public Map<String, Metric> getMetricsMap() {
+        return allMetrics;
+    }
+
+    public List<Metric> getMetricsList() {
+        return metrics;
+    }
 
     private String buildUrl(Map<String, String> server, String statEndpoint) {
         return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + statEndpoint;
@@ -95,6 +102,8 @@ public class MetricCollector implements Runnable {
 
     private void printMetrics() {
         metrics.add(new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT));
+
+
         String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
         Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), prefix);
         allMetrics.put(prefix, heartBeat);
