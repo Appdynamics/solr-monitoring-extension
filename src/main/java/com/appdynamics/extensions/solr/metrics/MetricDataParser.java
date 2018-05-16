@@ -27,7 +27,7 @@ public class MetricDataParser {
 
     private static final Logger logger = LoggerFactory.getLogger(MetricCollector.class);
     private MonitorContextConfiguration monitorContextConfiguration;
-    private List<Metric> metrics = new ArrayList<Metric>();
+//    private List<Metric> metrics = new ArrayList<Metric>();
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
 
     public MetricDataParser(MonitorContextConfiguration monitorContextConfiguration) {
@@ -42,12 +42,14 @@ public class MetricDataParser {
                     Map<String, Object> mapOfNodes = MetricUtils.mapOfArrayList(arrayOfNodes);
 
                     for (MetricConfig metricConfig : stat.getMetricConfig()) {
-                        metrics.add(getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper, metricReplacer));
+//                        metrics.add(getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper, metricReplacer));
+                        getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper, metricReplacer);
                     }
                 } else if (stat.getStructure().toString().equals(JSONLIST)) {
                     JsonNode newNode = MetricUtils.getJsonNode(stat, nodes);
                     for (MetricConfig metricConfig : stat.getMetricConfig()) {
-                        metrics.add(getMetricFromJson(metricConfig, stat, newNode, objectMapper, serverName, metricReplacer));
+//                        metrics.add(getMetricFromJson(metricConfig, stat, newNode, objectMapper, serverName, metricReplacer));
+                        getMetricFromJson(metricConfig, stat, newNode, objectMapper, serverName, metricReplacer);
                     }
 
                 }
@@ -62,7 +64,7 @@ public class MetricDataParser {
     }
 
 
-    private Metric getMetricFromMap(Map<String, Object> mapOfNodes, MetricConfig metricConfig, Stat stat, String serverName, ObjectMapper objectMapper, List<Map<String, String>> metricReplacer) {
+    private void getMetricFromMap(Map<String, Object> mapOfNodes, MetricConfig metricConfig, Stat stat, String serverName, ObjectMapper objectMapper, List<Map<String, String>> metricReplacer) {
         Metric metric = null;
         if (!MetricUtils.checkForEmptyAttribute(metricConfig)) {
             String metricValue = getValueFromMap(mapOfNodes, metricConfig, stat);
@@ -72,7 +74,7 @@ public class MetricDataParser {
         }
 
         allMetrics.put(metric.getMetricPath(), metric);
-        return metric;
+//        return metric;
 
     }
 
@@ -104,7 +106,7 @@ public class MetricDataParser {
         return value;
     }
 
-    private Metric getMetricFromJson(MetricConfig metricConfig, Stat stat, JsonNode currentNode, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
+    private void getMetricFromJson(MetricConfig metricConfig, Stat stat, JsonNode currentNode, ObjectMapper objectMapper, String serverName, List<Map<String, String>> metricReplacer) {
         Metric metric = null;
         String metricValue;
 
@@ -123,7 +125,7 @@ public class MetricDataParser {
         }
         allMetrics.put(metric.getMetricPath(), metric);
 
-        return metric;
+//        return metric;
     }
 
     private String getMetricPrefix(MetricConfig metricConfig, Stat stat, String serverName, List<Map<String, String>> metricReplacer) {

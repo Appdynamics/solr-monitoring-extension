@@ -38,7 +38,7 @@ public class MetricCollector implements Runnable {
     private MetricDataParser metricDataParser;
     private String endpoint;
     private String serverName;
-    private List<Metric> metrics = new ArrayList<Metric>();
+//    private List<Metric> metrics = new ArrayList<Metric>();
     private List<Map<String, String>> metricReplacer;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
 
@@ -58,9 +58,9 @@ public class MetricCollector implements Runnable {
         return allMetrics;
     }
 
-    public List<Metric> getMetricsList() {
-        return metrics;
-    }
+//    public List<Metric> getMetricsList() {
+//        return metrics;
+//    }
 
     private String buildUrl(Map<String, String> server, String statEndpoint) {
         return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + statEndpoint;
@@ -76,8 +76,8 @@ public class MetricCollector implements Runnable {
                 jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
             } catch (Exception e) {
                 logger.error("Unable to establish connection and get data from endpoint: {}", endpoint);
-                metrics.add(new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO),
-                        monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT));
+//                metrics.add(new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO),
+//                        monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT));
 
                 String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
                 Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO), prefix);
@@ -90,8 +90,13 @@ public class MetricCollector implements Runnable {
 
         } catch (Exception e) {
             logger.error("Error encountered while collecting metrics from endpoint: " + endpoint, e.getMessage());
-            metrics.add(new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO),
-                    monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT));
+//            metrics.add(new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO),
+//                    monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT));
+
+            String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
+            Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO), prefix);
+            allMetrics.put(prefix, heartBeat);
+
 
         } finally {
             logger.debug("Completing metric collection from endpoint: " + endpoint);
@@ -101,19 +106,17 @@ public class MetricCollector implements Runnable {
     }
 
     private void printMetrics() {
-        metrics.add(new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT));
+//        metrics.add(new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT));
 
 
         String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
         Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), prefix);
         allMetrics.put(prefix, heartBeat);
 
-        List<Metric> metricList = MetricUtils.getListMetrics(allMetrics);
 
-
-        if (metricList != null && metricList.size() > 0) {
-            logger.debug("Printing {} metrics for stat: {}", metricList.size(), stat.getAlias());
-            metricWriteHelper.transformAndPrintMetrics(metricList);
+        if (MetricUtils.getListMetrics(allMetrics) != null && MetricUtils.getListMetrics(allMetrics).size() > 0) {
+            logger.debug("Printing {} metrics for stat: {}", MetricUtils.getListMetrics(allMetrics).size(), stat.getAlias());
+            metricWriteHelper.transformAndPrintMetrics(MetricUtils.getListMetrics(allMetrics));
         }
     }
 
