@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.appdynamics.extensions.solr.utils.MetricUtils.convertMemoryStringToDouble;
-import static com.appdynamics.extensions.solr.utils.Constants.JSONMAP;
 import static com.appdynamics.extensions.solr.utils.Constants.JSONLIST;
+import static com.appdynamics.extensions.solr.utils.Constants.JSONMAP;
+import static com.appdynamics.extensions.solr.utils.MetricUtils.convertMemoryStringToDouble;
 
 /**
  * Created by bhuvnesh.kumar on 4/10/18.
@@ -27,7 +27,6 @@ public class MetricDataParser {
 
     private static final Logger logger = LoggerFactory.getLogger(MetricCollector.class);
     private MonitorContextConfiguration monitorContextConfiguration;
-//    private List<Metric> metrics = new ArrayList<Metric>();
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
 
     public MetricDataParser(MonitorContextConfiguration monitorContextConfiguration) {
@@ -42,16 +41,13 @@ public class MetricDataParser {
                     Map<String, Object> mapOfNodes = MetricUtils.mapOfArrayList(arrayOfNodes);
 
                     for (MetricConfig metricConfig : stat.getMetricConfig()) {
-//                        metrics.add(getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper, metricReplacer));
                         getMetricFromMap(mapOfNodes, metricConfig, stat, serverName, objectMapper, metricReplacer);
                     }
                 } else if (stat.getStructure().toString().equals(JSONLIST)) {
                     JsonNode newNode = MetricUtils.getJsonNode(stat, nodes);
                     for (MetricConfig metricConfig : stat.getMetricConfig()) {
-//                        metrics.add(getMetricFromJson(metricConfig, stat, newNode, objectMapper, serverName, metricReplacer));
                         getMetricFromJson(metricConfig, stat, newNode, objectMapper, serverName, metricReplacer);
                     }
-
                 }
             } else {
                 logger.debug("No structure defined in the stat. ");
@@ -72,9 +68,7 @@ public class MetricDataParser {
             String metricPrefix = getMetricPrefix(metricConfig, stat, serverName, metricReplacer);
             metric = new Metric(metricConfig.getAlias(), metricValue, metricPrefix, propertiesMap);
         }
-
         allMetrics.put(metric.getMetricPath(), metric);
-//        return metric;
 
     }
 
@@ -124,8 +118,6 @@ public class MetricDataParser {
             }
         }
         allMetrics.put(metric.getMetricPath(), metric);
-
-//        return metric;
     }
 
     private String getMetricPrefix(MetricConfig metricConfig, Stat stat, String serverName, List<Map<String, String>> metricReplacer) {

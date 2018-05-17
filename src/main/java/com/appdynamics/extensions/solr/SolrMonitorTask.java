@@ -43,6 +43,7 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
 
     public void run() {
         try {
+            logger.debug("Created Task and starting work for Server: {}", server.get(NAME));
             Phaser phaser = new Phaser();
             Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
 

@@ -119,7 +119,7 @@ public class MetricCollectorMBeanMetricsTest {
 
         }
         @Test
-        public void testWithSystemMetrics() throws TaskExecutionException {
+        public void testWithMbeanMetrics() throws TaskExecutionException {
 
             expectedValueMap = new HashMap<String, String>();
             initExpectedMBeanCACHEdocumentCacheMetrics();
@@ -133,7 +133,6 @@ public class MetricCollectorMBeanMetricsTest {
             addHeartBeatMetricOne();
             metricCollector.run();
             validateMetricsList();
-
         }
 
     private void validateMetricsList(){
