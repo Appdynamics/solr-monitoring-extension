@@ -65,7 +65,8 @@ public class MetricCollector implements Runnable {
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
             JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
 
-            ProcessChildStats processChildStats = new ProcessChildStats( monitorContextConfiguration, serverName, metricReplacer);
+            boolean isJsonMap = MetricUtils.isJsonMap(stat);
+            ProcessChildStats processChildStats = new ProcessChildStats( monitorContextConfiguration, serverName, metricReplacer, isJsonMap);
             allMetrics.putAll(processChildStats.processStats(stat, jsonNode));
 
             logger.debug("Received Json Node and starting processing.");

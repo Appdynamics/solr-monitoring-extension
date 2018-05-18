@@ -22,13 +22,16 @@ public class ProcessChildStats {
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
     private String serverName;
     private List<Map<String, String>> metricReplacer;
+    private boolean isJsonMap;
+    private ParseMetrics metricParser;
 
-
-    ProcessChildStats(MonitorContextConfiguration monitorContextConfiguration, String serverName, List<Map<String, String>> metricReplacer){
+    ProcessChildStats(MonitorContextConfiguration monitorContextConfiguration, String serverName, List<Map<String, String>> metricReplacer, Boolean isJsonMap){
         this.monitorContextConfiguration = monitorContextConfiguration;
         this.metricDataParser = new MetricDataParser(monitorContextConfiguration);
+        this.metricParser = new ParseMetrics(monitorContextConfiguration);
         this.serverName = serverName;
         this.metricReplacer = metricReplacer;
+        this.isJsonMap = isJsonMap;
     }
 
 
@@ -46,7 +49,8 @@ public class ProcessChildStats {
 
     private void collectStats(Stat stat, JsonNode jsonNode) {
         if (stat.getMetricConfig() != null) {
-            allMetrics.putAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName, metricReplacer));
+//            allMetrics.putAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName, metricReplacer));
+            allMetrics.putAll(metricParser.parseNodeData(stat, jsonNode,  new ObjectMapper(), serverName, metricReplacer, isJsonMap));
         }
     }
 
@@ -55,7 +59,9 @@ public class ProcessChildStats {
         return stat == null;
     }
 
+
     private void collectChildStats(Stat stat, JsonNode jsonNode) {
+
         for (Stat childStat : stat.getStats()) {
             if (childStat != null) {
                 if (stat.getRootElement() != null) {

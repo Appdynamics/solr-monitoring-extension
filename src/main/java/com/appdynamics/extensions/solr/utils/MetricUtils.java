@@ -110,4 +110,9 @@ public class MetricUtils {
         return metricList;
 
     }
+
+    public static boolean isJsonMap(Stat stat){
+        return stat.getStructure().toString().equals("jsonMap");
+    }
+
 }

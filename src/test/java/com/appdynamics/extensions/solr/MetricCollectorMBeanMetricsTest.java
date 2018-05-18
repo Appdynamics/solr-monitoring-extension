@@ -81,7 +81,7 @@ public class MetricCollectorMBeanMetricsTest {
         public void before() {
 
             monitorContextConfiguration.setConfigYml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
-            monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/MbeansMetrics.xml", Stat.Stats.class);
+            monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/MbeansMetricsTest.xml", Stat.Stats.class);
 
             Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
 
