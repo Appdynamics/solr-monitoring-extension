@@ -67,7 +67,7 @@ public class MetricCollector implements Runnable {
 
             boolean isJsonMap = MetricUtils.isJsonMap(stat);
             ProcessChildStats processChildStats = new ProcessChildStats( monitorContextConfiguration, serverName, metricReplacer, isJsonMap);
-            allMetrics.putAll(processChildStats.processStats(stat, jsonNode));
+            allMetrics.putAll(processChildStats.startProcessingStats(stat, jsonNode ));
 
             logger.debug("Received Json Node and starting processing.");
 //            processStats(stat, jsonNode);

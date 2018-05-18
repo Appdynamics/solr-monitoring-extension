@@ -8,9 +8,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by bhuvnesh.kumar on 5/17/18.
@@ -34,23 +32,28 @@ public class ProcessChildStats {
         this.isJsonMap = isJsonMap;
     }
 
-
-    protected Map<String, Metric> processStats(Stat stat, JsonNode jsonNode) {
-
-        if (!isChildStatNull(stat.getStats())) {
-            collectChildStats(stat, jsonNode);
-        } else {
-            collectStats(stat, jsonNode);
-        }
-
+    protected Map<String, Metric> startProcessingStats(Stat stat, JsonNode jsonNode) {
+        List<String> properties = new ArrayList<String>();
+        Map<String, String> propertiesMap = new LinkedHashMap<String, String>();
+        processStats(stat,jsonNode, propertiesMap);
         return allMetrics;
 
     }
 
-    private void collectStats(Stat stat, JsonNode jsonNode) {
+
+    private void processStats(Stat stat, JsonNode jsonNode, Map<String, String> properties ) {
+        if (!isChildStatNull(stat.getStats())) {
+            collectChildStats(stat, jsonNode, properties);
+        } else {
+            collectStats(stat, jsonNode,properties);
+        }
+
+
+    }
+
+    private void collectStats(Stat stat, JsonNode jsonNode,Map<String, String> properties) {
         if (stat.getMetricConfig() != null) {
-//            allMetrics.putAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName, metricReplacer));
-            allMetrics.putAll(metricParser.parseNodeData(stat, jsonNode,  new ObjectMapper(), serverName, metricReplacer, isJsonMap));
+            allMetrics.putAll(metricParser.parseNodeData(stat, jsonNode,  new ObjectMapper(), serverName, metricReplacer, isJsonMap, properties));
         }
     }
 
@@ -60,21 +63,22 @@ public class ProcessChildStats {
     }
 
 
-    private void collectChildStats(Stat stat, JsonNode jsonNode) {
+    private void collectChildStats(Stat stat, JsonNode jsonNode, Map<String, String> properties) {
 
         for (Stat childStat : stat.getStats()) {
-            if (childStat != null) {
+            if (childStat != null ) {
+                properties.put(childStat.getRootElement(),childStat.getAlias());
                 if (stat.getRootElement() != null) {
                     if (jsonNode.get(stat.getRootElement()) != null) {
                         jsonNode = jsonNode.get(stat.getRootElement());
-                    } else{
-                        logger.debug("no root element found for {}", childStat.getAlias());
                     }
                 }
-                processStats(childStat, jsonNode);
+                processStats(childStat, jsonNode, properties);
             } else {
-                collectStats(stat, jsonNode);
+                collectStats(stat, jsonNode, properties);
             }
+
+            properties.remove(childStat.getRootElement());
         }
     }
 }
