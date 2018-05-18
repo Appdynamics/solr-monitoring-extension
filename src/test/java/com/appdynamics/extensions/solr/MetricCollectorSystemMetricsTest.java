@@ -138,7 +138,6 @@ public class MetricCollectorSystemMetricsTest {
                 expectedValueMap.remove(metricPath);
             }
             else {
-                System.out.println("\"" + metricPath + "\",\"" + actualValue + "\"");
                 Assert.fail("Unknown Metric " + metricPath);
             }
 

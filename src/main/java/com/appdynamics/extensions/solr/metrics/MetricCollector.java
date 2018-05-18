@@ -63,19 +63,13 @@ public class MetricCollector implements Runnable {
 
             serverName = server.get(NAME).toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
-            JsonNode jsonNode = null;
-            try {
-                jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
-            } catch (Exception e) {
-                logger.error("Unable to establish connection and get data from endpoint: {}", endpoint);
-                String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
-                Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO), prefix);
-                allMetrics.put(prefix, heartBeat);
+            JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
 
-            }
+            ProcessChildStats processChildStats = new ProcessChildStats( monitorContextConfiguration, serverName, metricReplacer);
+            allMetrics.putAll(processChildStats.processStats(stat, jsonNode));
 
             logger.debug("Received Json Node and starting processing.");
-            processStats(stat, jsonNode);
+//            processStats(stat, jsonNode);
 
             printMetrics();
 
@@ -103,45 +97,6 @@ public class MetricCollector implements Runnable {
         }
     }
 
-    private void processStats(Stat stat, JsonNode jsonNode) {
-
-        if (!childStatNull(stat.getStats())) {
-            collectChildStats(stat, jsonNode);
-        } else {
-            collectStats(stat, jsonNode);
-        }
-
-    }
-
-    private void collectStats(Stat stat, JsonNode jsonNode) {
-        if (stat.getMetricConfig() != null) {
-            allMetrics.putAll(metricDataParser.parseNodeData(stat, jsonNode, new ObjectMapper(), serverName, metricReplacer));
-        }
-    }
-
-
-    private boolean childStatNull(Stat[] stat) {
-        if (stat == null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void collectChildStats(Stat stat, JsonNode jsonNode) {
-        for (Stat childStat : stat.getStats()) {
-            if (childStat != null) {
-                if (stat.getRootElement() != null) {
-                    if (jsonNode.get(stat.getRootElement()) != null) {
-                        jsonNode = jsonNode.get(stat.getRootElement());
-                    }
-                }
-                processStats(childStat, jsonNode);
-            } else {
-                collectStats(stat, jsonNode);
-            }
-        }
-    }
 
 
 }

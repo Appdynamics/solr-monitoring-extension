@@ -57,7 +57,6 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
             logger.info("Completed the Solr Metric Monitoring task");
         } catch (Exception e) {
             logger.error("An error was encountered during the Solr Monitoring Task for server : " + server.get(NAME), e.getMessage());
-
         }
     }
 

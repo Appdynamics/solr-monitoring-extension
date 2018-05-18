@@ -31,8 +31,6 @@ import static com.appdynamics.extensions.solr.utils.Constants.*;
 
 public class SolrMonitor extends ABaseMonitor {
     private static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
-    protected String monitorName = this.getMonitorName();
-    protected AMonitorJob monitorJob;
 
     public static void main(String[] args) throws TaskExecutionException, IOException {
 
@@ -93,8 +91,8 @@ public class SolrMonitor extends ABaseMonitor {
     }
 
     private List<Map<String, String>> getMetricReplacer() {
-        List<Map<String, String>> metricReplace = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("metricCharacterReplacer");
-        return metricReplace;
+        List<Map<String, String>> metricReplacers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("metricCharacterReplacer");
+        return metricReplacers;
     }
 
 

@@ -2,7 +2,7 @@
 #metricPrefix: "Custom Metrics|Solr"
 
 #This will create it in specific Tier. Replace <TIER_ID>
-metricPrefix: "Server|Component:<TIER_ID>|Custom Metrics|Solr Monitor|"
+metricPrefix: "Server|Component:<TIER_ID>|Custom Metrics|Solr Monitor"
 
 servers:
     # mandatory parameters
@@ -10,16 +10,6 @@ servers:
      port: 8983
      name: "Server 1"
      collectionName : "gettingStarted"
-
-#  Optional Parameters. Configure if any required
-#     username: ""
-#     password: ""
-#     contextRoot: ""
-#     usessl: ""
-#     proxyHost: ""
-#     proxyPort: ""
-#     proxyUsername: ""
-#     proxyPassword: ""
 
 
 #   - host: "localhost"
