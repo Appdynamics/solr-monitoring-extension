@@ -8,6 +8,9 @@ import com.appdynamics.extensions.solr.metrics.MetricCollector;
 
 import com.appdynamics.extensions.AMonitorJob;
 import com.appdynamics.extensions.TasksExecutionServiceProvider;
+import com.appdynamics.extensions.solr.metrics.MetricDataParser;
+import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.log4j.Logger;
@@ -81,14 +84,14 @@ public class MetricCollectorSystemMetricsTest {
 
         stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
 
-//        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration));
+        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration));
 
         server.put("host","localhost");
         server.put("port","8983");
         server.put("name", "Server 1");
         server.put("collectionName", "techproducts");
 
-        metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter, metricReplacer));
+        metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter));
 
 
         PowerMockito.mockStatic(HttpClientUtils.class);
@@ -112,16 +115,16 @@ public class MetricCollectorSystemMetricsTest {
                 });
 
     }
-//    @Test
-//    public void testWithSystemMetrics() throws TaskExecutionException {
-//
-//        expectedValueMap = new HashMap<String, String>();
-//        initExpectedSystemandMemoryMetrics();
-//        initExpectedSystemAndSystemMetrics();
-//        addHeartBeatMetricOne();
-//        metricCollector.run();
-//        validateMetricsList();
-//    }
+    @Test
+    public void testWithSystemMetrics() throws TaskExecutionException {
+
+        expectedValueMap = new HashMap<String, String>();
+        initExpectedSystemandMemoryMetrics();
+        initExpectedSystemAndSystemMetrics();
+        addHeartBeatMetricOne();
+        metricCollector.run();
+        validateMetricsList();
+    }
 
     private void validateMetricsList(){
         Map<String, Metric> mapOfMetrics = metricCollector.getMetricsMap();
@@ -159,10 +162,10 @@ public class MetricCollectorSystemMetricsTest {
     }
 
     private void initExpectedSystemandMemoryMetrics() {
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|Memory|Free MB", "430.6");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|Memory|Total MB", "490.7");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|Memory|Max MB", "490.7");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|Memory|Used MB", "60.1");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|Free MB", "430.6");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|Total MB", "490.7");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|Max MB", "490.7");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|Used MB", "60.1");
 
     }
 

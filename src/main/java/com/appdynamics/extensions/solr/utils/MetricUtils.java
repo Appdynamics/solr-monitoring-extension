@@ -47,6 +47,14 @@ public class MetricUtils {
 
     }
 
+    public static JsonNode getJsonNodeFromMap(JsonNode childNode, Map<String, ?> jsonMap, Stat childStat) {
+        if (childStat.getRootElement() != null) {
+            if (jsonMap.get(childStat.getRootElement()) != null) {
+                childNode = (JsonNode) jsonMap.get(childStat.getRootElement());
+            }
+        }
+        return childNode;
+    }
 
     public static String replaceCharacter(String metricPath, List<Map<String, String>> metricReplacer) {
 
