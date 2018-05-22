@@ -14,8 +14,8 @@ import java.util.*;
  * Created by bhuvnesh.kumar on 5/17/18.
  */
 public class ProcessChildStats {
+
     private static final Logger logger = LoggerFactory.getLogger(ProcessChildStats.class);
-    private MetricDataParser metricDataParser;
     private MonitorContextConfiguration monitorContextConfiguration;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
     private String serverName;
@@ -25,15 +25,14 @@ public class ProcessChildStats {
 
     ProcessChildStats(MonitorContextConfiguration monitorContextConfiguration, String serverName, List<Map<String, String>> metricReplacer, Boolean isJsonMap){
         this.monitorContextConfiguration = monitorContextConfiguration;
-        this.metricDataParser = new MetricDataParser(monitorContextConfiguration);
         this.metricParser = new ParseMetrics(monitorContextConfiguration);
         this.serverName = serverName;
         this.metricReplacer = metricReplacer;
         this.isJsonMap = isJsonMap;
     }
 
-    protected Map<String, Metric> startProcessingStats(Stat stat, JsonNode jsonNode) {
-        List<String> properties = new ArrayList<String>();
+     Map<String, Metric> startProcessingStats(Stat stat, JsonNode jsonNode) {
+//        List<String> properties = new ArrayList<String>();
         Map<String, String> propertiesMap = new LinkedHashMap<String, String>();
         processStats(stat,jsonNode, propertiesMap);
         return allMetrics;

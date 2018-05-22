@@ -31,12 +31,13 @@ public class Stat {
 
     @XmlElement(name = "stat")
     public Stat[] stats;
-    @XmlAttribute
-    private String category;
 
-    @XmlAttribute
-    private String subCategory;
-
+//    @XmlAttribute
+//    private String category;
+//
+//    @XmlAttribute
+//    private String subCategory;
+//
     @XmlAttribute
     private String metricSection;
 
@@ -48,23 +49,23 @@ public class Stat {
         this.structure = structure;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getSubcategory() {
-        return subCategory;
-    }
-
-    public void setSubcategory(String subcategory) {
-        this.subCategory = subcategory;
-    }
-
-
+//    public String getCategory() {
+//        return category;
+//    }
+//
+//    public void setCategory(String category) {
+//        this.category = category;
+//    }
+//
+//    public String getSubcategory() {
+//        return subCategory;
+//    }
+//
+//    public void setSubcategory(String subcategory) {
+//        this.subCategory = subcategory;
+//    }
+//
+//
     public String getMetricSection() {
         return metricSection;
     }

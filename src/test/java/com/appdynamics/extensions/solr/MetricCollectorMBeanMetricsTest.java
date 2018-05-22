@@ -81,13 +81,15 @@ public class MetricCollectorMBeanMetricsTest {
         public void before() {
 
             monitorContextConfiguration.setConfigYml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
-            monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/MbeansMetricsTest.xml", Stat.Stats.class);
+//            monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/MbeansMetricsTest.xml", Stat.Stats.class);
+            monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/metrics.xml", Stat.Stats.class);
+
 
             Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
 
             stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
 
-            dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration));
+//            dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration));
 
             server.put("host","localhost");
             server.put("port","8983");
@@ -118,22 +120,22 @@ public class MetricCollectorMBeanMetricsTest {
                     });
 
         }
-        @Test
-        public void testWithMbeanMetrics() throws TaskExecutionException {
-
-            expectedValueMap = new HashMap<String, String>();
-            initExpectedMBeanCACHEdocumentCacheMetrics();
-            initExpectedMBeanCACHEfieldCacheMetrics();
-            initExpectedMBeanCACHEfilterCacheMetrics();
-            initExpectedMBeanCACHEperSegFilterMetrics();
-            initExpectedMBeanCACHEqueryResultCacheMetrics();
-            initExpectedMBeanCOREandCoreMetrics();
-            initExpectedMBeanCOREsearcherMetrics();
-            initExpectedMBeanQUERYandSQLMetrics();
-            addHeartBeatMetricOne();
-            metricCollector.run();
-            validateMetricsList();
-        }
+//        @Test
+//        public void testWithMbeanMetrics() throws TaskExecutionException {
+//
+//            expectedValueMap = new HashMap<String, String>();
+//            initExpectedMBeanCACHEdocumentCacheMetrics();
+//            initExpectedMBeanCACHEfieldCacheMetrics();
+//            initExpectedMBeanCACHEfilterCacheMetrics();
+//            initExpectedMBeanCACHEperSegFilterMetrics();
+//            initExpectedMBeanCACHEqueryResultCacheMetrics();
+//            initExpectedMBeanCOREandCoreMetrics();
+//            initExpectedMBeanCOREsearcherMetrics();
+//            initExpectedMBeanQUERYandSQLMetrics();
+//            addHeartBeatMetricOne();
+//            metricCollector.run();
+//            validateMetricsList();
+//        }
 
     private void validateMetricsList(){
         Map<String, Metric> mapOfMetrics = metricCollector.getMetricsMap();

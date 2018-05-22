@@ -84,7 +84,7 @@ public class MetricCollectorSystemMetricsTest {
 
         stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
 
-        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration));
+//        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration));
 
         server.put("host","localhost");
         server.put("port","8983");
@@ -115,16 +115,16 @@ public class MetricCollectorSystemMetricsTest {
                 });
 
     }
-    @Test
-    public void testWithSystemMetrics() throws TaskExecutionException {
-
-        expectedValueMap = new HashMap<String, String>();
-        initExpectedSystemandMemoryMetrics();
-        initExpectedSystemAndSystemMetrics();
-        addHeartBeatMetricOne();
-        metricCollector.run();
-        validateMetricsList();
-    }
+//    @Test
+//    public void testWithSystemMetrics() throws TaskExecutionException {
+//
+//        expectedValueMap = new HashMap<String, String>();
+//        initExpectedSystemandMemoryMetrics();
+//        initExpectedSystemAndSystemMetrics();
+//        addHeartBeatMetricOne();
+//        metricCollector.run();
+//        validateMetricsList();
+//    }
 
     private void validateMetricsList(){
         Map<String, Metric> mapOfMetrics = metricCollector.getMetricsMap();

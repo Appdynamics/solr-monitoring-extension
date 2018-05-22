@@ -4,7 +4,9 @@ import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.MetricConfig;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.google.common.base.Strings;
+import com.google.common.collect.Maps;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +36,17 @@ public class MetricUtils {
         return newNode;
     }
 
+    public static JsonNode getMetricSectionMetrics(Stat stat, JsonNode jsonNode){
+        JsonNode node = jsonNode;
+        if(stat.getMetricSection() != null){
+            if (jsonNode.get(stat.getMetricSection()) != null) {
+                node = jsonNode.get(stat.getMetricSection().toString());
+            }
+        }
+        return node;
+
+    }
+
 
     public static String replaceCharacter(String metricPath, List<Map<String, String>> metricReplacer) {
 
@@ -48,6 +61,20 @@ public class MetricUtils {
         return metricPath;
     }
 
+    public static Map<String, Object> mapOfArrayNodes(JsonNode arrayOfNodes) {
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        for (int i = 0; i < arrayOfNodes.size(); i = i + 2) {
+            String name = arrayOfNodes.get(i).asText();
+            if (arrayOfNodes.get(i + 1) != null) {
+                JsonNode jsonNode = mapper.convertValue(arrayOfNodes.get(i + 1), JsonNode.class);
+                map.put(name, jsonNode);
+            }
+        }
+        return map;
+    }
+
     public static Map mapOfArrayList(ArrayList<?> arrayOfNodes) {
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -58,6 +85,19 @@ public class MetricUtils {
             }
         }
         return map;
+    }
+
+
+
+    public static Map mapOfJSONList(ArrayList<?> arrayOfNodes){
+        Map<String, JsonNode> jsonNodeMap = new HashMap<String, JsonNode>();
+
+        for(int i=0; i<arrayOfNodes.size(); i=i+2){
+
+        }
+
+
+        return jsonNodeMap;
     }
 
     public static Boolean checkForEmptyAttribute(MetricConfig metricConfig){

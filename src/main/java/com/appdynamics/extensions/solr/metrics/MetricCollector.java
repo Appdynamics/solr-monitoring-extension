@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
@@ -31,7 +32,7 @@ public class MetricCollector implements Runnable {
     private Map server;
     private MetricWriteHelper metricWriteHelper;
     private MonitorContextConfiguration monitorContextConfiguration;
-    private MetricDataParser metricDataParser;
+//    private MetricDataParser metricDataParser;
     private String endpoint;
     private String serverName;
     private List<Map<String, String>> metricReplacer;
@@ -45,8 +46,12 @@ public class MetricCollector implements Runnable {
         this.server = server;
         this.phaser = phaser;
         this.metricWriteHelper = metricWriteHelper;
-        this.metricDataParser = new MetricDataParser(monitorContextConfiguration);
+//        this.metricDataParser = new MetricDataParser(monitorContextConfiguration);
         this.endpoint = buildUrl(server, stat.getUrl());
+
+        //#TODO remove metric replacer and get from monitor context configuration
+        //#TODO Change name for ProcessChildStats
+
         this.metricReplacer = metricReplacer;
     }
 
@@ -65,11 +70,19 @@ public class MetricCollector implements Runnable {
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
             JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
 
-            boolean isJsonMap = MetricUtils.isJsonMap(stat);
-            ProcessChildStats processChildStats = new ProcessChildStats( monitorContextConfiguration, serverName, metricReplacer, isJsonMap);
-            allMetrics.putAll(processChildStats.startProcessingStats(stat, jsonNode ));
+//            logger.debug("Received Json Node and starting processing.");
+            Map<String, String> propertiesMap = new LinkedHashMap<String, String>();
 
-            logger.debug("Received Json Node and starting processing.");
+
+            ParseMetrics parseMetrics = new ParseMetrics(monitorContextConfiguration);
+
+
+            JsonNode mapNode = getJsonOutput(jsonNode , stat, propertiesMap, parseMetrics);
+
+
+//            ProcessChildStats processChildStats = new ProcessChildStats( monitorContextConfiguration, serverName, metricReplacer, isJsonMap);
+//            allMetrics.putAll(processChildStats.startProcessingStats(stat, jsonNode ));
+
 //            processStats(stat, jsonNode);
 
             printMetrics();
@@ -87,17 +100,115 @@ public class MetricCollector implements Runnable {
 
     }
 
+    private JsonNode getJsonOutput(JsonNode childNode, Stat stats, Map<String, String> properties, ParseMetrics parseMetrics) {
+
+        boolean isJsonMap = MetricUtils.isJsonMap(stat);
+        Map<String, ?> jsonMap = getMapOfJson(isJsonMap, childNode);
+
+//        JsonNode childNode = null;
+
+        if(stats.getStats()!= null){
+            for(Stat childStat: stats.getStats()){
+                if(childStat.getMetricSection() == null){
+                    if(childStat.getRootElement() != null){
+                        if(jsonMap.get(childStat.getRootElement()) != null){
+                        childNode = (JsonNode) jsonMap.get(childStat.getRootElement());
+                        }
+                    }
+                } else {
+                    if(childStat.getRootElement() != null){
+                        if(jsonMap.get(childStat.getRootElement()) != null){
+                            childNode = (JsonNode) jsonMap.get(childStat.getRootElement());
+                        }
+                    }
+                    childNode = childNode.get(childStat.getMetricSection());
+                }
+                properties.put(childStat.getRootElement(),childStat.getAlias());
+                allMetrics.putAll(startProcessingStats(childStat,childNode, properties));
+                properties.remove(childStat.getRootElement());
+
+                int a = 3+4;
+            }
+        }
+        return childNode;
+    }
+
+
     private void printMetrics() {
         String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
         Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), prefix);
         allMetrics.put(prefix, heartBeat);
 
-        if (MetricUtils.getListMetrics(allMetrics) != null && MetricUtils.getListMetrics(allMetrics).size() > 0) {
-            logger.debug("Printing {} metrics for stat: {}", MetricUtils.getListMetrics(allMetrics).size(), stat.getAlias());
-            metricWriteHelper.transformAndPrintMetrics(MetricUtils.getListMetrics(allMetrics));
+        List<Metric> metricList = MetricUtils.getListMetrics(allMetrics);
+        if ( metricList.size() > 0) {
+            logger.debug("Printing {} metrics for stat: {}", metricList.size(), stat.getAlias());
+            metricWriteHelper.transformAndPrintMetrics(metricList);
+        }
+    }
+
+    private Map<String, ?> getMapOfJson (boolean isJsonMap, JsonNode jsonNode){
+        Map<String, ?> jsonMap = new HashMap<String, Object>();
+
+        if(isJsonMap) {
+            jsonMap = MetricUtils.mapOfArrayNodes(jsonNode.get(stat.getRootElement()));
+        }
+        return jsonMap ;
+    }
+
+    private Map<String, Metric> startProcessingStats(Stat stat, JsonNode jsonNode, Map<String, String> propertiesMap) {
+        processStats(stat,jsonNode, propertiesMap);
+        return allMetrics;
+
+    }
+
+
+    private void processStats(Stat stat, JsonNode jsonNode, Map<String, String> properties ) {
+        JsonNode node = jsonNode;
+        if (!isChildStatNull(stat.getStats())) {
+            node = MetricUtils.getJsonNode(stat, node);
+            node = MetricUtils.getMetricSectionMetrics(stat, node);
+            collectChildStats(stat, node, properties);
+        } else {
+            collectStats(stat, node,properties);
+        }
+
+
+    }
+
+
+    private void collectStats(Stat stat, JsonNode jsonNode,Map<String, String> properties) {
+        if (stat.getMetricConfig() != null) {
+            ParseMetrics parseMetrics = new ParseMetrics(monitorContextConfiguration);
+            allMetrics.putAll(parseMetrics.parseNodeData(stat, jsonNode,  new ObjectMapper(), serverName, metricReplacer, false, properties));
         }
     }
 
 
+    private boolean isChildStatNull(Stat[] stat) {
+        return stat == null;
+    }
 
-}
+    private void collectChildStats(Stat stat, JsonNode node, Map<String, String> properties) {
+
+        JsonNode jsonNode = node;
+        for (Stat childStat : stat.getStats()) {
+            if (childStat != null ) {
+                properties.put(childStat.getRootElement(),childStat.getAlias());
+
+                jsonNode = MetricUtils.getJsonNode(childStat, node);
+                jsonNode = MetricUtils.getMetricSectionMetrics(childStat, jsonNode);
+                processStats(childStat, jsonNode, properties);
+
+            }
+            else {
+                collectStats(stat, jsonNode, properties);
+            }
+
+            properties.remove(childStat.getRootElement());
+        }
+
+        }
+
+
+
+    }
