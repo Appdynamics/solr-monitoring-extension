@@ -88,18 +88,6 @@ public class MetricUtils {
     }
 
 
-
-    public static Map mapOfJSONList(ArrayList<?> arrayOfNodes){
-        Map<String, JsonNode> jsonNodeMap = new HashMap<String, JsonNode>();
-
-        for(int i=0; i<arrayOfNodes.size(); i=i+2){
-
-        }
-
-
-        return jsonNodeMap;
-    }
-
     public static Boolean checkForEmptyAttribute(MetricConfig metricConfig){
         Boolean result = false;
         if( metricConfig.getAttr() == null ){

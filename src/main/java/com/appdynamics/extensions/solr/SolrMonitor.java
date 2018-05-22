@@ -73,7 +73,7 @@ public class SolrMonitor extends ABaseMonitor {
         AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
         for (Map<String, String> server : servers) {
             logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
-            SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server, getMetricReplacer());
+            SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server);
             taskExecutor.submit(server.get(NAME), task);
         }
     }
@@ -89,11 +89,6 @@ public class SolrMonitor extends ABaseMonitor {
     protected void initializeMoreStuff(Map<String, String> args) {
         getContextConfiguration().setMetricXml(args.get("metric-file"), Stat.Stats.class);
 
-    }
-
-    private List<Map<String, String>> getMetricReplacer() {
-        List<Map<String, String>> metricReplacers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("metricCharacterReplacer");
-        return metricReplacers;
     }
 
 

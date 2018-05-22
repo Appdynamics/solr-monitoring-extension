@@ -1,23 +1,5 @@
 package com.appdynamics.extensions.solr;
 
-import com.appdynamics.extensions.AMonitorJob;
-import com.appdynamics.extensions.conf.MonitorContextConfiguration;
-import com.appdynamics.extensions.metrics.Metric;
-import com.appdynamics.extensions.solr.input.Stat;
-import com.appdynamics.extensions.solr.metrics.MetricDataParser;
-
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.junit.Test;
-import org.mockito.Mockito;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Created by bhuvnesh.kumar on 5/2/18.
  */

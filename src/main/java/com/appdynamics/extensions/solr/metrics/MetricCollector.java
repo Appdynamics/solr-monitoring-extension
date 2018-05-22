@@ -32,28 +32,22 @@ public class MetricCollector implements Runnable {
     private Map server;
     private MetricWriteHelper metricWriteHelper;
     private MonitorContextConfiguration monitorContextConfiguration;
-//    private MetricDataParser metricDataParser;
     private String endpoint;
     private String serverName;
-    private List<Map<String, String>> metricReplacer;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
-    ParseMetrics parseMetrics = new ParseMetrics(monitorContextConfiguration);
+    MetricDataParser metricDataParser;
 
 
     public MetricCollector(Stat stat, MonitorContextConfiguration monitorContextConfiguration, Map<String, String> server,
-                           Phaser phaser, MetricWriteHelper metricWriteHelper, List<Map<String, String>> metricReplacer) {
+                           Phaser phaser, MetricWriteHelper metricWriteHelper) {
         this.stat = stat;
         this.monitorContextConfiguration = monitorContextConfiguration;
         this.server = server;
         this.phaser = phaser;
         this.metricWriteHelper = metricWriteHelper;
-//        this.metricDataParser = new MetricDataParser(monitorContextConfiguration);
         this.endpoint = buildUrl(server, stat.getUrl());
 
-        //#TODO remove metric replacer and get from monitor context configuration
-        //#TODO Change name for ProcessChildStats
-
-        this.metricReplacer = metricReplacer;
+        metricDataParser = new MetricDataParser(monitorContextConfiguration);
     }
 
     public Map<String, Metric> getMetricsMap() {
@@ -159,7 +153,7 @@ public class MetricCollector implements Runnable {
 
     private void collectStats(Stat stat, JsonNode jsonNode,Map<String, String> properties) {
         if (stat.getMetricConfig() != null) {
-            allMetrics.putAll(parseMetrics.parseNodeData(stat, jsonNode,  new ObjectMapper(), serverName, metricReplacer, false, properties));
+            allMetrics.putAll(metricDataParser.parseNodeData(stat, jsonNode, serverName, properties));
         }
     }
 
