@@ -40,7 +40,7 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
 
 <stats>
 
-    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans" structure="jsonMap" >
+    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans" structure="jsonList" >
 
         <stat rootElement="CACHE" alias="Cache" structure="jsonList" >
             <stat rootElement="perSegFilter" alias="Per Seg Filter" metricSection="stats"  >

@@ -147,8 +147,8 @@ public class MetricUtils {
 
     }
 
-    public static boolean isJsonMap(Stat stat){
-        return stat.getStructure().toString().equals("jsonMap");
+    public static boolean isJsonList(Stat stat){
+        return stat.getStructure().toString().equals("jsonList");
     }
 
 }

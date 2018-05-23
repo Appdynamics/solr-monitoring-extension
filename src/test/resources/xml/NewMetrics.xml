@@ -40,7 +40,7 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
 
 <stats>
 
-    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans" structure="jsonMap" >
+    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans" structure="jsonList" >
 
         <stat rootElement="CACHE" alias="CacheAlias" structure="jsonList" >
             <stat rootElement="perSegFilter" alias="perSegFilterAlias" metricSection="stats"  >
@@ -162,7 +162,7 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
     </stat>
 
 
-    <stat url="/admin/system?stats=true" alias="MainStructure"  structure="jsonList">
+    <stat url="/admin/system?stats=true" alias="MainStructure"  structure="jsonMap">
         <stat alias="System" rootElement="system" >
             <metric alias="Available Processors" attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             <metric alias="System Load Average" attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />

@@ -40,7 +40,7 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
 
 <stats>
 
-    <stat url="/admin/system?stats=true" alias="MainStructure"  structure="jsonList">
+    <stat url="/admin/system?stats=true" alias="MainStructure"  structure="jsonMap">
         <stat alias="System" rootElement="system" >
             <metric alias="Available Processors" attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             <metric alias="System Load Average" attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />

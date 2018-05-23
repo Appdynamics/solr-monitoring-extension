@@ -105,7 +105,7 @@ public class MetricCollector implements Runnable {
 
     private void getMetricsFromJson(JsonNode childNode, Stat stats) {
         Map<String, String> properties = new LinkedHashMap<String, String>();
-        boolean isJsonMap = MetricUtils.isJsonMap(stat);
+        boolean isJsonMap = MetricUtils.isJsonList(stat);
         Map<String, ?> jsonMap = getMapOfJson(isJsonMap, childNode);
 
         if (stats.getStats() != null) {
