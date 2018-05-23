@@ -82,9 +82,6 @@ public class MetricCollectorMBeanMetricsTest {
 
             monitorContextConfiguration.setConfigYml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
             monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/MbeansMetricsTest.xml", Stat.Stats.class);
-//            monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/metrics.xml", Stat.Stats.class);
-
-
             Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
 
             stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
@@ -105,17 +102,9 @@ public class MetricCollectorMBeanMetricsTest {
                     new Answer() {
                         public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                             ObjectMapper mapper = new ObjectMapper();
-                            String url = (String) invocationOnMock.getArguments()[1];
-                            String file = null;
-                            if (url.contains("/mbeans")) {
-                                file = "/json/mbeans.json";
-                            } else if (url.contains("/system")) {
-                                file = "/json/system.json";
-                            }
+                            String file = "/json/mbeans.json";
                             logger.info("Returning the mocked data for the api " + file);
-
                             return mapper.readValue(getClass().getResourceAsStream(file), JsonNode.class);
-
                         }
                     });
 

@@ -93,28 +93,19 @@ public class MetricCollectorSystemMetricsTest {
 
         metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter));
 
-
         PowerMockito.mockStatic(HttpClientUtils.class);
 
         PowerMockito.when(HttpClientUtils.getResponseAsJson(any(CloseableHttpClient.class), anyString(), any(Class.class))).thenAnswer(
                 new Answer() {
                     public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                         ObjectMapper mapper = new ObjectMapper();
-                        String url = (String) invocationOnMock.getArguments()[1];
-                        String file = null;
-                        if (url.contains("/mbeans")) {
-                            file = "/json/mbeans.json";
-                        } else if (url.contains("/system")) {
-                            file = "/json/system.json";
-                        }
+                        String file = "/json/system.json";
                         logger.info("Returning the mocked data for the api " + file);
-
                         return mapper.readValue(getClass().getResourceAsStream(file), JsonNode.class);
-
                     }
                 });
-
     }
+
     @Test
     public void testWithSystemMetrics() throws TaskExecutionException {
 
