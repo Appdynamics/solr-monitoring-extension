@@ -5,7 +5,6 @@ import com.appdynamics.extensions.http.HttpClientUtils;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.metrics.MetricCollector;
-
 import com.appdynamics.extensions.AMonitorJob;
 import com.appdynamics.extensions.TasksExecutionServiceProvider;
 import com.appdynamics.extensions.solr.metrics.MetricDataParser;

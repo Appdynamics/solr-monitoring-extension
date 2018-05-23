@@ -1,0 +1,23 @@
+<!--
+  ~ Copyright 2018. AppDynamics LLC and its affiliates.
+  ~ All Rights Reserved.
+  ~ This is unpublished proprietary source code of AppDynamics LLC and its affiliates.
+  ~ The copyright notice above does not evidence any actual or intended publication of such source code.
+  -->
+
+<stats>
+    <stat alias="System" rootElement="system" >
+        <metric  attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric  attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric  attr="committedVirtualMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric  attr="freePhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric  attr="freeSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric  attr="processCpuTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric  attr="totalPhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric  attr="totalSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric  attr="maxFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric  attr="openFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric  attr="processCpuLoad" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+    </stat>
+
+</stats>

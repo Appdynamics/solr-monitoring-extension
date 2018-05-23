@@ -86,7 +86,11 @@ public class MetricDataParser {
 
             if (metricValue != null) {
                 Map<String, String> propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
-                metric = new Metric(metricConfig.getAlias(), String.valueOf(metricValue), metricPrefix, propertiesMap);
+                if (metricConfig.getAlias() != null){
+                    metric = new Metric(metricConfig.getAlias(), String.valueOf(metricValue), metricPrefix, propertiesMap);
+                } else {
+                    metric = new Metric(metricConfig.getAttr(), String.valueOf(metricValue), metricPrefix, propertiesMap);
+                }
                 logger.info("Adding metric {} to the queue for publishing", metric.getMetricPath());
             }
         }
