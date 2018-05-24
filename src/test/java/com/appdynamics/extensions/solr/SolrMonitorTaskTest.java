@@ -23,9 +23,8 @@ public class SolrMonitorTaskTest {
     public void test() throws TaskExecutionException {
         SolrMonitor monitor = new SolrMonitor();
         Map<String, String> taskArgs = Maps.newHashMap();
-        taskArgs.put("config-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
-        taskArgs.put("metric-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/metrics.xml");
+        taskArgs.put("config-file", "src/test/resources/conf/config.yml");
+        taskArgs.put("metric-file", "src/test/resources/conf/metrics.xml");
         monitor.execute(taskArgs, null);
     }
-///Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/metrics.xml
 }

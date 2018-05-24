@@ -41,11 +41,11 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
 
 <stats>
 
-    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans" structure="jsonList" >
+    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" element="solr-mbeans" elementType="array" >
 
-        <stat rootElement="CACHE" alias="CacheAlias" >
-            <stat rootElement="perSegFilter" alias="perSegFilterAlias">
-                <stat rootElement="stats" alias="statsAlias">
+        <stat element="CACHE" alias="CacheAlias" >
+            <stat element="perSegFilter" alias="perSegFilterAlias">
+                <stat element="stats" alias="statsAlias">
                     <metric alias="Lookups" attr="CACHE.searcher.perSegFilter.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Hits" attr="CACHE.searcher.perSegFilter.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Hit Ratio" attr="CACHE.searcher.perSegFilter.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
@@ -61,8 +61,8 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
                 </stat>
             </stat>
 
-            <stat rootElement="queryResultCache" alias="queryResultCacheAlias">
-                <stat rootElement="stats" alias="statsAlias">
+            <stat element="queryResultCache" alias="queryResultCacheAlias">
+                <stat element="stats" alias="statsAlias">
                     <metric alias="Lookups" attr="CACHE.searcher.queryResultCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Hits" attr="CACHE.searcher.queryResultCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Hit Ratio" attr="CACHE.searcher.queryResultCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
@@ -78,8 +78,8 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
                 </stat>
             </stat>
 
-            <stat  rootElement="documentCache" alias="documentCacheAlias"  >
-                <stat rootElement="stats" alias="statsAlias">
+            <stat  element="documentCache" alias="documentCacheAlias"  >
+                <stat element="stats" alias="statsAlias">
                     <metric alias="Lookups" attr="CACHE.searcher.documentCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Hits" attr="CACHE.searcher.documentCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Hit Ratio" attr="CACHE.searcher.documentCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
@@ -95,8 +95,8 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
                 </stat>
             </stat>
 
-            <stat  rootElement="filterCache" alias="filterCacheAlias"  >
-                <stat rootElement="stats" alias="statsAlias">
+            <stat  element="filterCache" alias="filterCacheAlias"  >
+                <stat element="stats" alias="statsAlias">
                     <metric alias="Lookups" attr="CACHE.searcher.filterCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Hits" attr="CACHE.searcher.filterCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Hit Ratio" attr="CACHE.searcher.filterCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100"/>
@@ -112,16 +112,16 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
                 </stat>
             </stat>
 
-            <stat  rootElement="fieldCache" alias="fieldCacheAlias"  >
-                <stat rootElement="stats" alias="statsAlias">
+            <stat  element="fieldCache" alias="fieldCacheAlias"  >
+                <stat element="stats" alias="statsAlias">
                     <metric alias="Entries Count" attr="CACHE.core.fieldCache.entries_count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 </stat>
             </stat>
         </stat>
 
-        <stat  rootElement="CORE" alias="COREAlias"  >
-            <stat  rootElement="core" alias="coreAlias"  >
-                <stat rootElement="stats" alias="statsAlias">
+        <stat  element="CORE" alias="COREAlias"  >
+            <stat  element="core" alias="coreAlias"  >
+                <stat element="stats" alias="statsAlias">
                     <metric alias="Total Space" attr="CORE.fs.totalSpace" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Size In Bytes" attr="INDEX.sizeInBytes" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="SEARCHER New Errors" attr="SEARCHER.new.errors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -130,8 +130,8 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
                 </stat>
             </stat>
 
-            <stat  rootElement="searcher" alias="searcherAlias"  >
-                <stat rootElement="stats" alias="statsAlias">
+            <stat  element="searcher" alias="searcherAlias"  >
+                <stat element="stats" alias="statsAlias">
                     <metric alias="Max Docs" attr="SEARCHER.searcher.maxDoc" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Deleted Docs" attr="SEARCHER.searcher.deletedDocs" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Warmup Time" attr="SEARCHER.searcher.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -143,9 +143,9 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
         </stat>
 
 
-        <stat  rootElement="QUERY" alias="QUERYAlias"  >
-            <stat  rootElement="/sql" alias="/sqlAlias"  >
-                <stat rootElement="stats" alias="statsAlias">
+        <stat  element="QUERY" alias="QUERYAlias"  >
+            <stat  element="/sql" alias="/sqlAlias"  >
+                <stat element="stats" alias="statsAlias">
                     <metric alias="Total Time" attr="QUERY./sql.totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Client Error Count" attr="QUERY./sql.clientErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                     <metric alias="Timeout" attr="QUERY./sql.timeouts.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -161,8 +161,8 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
     </stat>
 
 
-    <stat url="/admin/system?stats=true" alias="MainStructure"  structure="jsonMap">
-        <stat alias="System" rootElement="system" >
+    <stat url="/admin/system?stats=true" alias="System">
+        <stat alias="System" element="system" >
             <metric alias="Available Processors" attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             <metric alias="System Load Average" attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             <metric alias="Committed Virtual Memory Size" attr="committedVirtualMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -176,8 +176,8 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
             <metric alias="Process CPU Load" attr="processCpuLoad" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
         </stat>
 
-        <stat alias="JVM" rootElement="jvm"  >
-            <stat alias="Memory" rootElement="memory" >
+        <stat alias="JVM" element="jvm"  >
+            <stat alias="Memory" element="memory" >
                 <metric alias="Free MB" attr="free" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Total MB" attr="total" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Max MB" attr="max" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />

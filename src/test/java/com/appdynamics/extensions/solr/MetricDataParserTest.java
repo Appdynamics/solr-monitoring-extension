@@ -54,16 +54,13 @@ public class MetricDataParserTest {
 
     @Test
     public void TestSystemMetricsWithoutAlias() throws Exception {
-        monitorContextConfiguration.setConfigYml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
-        monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/system-no-alias.xml", Stat.Stats.class);
+        monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
+        monitorContextConfiguration.setMetricXml("src/test/resources/xml/system-no-alias.xml", Stat.Stats.class);
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.readValue(new FileInputStream("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/json/system-exact.json"), JsonNode.class);
+        JsonNode node = mapper.readValue(new FileInputStream("src/test/resources/json/system-exact.json"), JsonNode.class);
         MetricDataParser metricDataParser = new MetricDataParser(monitorContextConfiguration);
         String serverName = "Server 1";
         Map<String, Metric> result =  metricDataParser.parseNodeData(getStat(), node, serverName, getPropertiesMap() );
-//        for(String s: result.keySet()){
-//            System.out.println("expectedValueMap.put(\""+ result.get(s).getMetricPath()+"\", \""+result.get(s).getMetricValue()+"\");");
-//        }
         Map<String, String> expectedValueMap = initExpectedSystemMetricsWithoutAlias();
 
         validateMetricsList(result, expectedValueMap);
@@ -72,12 +69,12 @@ public class MetricDataParserTest {
         @Test
     public void TestSystemMetrics() throws Exception {
 
-            monitorContextConfiguration.setConfigYml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
-        monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/system-exact.xml", Stat.Stats.class);
+            monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
+        monitorContextConfiguration.setMetricXml("src/test/resources/xml/system-exact.xml", Stat.Stats.class);
 
 
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.readValue(new FileInputStream("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/json/system-exact.json"), JsonNode.class);
+        JsonNode node = mapper.readValue(new FileInputStream("src/test/resources/json/system-exact.json"), JsonNode.class);
         MetricDataParser metricDataParser = new MetricDataParser(monitorContextConfiguration);
         String serverName = "Server 1";
         Map<String, Metric> result =  metricDataParser.parseNodeData(getStat(), node, serverName, getPropertiesMap() );

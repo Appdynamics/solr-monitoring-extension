@@ -77,20 +77,13 @@ public class MetricCollectorMBeanMetricsTest {
 
         private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|",Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
 
-        public static final Logger logger = Logger.getLogger(com.appdynamics.extensions.solr.MetricCollectorSystemMetricsTest.class);
-
         private Map<String, String> expectedValueMap = new HashMap<String, String>();
 
-        private List<Metric> metrics = new ArrayList<Metric>();
-
         private Map<String, String> server = new HashMap<String, String>();
-        private List<Map<String, String>> metricReplacer = new ArrayList<Map<String, String>>();
 
         @Before
         public void before() {
 
-            //monitorContextConfiguration.setConfigYml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
-            //monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/MbeansMetricsTest.xml", Stat.Stats.class);
             monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
             monitorContextConfiguration.setMetricXml("src/test/resources/xml/MbeansMetricsTest.xml", Stat.Stats.class);
             Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
@@ -114,7 +107,6 @@ public class MetricCollectorMBeanMetricsTest {
                         public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                             ObjectMapper mapper = new ObjectMapper();
                             String file = "/json/mbeans.json";
-                            logger.info("Returning the mocked data for the api " + file);
                             return mapper.readValue(getClass().getResourceAsStream(file), JsonNode.class);
                         }
                     });
@@ -144,9 +136,6 @@ public class MetricCollectorMBeanMetricsTest {
 
             String actualValue = mapOfMetrics.get(prefix).getMetricValue();
             String metricPath = mapOfMetrics.get(prefix).getMetricPath();
-
-//            System.out.println("expectedValueMap.put(\"" + metricPath + "\",\"" + actualValue + "\");");
-
 
             if(expectedValueMap.containsKey(metricPath)){
                 String expectedValue = expectedValueMap.get(metricPath);

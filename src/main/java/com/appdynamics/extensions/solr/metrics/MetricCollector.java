@@ -73,7 +73,7 @@ public class MetricCollector implements Runnable {
             JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
 
             logger.debug("Received Json Node and starting processing.");
-            getMetricsFromJson(jsonNode, stat);
+            addMetricsFromJson(jsonNode, stat);
 
             printMetrics();
 
@@ -111,11 +111,11 @@ public class MetricCollector implements Runnable {
         return jsonMap;
     }
 
-    private void getMetricsFromJson(JsonNode childNode, Stat stats) {
+    private void addMetricsFromJson(JsonNode childNode, Stat stats) {
         Map<String, String> properties = new LinkedHashMap<String, String>();
         //#TODO refactor this.
-        boolean isJsonMap = MetricUtils.isJsonList(stat);
-        Map<String, ?> jsonMap = getMapOfJson(isJsonMap, childNode);
+        boolean isArray = MetricUtils.isJsonArray(stat);
+        Map<String, ?> jsonMap = getMapOfJson(isArray, childNode);
 
         if (stats.getStats() != null) {
             for (Stat childStat : stats.getStats()) {

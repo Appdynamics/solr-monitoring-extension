@@ -79,13 +79,12 @@ public class MetricCollectorSystemMetricsTest {
     private Map<String, String> expectedValueMap = new HashMap<String, String>();
 
     private Map<String, String> server = new HashMap<String, String>();
-    private List<Map<String, String>> metricReplacer = new ArrayList<Map<String, String>>();
 
     @Before
     public void before() {
 
-        monitorContextConfiguration.setConfigYml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
-        monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/SystemMetrics.xml", Stat.Stats.class);
+        monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
+        monitorContextConfiguration.setMetricXml("src/test/resources/xml/SystemMetrics.xml", Stat.Stats.class);
 
         Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
 

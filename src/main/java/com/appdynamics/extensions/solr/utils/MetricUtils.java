@@ -155,8 +155,13 @@ public class MetricUtils {
 
     }
 
-    public static boolean isJsonList(Stat stat){
-        return stat.getStructure().toString().equals("jsonList");
+    public static boolean isJsonArray(Stat stat){
+        if(stat.getStructure() != null){
+            if(stat.getStructure().toString().equals("array")){
+                return true;
+            }
+        }
+        return false;
     }
 
 }

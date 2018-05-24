@@ -41,7 +41,7 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
 
 <stats>
 
-    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans"  >
+    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" element="solr-mbeans"  >
         <stat category="CACHE" subCategory="perSegFilter" metricSection="stats"  structure="jsonMap">
             <metric alias="Lookups" attr="CACHE.searcher.perSegFilter.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             <metric alias="Hits" attr="CACHE.searcher.perSegFilter.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />

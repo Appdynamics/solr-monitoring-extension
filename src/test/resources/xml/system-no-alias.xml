@@ -7,7 +7,7 @@
   -->
 
 <stats>
-    <stat alias="System" rootElement="system" >
+    <stat alias="System" element="system" >
         <metric  attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
         <metric  attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
         <metric  attr="committedVirtualMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />

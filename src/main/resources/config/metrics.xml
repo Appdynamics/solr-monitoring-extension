@@ -18,10 +18,10 @@ Set delta = true for metric to report per-min data
 
 <stats>
 
-    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans" elementType="array" >
+    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" element="solr-mbeans" elementType="array" >
 
-        <stat rootElement="CACHE" alias="Cache" >
-            <stat rootElement="perSegFilter" alias="Per Seg Filter" metricSection="stats"  >
+        <stat element="CACHE" alias="Cache" >
+            <stat element="perSegFilter" alias="Per Seg Filter" metricSection="stats"  >
                 <metric alias="Lookups" attr="CACHE.searcher.perSegFilter.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hits" attr="CACHE.searcher.perSegFilter.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hit Ratio" attr="CACHE.searcher.perSegFilter.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
@@ -36,7 +36,7 @@ Set delta = true for metric to report per-min data
                 <metric alias="Cumulative Evictions" attr="CACHE.searcher.perSegFilter.cumulative_evictions" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
             </stat>
 
-            <stat rootElement="queryResultCache" alias="Query Result Cache" metricSection="stats">
+            <stat element="queryResultCache" alias="Query Result Cache" metricSection="stats">
                 <metric alias="Lookups" attr="CACHE.searcher.queryResultCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hits" attr="CACHE.searcher.queryResultCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hit Ratio" attr="CACHE.searcher.queryResultCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
@@ -51,7 +51,7 @@ Set delta = true for metric to report per-min data
                 <metric alias="Cumulative Evictions" attr="CACHE.searcher.queryResultCache.cumulative_evictions" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
             </stat>
 
-            <stat  rootElement="documentCache" alias="Document Cache" metricSection="stats" >
+            <stat  element="documentCache" alias="Document Cache" metricSection="stats" >
                 <metric alias="Lookups" attr="CACHE.searcher.documentCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hits" attr="CACHE.searcher.documentCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hit Ratio" attr="CACHE.searcher.documentCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
@@ -66,7 +66,7 @@ Set delta = true for metric to report per-min data
                 <metric alias="Cumulative Evictions" attr="CACHE.searcher.documentCache.cumulative_evictions" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
             </stat>
 
-            <stat  rootElement="filterCache" alias="Filter Cache" metricSection="stats" >
+            <stat  element="filterCache" alias="Filter Cache" metricSection="stats" >
                 <metric alias="Lookups" attr="CACHE.searcher.filterCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hits" attr="CACHE.searcher.filterCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hit Ratio" attr="CACHE.searcher.filterCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100"/>
@@ -81,13 +81,13 @@ Set delta = true for metric to report per-min data
                 <metric alias="Cumulative Inserts" attr="CACHE.searcher.filterCache.cumulative_inserts" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
             </stat>
 
-            <stat  rootElement="fieldCache" alias="Field Cache" metricSection="stats" >
+            <stat  element="fieldCache" alias="Field Cache" metricSection="stats" >
                 <metric alias="Entries Count" attr="CACHE.core.fieldCache.entries_count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             </stat>
         </stat>
 
-        <stat  rootElement="CORE" alias="Core"  >
-            <stat  rootElement="core" alias="Core" metricSection="stats" >
+        <stat  element="CORE" alias="Core"  >
+            <stat  element="core" alias="Core" metricSection="stats" >
                 <metric alias="Total Space" attr="CORE.fs.totalSpace" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Size In Bytes" attr="INDEX.sizeInBytes" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="SEARCHER New Errors" attr="SEARCHER.new.errors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -95,7 +95,7 @@ Set delta = true for metric to report per-min data
                 <metric alias="Usable Space" attr="CORE.fs.usableSpace" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             </stat>
 
-            <stat  rootElement="searcher" alias="Searcher" metricSection="stats" >
+            <stat  element="searcher" alias="Searcher" metricSection="stats" >
                 <metric alias="Max Docs" attr="SEARCHER.searcher.maxDoc" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Deleted Docs" attr="SEARCHER.searcher.deletedDocs" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Warmup Time" attr="SEARCHER.searcher.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -106,8 +106,8 @@ Set delta = true for metric to report per-min data
         </stat>
 
 
-        <stat  rootElement="QUERY" alias="Query"  >
-            <stat  rootElement="/sql" alias="SQL" metricSection="stats" >
+        <stat  element="QUERY" alias="Query"  >
+            <stat  element="/sql" alias="SQL" metricSection="stats" >
                 <metric alias="Total Time" attr="QUERY./sql.totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Client Error Count" attr="QUERY./sql.clientErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Timeout" attr="QUERY./sql.timeouts.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -123,7 +123,7 @@ Set delta = true for metric to report per-min data
     </stat>
 
     <stat url="/admin/system?stats=true" alias="System">
-        <stat alias="System" rootElement="system" >
+        <stat alias="System" element="system" >
             <metric alias="Available Processors" attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             <metric alias="System Load Average" attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             <metric alias="Committed Virtual Memory Size" attr="committedVirtualMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -137,8 +137,8 @@ Set delta = true for metric to report per-min data
             <metric alias="Process CPU Load" attr="processCpuLoad" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
         </stat>
 
-        <stat alias="JVM" rootElement="jvm"  >
-            <stat alias="Memory" rootElement="memory"  >
+        <stat alias="JVM" element="jvm"  >
+            <stat alias="Memory" element="memory"  >
                 <metric alias="Free MB" attr="free" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Total MB" attr="total" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Max MB" attr="max" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />

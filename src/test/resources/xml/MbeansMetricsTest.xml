@@ -41,10 +41,10 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
 
 <stats>
 
-    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" rootElement="solr-mbeans" structure="jsonList" >
+    <stat url="/admin/mbeans?stats=true" alias="solr-mbeans" element="solr-mbeans" elementType="array" >
 
-        <stat rootElement="CACHE" alias="Cache" structure="jsonList" >
-            <stat rootElement="perSegFilter" alias="Per Seg Filter" metricSection="stats"  >
+        <stat element="CACHE" alias="Cache"  >
+            <stat element="perSegFilter" alias="Per Seg Filter" metricSection="stats"  >
                 <metric alias="Lookups" attr="CACHE.searcher.perSegFilter.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hits" attr="CACHE.searcher.perSegFilter.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hit Ratio" attr="CACHE.searcher.perSegFilter.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
@@ -59,7 +59,7 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
                 <metric alias="Cumulative Evictions" attr="CACHE.searcher.perSegFilter.cumulative_evictions" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
             </stat>
 
-            <stat rootElement="queryResultCache" alias="Query Result Cache" metricSection="stats">
+            <stat element="queryResultCache" alias="Query Result Cache" metricSection="stats">
                 <metric alias="Lookups" attr="CACHE.searcher.queryResultCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hits" attr="CACHE.searcher.queryResultCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hit Ratio" attr="CACHE.searcher.queryResultCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
@@ -74,7 +74,7 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
                 <metric alias="Cumulative Evictions" attr="CACHE.searcher.queryResultCache.cumulative_evictions" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
             </stat>
 
-            <stat  rootElement="documentCache" alias="Document Cache" metricSection="stats" >
+            <stat  element="documentCache" alias="Document Cache" metricSection="stats" >
                 <metric alias="Lookups" attr="CACHE.searcher.documentCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hits" attr="CACHE.searcher.documentCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hit Ratio" attr="CACHE.searcher.documentCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
@@ -89,7 +89,7 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
                 <metric alias="Cumulative Evictions" attr="CACHE.searcher.documentCache.cumulative_evictions" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
             </stat>
 
-            <stat  rootElement="filterCache" alias="Filter Cache" metricSection="stats" >
+            <stat  element="filterCache" alias="Filter Cache" metricSection="stats" >
                 <metric alias="Lookups" attr="CACHE.searcher.filterCache.lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hits" attr="CACHE.searcher.filterCache.hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Hit Ratio" attr="CACHE.searcher.filterCache.hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100"/>
@@ -104,13 +104,13 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
                 <metric alias="Cumulative Inserts" attr="CACHE.searcher.filterCache.cumulative_inserts" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
             </stat>
 
-            <stat  rootElement="fieldCache" alias="Field Cache" metricSection="stats" >
+            <stat  element="fieldCache" alias="Field Cache" metricSection="stats" >
                 <metric alias="Entries Count" attr="CACHE.core.fieldCache.entries_count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             </stat>
         </stat>
 
-        <stat  rootElement="CORE" alias="Core"  >
-            <stat  rootElement="core" alias="Core" metricSection="stats" >
+        <stat  element="CORE" alias="Core"  >
+            <stat  element="core" alias="Core" metricSection="stats" >
                 <metric alias="Total Space" attr="CORE.fs.totalSpace" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Size In Bytes" attr="INDEX.sizeInBytes" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="SEARCHER New Errors" attr="SEARCHER.new.errors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -118,7 +118,7 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
                 <metric alias="Usable Space" attr="CORE.fs.usableSpace" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             </stat>
 
-            <stat  rootElement="searcher" alias="Searcher" metricSection="stats" >
+            <stat  element="searcher" alias="Searcher" metricSection="stats" >
                 <metric alias="Max Docs" attr="SEARCHER.searcher.maxDoc" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Deleted Docs" attr="SEARCHER.searcher.deletedDocs" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Warmup Time" attr="SEARCHER.searcher.warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -129,8 +129,8 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
         </stat>
 
 
-        <stat  rootElement="QUERY" alias="Query"  >
-            <stat  rootElement="/sql" alias="SQL" metricSection="stats" >
+        <stat  element="QUERY" alias="Query"  >
+            <stat  element="/sql" alias="SQL" metricSection="stats" >
                 <metric alias="Total Time" attr="QUERY./sql.totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Client Error Count" attr="QUERY./sql.clientErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Timeout" attr="QUERY./sql.timeouts.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />

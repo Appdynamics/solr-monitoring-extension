@@ -20,10 +20,10 @@ public class Stat {
     @XmlAttribute
     private String alias;
 
-    @XmlAttribute(name = "rootElement")
+    @XmlAttribute(name = "element")
     private String rootElement;
 
-    @XmlAttribute
+    @XmlAttribute(name = "elementType")
     private String structure;
 
     @XmlElement(name = "metric")
