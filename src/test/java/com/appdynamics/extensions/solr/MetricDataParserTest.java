@@ -7,39 +7,28 @@
  */
 
 package com.appdynamics.extensions.solr;
-import com.appdynamics.extensions.MetricWriteHelper;
+
+import com.appdynamics.extensions.AMonitorJob;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.http.HttpClientUtils;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.Stat;
-import com.appdynamics.extensions.solr.metrics.MetricCollector;
-import com.appdynamics.extensions.AMonitorJob;
-import com.appdynamics.extensions.TasksExecutionServiceProvider;
 import com.appdynamics.extensions.solr.metrics.MetricDataParser;
-import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
-import org.junit.Before;
-import org.mockito.Mock;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.*;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by bhuvnesh.kumar on 5/23/18.
@@ -50,7 +39,7 @@ import static org.mockito.Matchers.anyString;
 
 public class MetricDataParserTest {
 
-    private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|",Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
+    private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|", Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
 
     @Test
     public void TestSystemMetricsWithoutAlias() throws Exception {
@@ -60,64 +49,58 @@ public class MetricDataParserTest {
         JsonNode node = mapper.readValue(new FileInputStream("src/test/resources/json/system-exact.json"), JsonNode.class);
         MetricDataParser metricDataParser = new MetricDataParser(monitorContextConfiguration);
         String serverName = "Server 1";
-        Map<String, Metric> result =  metricDataParser.parseNodeData(getStat(), node, serverName, getPropertiesMap() );
+        Map<String, Metric> result = metricDataParser.parseNodeData(getStat(), node, serverName, getPropertiesMap());
         Map<String, String> expectedValueMap = initExpectedSystemMetricsWithoutAlias();
 
         validateMetricsList(result, expectedValueMap);
 
     }
-        @Test
+
+    @Test
     public void TestSystemMetrics() throws Exception {
 
-            monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
+        monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
         monitorContextConfiguration.setMetricXml("src/test/resources/xml/system-exact.xml", Stat.Stats.class);
-
-
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readValue(new FileInputStream("src/test/resources/json/system-exact.json"), JsonNode.class);
         MetricDataParser metricDataParser = new MetricDataParser(monitorContextConfiguration);
         String serverName = "Server 1";
-        Map<String, Metric> result =  metricDataParser.parseNodeData(getStat(), node, serverName, getPropertiesMap() );
-            Map<String, String> expectedValueMap = initExpectedSystemMetrics();
+        Map<String, Metric> result = metricDataParser.parseNodeData(getStat(), node, serverName, getPropertiesMap());
+        Map<String, String> expectedValueMap = initExpectedSystemMetrics();
 
         validateMetricsList(result, expectedValueMap);
     }
 
-    private void validateMetricsList(Map<String, Metric> mapOfMetrics,Map<String, String> expectedValueMap){
+    private void validateMetricsList(Map<String, Metric> mapOfMetrics, Map<String, String> expectedValueMap) {
 
-        for(String prefix: mapOfMetrics.keySet()){
+        for (String prefix : mapOfMetrics.keySet()) {
 
             String actualValue = mapOfMetrics.get(prefix).getMetricValue();
             String metricPath = mapOfMetrics.get(prefix).getMetricPath();
-            if(expectedValueMap.containsKey(metricPath)){
+            if (expectedValueMap.containsKey(metricPath)) {
                 String expectedValue = expectedValueMap.get(metricPath);
                 Assert.assertEquals("The value of metric " + metricPath + " failed", expectedValue, actualValue);
                 expectedValueMap.remove(metricPath);
-            }
-            else {
+            } else {
                 Assert.fail("Unknown Metric " + metricPath);
             }
-
         }
     }
 
-    private Map<String, String> getPropertiesMap(){
+    private Map<String, String> getPropertiesMap() {
         Map<String, String> properties = new LinkedHashMap<String, String>();
         properties.put("system", "System");
         return properties;
     }
 
-    private Stat getStat(){
+    private Stat getStat() {
         Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
-
         Stat stat = metricConfiguration.getStats()[0];
-
         return stat;
     }
 
-    private Map<String, String> initExpectedSystemMetrics(){
+    private Map<String, String> initExpectedSystemMetrics() {
         Map<String, String> expectedValueMap = new HashMap<String, String>();
-
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Committed Virtual Memory Size", "6.57563648E9");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Process CPU Load", "0.4583333333333333");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Total Physical Memory Size", "1.7179869184E10");
@@ -129,11 +112,10 @@ public class MetricDataParserTest {
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Max File Descriptor Count", "10240.0");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Open File Descriptor Count", "205.0");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|System Load Average", "2.455078125");
-
         return expectedValueMap;
     }
 
-    private Map<String, String> initExpectedSystemMetricsWithoutAlias(){
+    private Map<String, String> initExpectedSystemMetricsWithoutAlias() {
         Map<String, String> expectedValueMap = new HashMap<String, String>();
 
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|openFileDescriptorCount", "205.0");

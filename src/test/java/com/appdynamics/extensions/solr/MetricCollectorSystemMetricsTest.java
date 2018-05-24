@@ -7,24 +7,24 @@
  */
 
 package com.appdynamics.extensions.solr;
+
+import com.appdynamics.extensions.AMonitorJob;
 import com.appdynamics.extensions.MetricWriteHelper;
+import com.appdynamics.extensions.TasksExecutionServiceProvider;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.http.HttpClientUtils;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.metrics.MetricCollector;
-import com.appdynamics.extensions.AMonitorJob;
-import com.appdynamics.extensions.TasksExecutionServiceProvider;
 import com.appdynamics.extensions.solr.metrics.MetricDataParser;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -35,9 +35,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
 
@@ -64,7 +62,6 @@ public class MetricCollectorSystemMetricsTest {
     @Mock
     private MetricDataParser dataParser;
 
-
     @Mock
     private Phaser phaser;
 
@@ -72,9 +69,7 @@ public class MetricCollectorSystemMetricsTest {
 
     private MetricCollector metricCollector;
 
-    private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|",Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
-
-    public static final Logger logger = Logger.getLogger(MetricCollectorSystemMetricsTest.class);
+    private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|", Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
 
     private Map<String, String> expectedValueMap = new HashMap<String, String>();
 
@@ -92,8 +87,8 @@ public class MetricCollectorSystemMetricsTest {
 
         dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration));
 
-        server.put("host","localhost");
-        server.put("port","8983");
+        server.put("host", "localhost");
+        server.put("port", "8983");
         server.put("name", "Server 1");
         server.put("collectionName", "techproducts");
 
@@ -106,7 +101,6 @@ public class MetricCollectorSystemMetricsTest {
                     public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                         ObjectMapper mapper = new ObjectMapper();
                         String file = "/json/system.json";
-                        logger.info("Returning the mocked data for the api " + file);
                         return mapper.readValue(getClass().getResourceAsStream(file), JsonNode.class);
                     }
                 });
@@ -123,28 +117,23 @@ public class MetricCollectorSystemMetricsTest {
         validateMetricsList();
     }
 
-    private void validateMetricsList(){
+    private void validateMetricsList() {
         Map<String, Metric> mapOfMetrics = metricCollector.getMetricsMap();
-        for(String prefix: mapOfMetrics.keySet()){
-
+        for (String prefix : mapOfMetrics.keySet()) {
             String actualValue = mapOfMetrics.get(prefix).getMetricValue();
             String metricPath = mapOfMetrics.get(prefix).getMetricPath();
-            if(expectedValueMap.containsKey(metricPath)){
+            if (expectedValueMap.containsKey(metricPath)) {
                 String expectedValue = expectedValueMap.get(metricPath);
                 Assert.assertEquals("The value of metric " + metricPath + " failed", expectedValue, actualValue);
                 expectedValueMap.remove(metricPath);
-            }
-            else {
+            } else {
                 Assert.fail("Unknown Metric " + metricPath);
             }
-
         }
     }
 
 
-
-
-    private void initExpectedSystemAndSystemMetrics(){
+    private void initExpectedSystemAndSystemMetrics() {
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Available Processors", "8.0");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|System Load Average", "2.455078125");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Committed Virtual Memory Size", "6.57563648E9");
@@ -169,6 +158,7 @@ public class MetricCollectorSystemMetricsTest {
     private void addHeartBeatMetricOne() {
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|HeartBeat", "1");
     }
+
     private void addHeartBeatMetricZero() {
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|HeartBeat", "0");
     }
