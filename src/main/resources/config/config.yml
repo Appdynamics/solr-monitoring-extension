@@ -12,10 +12,10 @@ servers:
      collectionName : "gettingStarted"
 
 
-#   - host: "localhost"
-#     port: 7574
-#     name: "Server 2"
-#     collectionName : "techproducts"
+   - host: "localhost"
+     port: 7574
+     name: "Server 2"
+     collectionName : "techproducts"
 
 
 
