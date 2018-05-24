@@ -9,7 +9,6 @@
 package com.appdynamics.extensions.solr;
 
 import com.appdynamics.extensions.ABaseMonitor;
-import com.appdynamics.extensions.AMonitorJob;
 import com.appdynamics.extensions.TasksExecutionServiceProvider;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.util.AssertUtils;

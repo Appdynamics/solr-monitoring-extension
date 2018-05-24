@@ -16,9 +16,9 @@ import com.appdynamics.extensions.solr.metrics.MetricCollector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
+
 import static com.appdynamics.extensions.solr.utils.Constants.NAME;
 
 public class SolrMonitorTask implements AMonitorTaskRunnable {

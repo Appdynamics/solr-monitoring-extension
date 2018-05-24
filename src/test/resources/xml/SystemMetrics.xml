@@ -58,6 +58,9 @@ http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=t
 
         <stat alias="JVM" rootElement="jvm"  >
             <stat alias="Memory" rootElement="memory"  >
+                <!--<stat alias="RAW" rootElement="raw">-->
+                    <!---->
+                <!--</stat>-->
                 <metric alias="Free MB" attr="free" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Total MB" attr="total" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Max MB" attr="max" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
