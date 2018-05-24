@@ -42,33 +42,34 @@ Note : Please make sure to not use tab (\t) while editing yaml files. You may wa
   2. Configure the Solr instances by specifying the name(required), host(required), port(required) and collectionName(required) of the Solr instance, and rest of the fields (only if authentication enabled),
      encryptedPassword(only if password encryption required). You can configure multiple instances as follows to report metrics
      For example,
+     
      ```
-servers:
-    # mandatory parameters
-   - host: "localhost"
-     port: 8983
-     name: "Server 1"
-     collectionName : "gettingStarted"
-
-
-   - host: "localhost"
-     port: 7574
-     name: "Server 2"
-     collectionName : "techproducts"
+     servers:
+        # mandatory parameters
+       - host: "localhost"
+         port: 8983
+         name: "Server 1"
+         collectionName : "gettingStarted"
+    
+    
+       - host: "localhost"
+         port: 7574
+         name: "Server 2"
+         collectionName : "techproducts"
 
      ```
      3. Configure the encyptionKey for encryptionPasswords(only if password encryption required).
         For example,
-        ```
+     ```
         #Encryption key for Encrypted password.
         encryptionKey: "axcdde43535hdhdgfiniyy576"
-        ```
+     ```
      4. Configure the numberOfThreads
         For example,
         If number of servers that need to be monitored is 3, then number of threads required is 5 * 3 = 15
-        ```
+     ```
         numberOfThreads: 15
-        ```  
+     ```  
 
 
 
