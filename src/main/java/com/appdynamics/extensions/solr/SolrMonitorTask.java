@@ -46,9 +46,8 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
             Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
 
             for (Stat stat : metricConfiguration.getStats()) {
-                phaser.register();
                 MetricCollector metricCollector = new MetricCollector(stat, monitorContextConfiguration, server, phaser, metricWriteHelper);
-                monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask", metricCollector);
+                monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask-"+stat.getAlias(), metricCollector);
                 logger.debug("Registering MetricCollectorTask phaser for {}", server.get(NAME));
             }
             phaser.arriveAndAwaitAdvance();

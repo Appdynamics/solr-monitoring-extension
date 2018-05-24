@@ -53,8 +53,8 @@ public class MetricCollector implements Runnable {
         this.phaser = phaser;
         this.metricWriteHelper = metricWriteHelper;
         this.endpoint = buildUrl(server, stat.getUrl());
-
         metricDataParser = new MetricDataParser(monitorContextConfiguration);
+        phaser.register();
     }
 
     public Map<String, Metric> getMetricsMap() {
@@ -67,7 +67,7 @@ public class MetricCollector implements Runnable {
 
     public void run() {
         try {
-
+            //#TODO add asserts wherever needed.
             serverName = server.get(NAME).toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
             JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
@@ -113,6 +113,7 @@ public class MetricCollector implements Runnable {
 
     private void getMetricsFromJson(JsonNode childNode, Stat stats) {
         Map<String, String> properties = new LinkedHashMap<String, String>();
+        //#TODO refactor this.
         boolean isJsonMap = MetricUtils.isJsonList(stat);
         Map<String, ?> jsonMap = getMapOfJson(isJsonMap, childNode);
 

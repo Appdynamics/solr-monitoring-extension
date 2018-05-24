@@ -50,6 +50,7 @@ import static org.mockito.Matchers.anyString;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(HttpClientUtils.class)
+
 @PowerMockIgnore("javax.net.ssl.*")
 
 
@@ -88,8 +89,10 @@ public class MetricCollectorMBeanMetricsTest {
         @Before
         public void before() {
 
-            monitorContextConfiguration.setConfigYml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
-            monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/MbeansMetricsTest.xml", Stat.Stats.class);
+            //monitorContextConfiguration.setConfigYml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
+            //monitorContextConfiguration.setMetricXml("/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/MbeansMetricsTest.xml", Stat.Stats.class);
+            monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
+            monitorContextConfiguration.setMetricXml("src/test/resources/xml/MbeansMetricsTest.xml", Stat.Stats.class);
             Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
 
             stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
