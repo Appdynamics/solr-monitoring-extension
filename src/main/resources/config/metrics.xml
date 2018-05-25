@@ -105,7 +105,6 @@ Set delta = true for metric to report per-min data
 
         </stat>
 
-
         <stat  element="QUERY" alias="Query"  >
             <stat  element="/sql" alias="SQL" metricSection="stats" >
                 <metric alias="Total Time" attr="QUERY./sql.totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
@@ -118,7 +117,6 @@ Set delta = true for metric to report per-min data
                 <metric alias="Requests" attr="QUERY./sql.requests" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             </stat>
         </stat>
-
 
     </stat>
 
@@ -139,14 +137,14 @@ Set delta = true for metric to report per-min data
 
         <stat alias="JVM" element="jvm"  >
             <stat alias="Memory" element="memory"  >
-                <metric alias="Free MB" attr="free" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Total MB" attr="total" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Max MB" attr="max" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Used MB" attr="used" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <stat alias="In Bytes" element="raw">
+                    <metric alias="Free" attr="free" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                    <metric alias="Total" attr="total" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                    <metric alias="Max" attr="max" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                    <metric alias="Used" attr="used" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                </stat>
             </stat>
         </stat>
-
-
 
     </stat>
 

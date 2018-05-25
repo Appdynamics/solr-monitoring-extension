@@ -91,9 +91,6 @@ public class MetricDataParser {
             metricValue = currentNode.findValue(metricConfig.getAttr()).asText();
 
             metricValue = convertMemoryStringToDouble(metricValue).toString();
-//            BigDecimal d = new BigDecimal(String.valueOf(metricValue));
-//            BigDecimal d2 = d.multiply(new BigDecimal(0.001));
-
             if (metricValue != null) {
                 Map<String, String> propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
                 if (metricConfig.getAlias() != null) {

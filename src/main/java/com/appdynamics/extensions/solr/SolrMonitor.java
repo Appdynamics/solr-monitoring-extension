@@ -31,30 +31,6 @@ import static com.appdynamics.extensions.solr.utils.Constants.*;
 public class SolrMonitor extends ABaseMonitor {
     private static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
 
-    public static void main(String[] args) throws TaskExecutionException, IOException {
-
-        ConsoleAppender ca = new ConsoleAppender();
-        ca.setWriter(new OutputStreamWriter(System.out));
-        ca.setLayout(new PatternLayout("%-5p [%t]: %m%n"));
-        ca.setThreshold(Level
-                .DEBUG);
-        org.apache.log4j.Logger.getRootLogger().addAppender(ca);
-
-
-//        FileAppender fa = new FileAppender(new PatternLayout("%-5p [%t]: %m%n"), "cache.log");
-//        fa.setThreshold(Level.DEBUG);
-//        logger.getRootLogger().addAppender(fa);
-
-
-        SolrMonitor solrMonitor = new SolrMonitor();
-        Map<String, String> argsMap = new HashMap<String, String>();
-        argsMap.put("config-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
-        argsMap.put("metric-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/SystemMetricsForProps.xml");
-//        argsMap.put("metric-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/SystemMetrics.xml");
-
-        solrMonitor.execute(argsMap, null);
-    }
-
     @Override
     public String getDefaultMetricPrefix() {
         return DEFAULT_METRIC_PREFIX;

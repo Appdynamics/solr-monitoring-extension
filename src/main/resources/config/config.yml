@@ -9,15 +9,12 @@ servers:
    - host: "localhost"
      port: 8983
      name: "Server 1"
-     collectionName : "gettingStarted"
-
+     collectionName : "techproducts"
 
    - host: "localhost"
      port: 7574
      name: "Server 2"
      collectionName : "techproducts"
-
-
 
 metricCharacterReplacer:
    - replace: "%"
