@@ -18,6 +18,7 @@ import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.utils.MetricUtils;
+import com.appdynamics.extensions.util.AssertUtils;
 import org.codehaus.jackson.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,11 +68,10 @@ public class MetricCollector implements Runnable {
 
     public void run() {
         try {
-            //#TODO add asserts wherever needed.
             serverName = server.get(NAME).toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
             JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
-
+            AssertUtils.assertNotNull(jsonNode,"The output returned from \""+endpoint+"\" is NULL");
             logger.debug("Received Json Node and starting processing.");
             addMetricsFromJson(jsonNode, stat);
 

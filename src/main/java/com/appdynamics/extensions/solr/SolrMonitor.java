@@ -49,7 +49,7 @@ public class SolrMonitor extends ABaseMonitor {
         SolrMonitor solrMonitor = new SolrMonitor();
         Map<String, String> argsMap = new HashMap<String, String>();
         argsMap.put("config-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/conf/config.yml");
-        argsMap.put("metric-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/NewMetrics.xml");
+        argsMap.put("metric-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/SystemMetricsForProps.xml");
 //        argsMap.put("metric-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/SystemMetrics.xml");
 
         solrMonitor.execute(argsMap, null);
@@ -72,6 +72,10 @@ public class SolrMonitor extends ABaseMonitor {
         AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
         for (Map<String, String> server : servers) {
             logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
+            AssertUtils.assertNotNull(server.get("host"), "The host field can not be empty in the config.yml");
+            AssertUtils.assertNotNull(server.get("port"), "The port field can not be empty in the config.yml");
+            AssertUtils.assertNotNull(server.get("name"), "The name field can not be empty in the config.yml");
+            AssertUtils.assertNotNull(server.get("collectionName"), "The collectionName field can not be empty in the config.yml");
             SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server);
             taskExecutor.submit(server.get(NAME), task);
         }

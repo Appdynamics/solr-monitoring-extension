@@ -13,6 +13,7 @@ import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.metrics.MetricCollector;
+import com.appdynamics.extensions.util.AssertUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
             logger.debug("Created Task and starting work for Server: {}", server.get(NAME));
             Phaser phaser = new Phaser();
             Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
-
+            AssertUtils.assertNotNull(metricConfiguration.getStats(), "The stat inside of stats are empty.");
             for (Stat stat : metricConfiguration.getStats()) {
                 MetricCollector metricCollector = new MetricCollector(stat, monitorContextConfiguration, server, phaser, metricWriteHelper);
                 monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask-"+stat.getAlias(), metricCollector);

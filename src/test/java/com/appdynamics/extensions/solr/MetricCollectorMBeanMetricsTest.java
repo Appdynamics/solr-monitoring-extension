@@ -25,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
@@ -36,11 +37,13 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.verify;
 
 /**
  * Created by bhuvnesh.kumar on 5/16/18.
@@ -123,6 +126,7 @@ public class MetricCollectorMBeanMetricsTest {
         addHeartBeatMetricOne();
         metricCollector.run();
         validateMetricsList();
+
     }
 
     private void validateMetricsList() {

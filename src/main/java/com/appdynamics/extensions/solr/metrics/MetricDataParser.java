@@ -18,6 +18,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +93,8 @@ public class MetricDataParser {
             metricValue = currentNode.findValue(metricConfig.getAttr()).asText();
 
             metricValue = convertMemoryStringToDouble(metricValue).toString();
+//            BigDecimal d = new BigDecimal(String.valueOf(metricValue));
+//            BigDecimal d2 = d.multiply(new BigDecimal(0.001));
 
             if (metricValue != null) {
                 Map<String, String> propertiesMap = objectMapper.convertValue(metricConfig, Map.class);
