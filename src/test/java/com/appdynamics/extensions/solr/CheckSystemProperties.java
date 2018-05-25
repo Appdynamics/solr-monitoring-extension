@@ -118,7 +118,7 @@ public class CheckSystemProperties {
         validateProperties();
     }
 
-    private void validateProperties(){
+    private void validateProperties() {
         ArgumentCaptor<List> pathCaptor = ArgumentCaptor.forClass(List.class);
 
         verify(metricWriter).transformAndPrintMetrics(pathCaptor.capture());
@@ -133,7 +133,7 @@ public class CheckSystemProperties {
         boolean check1 = false;
         boolean check2 = false;
         for (Metric metric : (List<Metric>) pathCaptor.getValue()) {
-            if(metric.getMetricName().equals("Free Multiplied")){
+            if (metric.getMetricName().equals("Free Multiplied")) {
                 Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|RAW|Free Multiplied"));
                 Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().toString().equals("COLLECTIVE"));
                 Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().toString().equals("SUM"));
@@ -143,7 +143,7 @@ public class CheckSystemProperties {
                 check1 = true;
             }
 
-            if(metric.getMetricName().equals("HeartBeat")){
+            if (metric.getMetricName().equals("HeartBeat")) {
                 Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|HeartBeat"));
                 Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().toString().equals("INDIVIDUAL"));
                 Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().toString().equals("AVERAGE"));
@@ -154,44 +154,13 @@ public class CheckSystemProperties {
             }
         }
 
-        if(check1 == true && check2 == true){
+        if (check1 == true && check2 == true) {
             Assert.assertTrue(1 == 1);
-        }
-        else {
-            Assert.assertFalse(1==1 );
+        } else {
+            Assert.assertFalse(1 == 1);
         }
 
     }
-
-
-//    private void validateMetricsList() {
-//        Map<String, Metric> mapOfMetrics = metricCollector.getMetricsMap();
-//        for (String prefix : mapOfMetrics.keySet()) {
-//            String actualValue = mapOfMetrics.get(prefix).getMetricValue();
-//            String metricPath = mapOfMetrics.get(prefix).getMetricPath();
-//            if (expectedValueMap.containsKey(metricPath)) {
-//                String expectedValue = expectedValueMap.get(metricPath);
-//                Assert.assertEquals("The value of metric " + metricPath + " failed", expectedValue, actualValue);
-//                expectedValueMap.remove(metricPath);
-//            } else {
-//                Assert.fail("Unknown Metric " + metricPath);
-//            }
-//        }
-//    }
-//
-//
-//
-//    private void initExpectedSystemandMemoryMetrics() {
-//        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|Free Normal", "430.6");
-//        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|RAW|Free RAW", "4.51509616E8");
-//        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|RAW|Free Multiplied", "4.51509616E8");
-//
-//    }
-//
-//    private void addHeartBeatMetricOne() {
-//        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|HeartBeat", "1");
-//    }
-
 
 
 }
