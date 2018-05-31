@@ -1,0 +1,24 @@
+<!--
+  ~   Copyright 2018 . AppDynamics LLC and its affiliates.
+  ~   All Rights Reserved.
+  ~   This is unpublished proprietary source code of AppDynamics LLC and its affiliates.
+  ~   The copyright notice above does not evidence any actual or intended publication of such source code.
+  ~
+  -->
+
+<stats>
+    <stat alias="System" element="system" >
+        <metric alias="Available Processors" attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric alias="System Load Average" attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric alias="Committed Virtual Memory Size" attr="committedVirtualMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric alias="Free Physical Memory Size" attr="freePhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric alias="Free Swap Space Size" attr="freeSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric alias="Process CPU Time" attr="processCpuTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric alias="Total Physical Memory Size" attr="totalPhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric alias="Total Swap Space Size" attr="totalSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric alias="Max File Descriptor Count" attr="maxFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric alias="Open File Descriptor Count" attr="openFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <metric alias="Process CPU Load" attr="processCpuLoad" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+    </stat>
+
+</stats>

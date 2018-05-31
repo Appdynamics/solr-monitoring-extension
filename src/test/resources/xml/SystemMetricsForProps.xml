@@ -1,0 +1,29 @@
+<!--
+  ~   Copyright 2018 . AppDynamics LLC and its affiliates.
+  ~   All Rights Reserved.
+  ~   This is unpublished proprietary source code of AppDynamics LLC and its affiliates.
+  ~   The copyright notice above does not evidence any actual or intended publication of such source code.
+  ~
+  -->
+
+<!--
+aggregationType = AVERAGE | SUM | OBSERVATION
+timeRollUpType = AVERAGE | SUM | CURRENT
+clusterRollUpType = INDIVIDUAL | COLLECTIVE
+-->
+<!--
+Set delta = true for metric to report per-min data
+-->
+
+<stats>
+    <stat url="/admin/system?stats=true" alias="System">
+        <stat alias="JVM" element="jvm">
+            <stat alias="Memory" element="memory">
+                <stat alias="RAW" element="raw">
+                    <metric alias="Free Multiplied" attr="free" aggregationType="AVERAGE" timeRollUpType="SUM"
+                            clusterRollUpType="COLLECTIVE" multiplier="0.001"/>
+                </stat>
+            </stat>
+        </stat>
+    </stat>
+</stats>

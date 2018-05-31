@@ -1,0 +1,77 @@
+<!--
+  ~   Copyright 2018 . AppDynamics LLC and its affiliates.
+  ~   All Rights Reserved.
+  ~   This is unpublished proprietary source code of AppDynamics LLC and its affiliates.
+  ~   The copyright notice above does not evidence any actual or intended publication of such source code.
+  ~
+  -->
+
+<!--
+aggregationType = AVERAGE | SUM | OBSERVATION
+timeRollUpType = AVERAGE | SUM | CURRENT
+clusterRollUpType = INDIVIDUAL | COLLECTIVE
+-->
+<!--
+Set delta = true for metric to report per-min data
+-->
+
+<!--
+http://localhost:8983/solr/techproducts/admin/mbeans?stats=true&wt=json
+http://localhost:8983/solr/techproducts/admin/system?stats=true&wt=json
+
+http://localhost:7574/solr/techproducts/admin/mbeans
+http://localhost:7574/solr/techproducts/admin/mbeans?stats=true
+http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json
+http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=true
+http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=true&cat=CACHE
+http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=true&cat=CACHE&key=queryResultCache
+http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=true&cat=CACHE&key=queryResultCache&key=filterCache
+http://localhost:7574/solr/techproducts/admin/mbeans?stats=true&wt=json&indent=true&cat=CACHE&key=queryResultCache
+
+&amp;wt=json&amp;indent=true
+
+        <stat category="" subCategory="" metricSection="stats"  >
+                <metric alias="" attr="" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="" attr="" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="" attr="" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        </stat>
+
+
+-->
+
+<stats>
+
+    <stat url="/admin/system?stats=true" alias="MainStructure"  >
+        <stat alias="System" element="system" >
+            <metric alias="Available Processors" attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="System Load Average" attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Committed Virtual Memory Size" attr="committedVirtualMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Free Physical Memory Size" attr="freePhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Free Swap Space Size" attr="freeSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Process CPU Time" attr="processCpuTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Total Physical Memory Size" attr="totalPhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Total Swap Space Size" attr="totalSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Max File Descriptor Count" attr="maxFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Open File Descriptor Count" attr="openFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <metric alias="Process CPU Load" attr="processCpuLoad" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+        </stat>
+
+        <stat alias="JVM" element="jvm"  >
+            <stat alias="Memory" element="memory"  >
+                <!--<stat alias="RAW" element="raw">-->
+                    <!---->
+                <!--</stat>-->
+                <metric alias="Free MB" attr="free" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Total MB" attr="total" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Max MB" attr="max" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Used MB" attr="used" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            </stat>
+        </stat>
+
+
+
+    </stat>
+
+
+
+</stats>
