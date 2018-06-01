@@ -19,7 +19,7 @@ The extension needs to be able to connect to Solr in order to collect and send m
 
 ## Installation
 
-1. Download and unzip the RabbitMQMonitor.zip to the "<MachineAgent_Dir>/monitors" directory
+1. Download and unzip the SolrMonitor.zip to the "<MachineAgent_Dir>/monitors" directory
 2. Edit the file config.yml as described below in Configuration Section, located in    <MachineAgent_Dir>/monitors/SolrMonitor and update the Solr server(s) details.
 3. All metrics to be reported are configured in metrics.xml. Users can remove entries from metrics.xml to stop the metric from reporting.
 4. Restart the Machine Agent
@@ -37,7 +37,7 @@ Note : Please make sure to not use tab (\t) while editing yaml files. You may wa
      metricPrefix: "Server|Component:`<TIER ID>`|Custom Metrics|Solr".
      For example,
      ```
-     metricPrefix: "Server|Component:438|Custom Metrics|RabbitMQ"
+     metricPrefix: "Server|Component:438|Custom Metrics|Solr"
      ```
   2. Configure the Solr instances by specifying the name(required), host(required), port(required) and collectionName(required) of the Solr instance, and rest of the fields (only if authentication enabled),
      encryptedPassword(only if password encryption required). You can configure multiple instances as follows to report metrics
@@ -183,10 +183,6 @@ The following metrics are reported under Cache/FilterCache
 |CacheSize (Bytes)		|
 
 
-#### Custom Dashboards
-![](https://github.com/Appdynamics/solr-monitoring-extension/raw/master/SolrDashboard.png)
-
-
 ### Credentials Encryption
 
 Please visit [this page](https://community.appdynamics.com/t5/Knowledge-Base/How-to-use-Password-Encryption-with-Extensions/ta-p/29397) to get detailed instructions on password encryption. The steps in this document will guide you through the whole process.
@@ -195,8 +191,7 @@ Please visit [this page](https://community.appdynamics.com/t5/Knowledge-Base/How
 Workbench is an inbuilt feature provided with each extension in order to assist you to fine tune the extension setup before you actually deploy it on the controller. Please review the following document on [How to use the Extensions WorkBench](https://community.appdynamics.com/t5/Knowledge-Base/How-to-use-the-Extensions-WorkBench/ta-p/30130)
 
 ### Troubleshooting
-1. Please ensure the RabbitMQ Management Plugin is enabled. Please check "" section of [this page](http://www.rabbitmq.com/management.html) for more details.
-2. Please follow the steps listed in this [troubleshooting-document](https://community.appdynamics.com/t5/Knowledge-Base/How-to-troubleshoot-missing-custom-metrics-or-extensions-metrics/ta-p/28695) in order to troubleshoot your issue. These are a set of common issues that customers might have faced during the installation of the extension. If these don't solve your issue, please follow the last step on the [troubleshooting-document](https://community.appdynamics.com/t5/Knowledge-Base/How-to-troubleshoot-missing-custom-metrics-or-extensions-metrics/ta-p/28695) to contact the support team.
+Please follow the steps listed in this [troubleshooting-document](https://community.appdynamics.com/t5/Knowledge-Base/How-to-troubleshoot-missing-custom-metrics-or-extensions-metrics/ta-p/28695) in order to troubleshoot your issue. These are a set of common issues that customers might have faced during the installation of the extension. If these don't solve your issue, please follow the last step on the [troubleshooting-document](https://community.appdynamics.com/t5/Knowledge-Base/How-to-troubleshoot-missing-custom-metrics-or-extensions-metrics/ta-p/28695) to contact the support team.
 
 ### Support Tickets
 If after going through the [Troubleshooting Document](https://community.appdynamics.com/t5/Knowledge-Base/How-to-troubleshoot-missing-custom-metrics-or-extensions-metrics/ta-p/28695) you have not been able to get your extension working, please file a ticket and add the following information.
@@ -218,12 +213,12 @@ For any support related questions, you can also contact help@appdynamics.com.
 
 ### Contributing
 
-Always feel free to fork and contribute any changes directly here on [GitHub](https://github.com/Appdynamics/rabbitmq-monitoring-extension/).
+Always feel free to fork and contribute any changes directly here on [GitHub](https://github.com/Appdynamics/solr-monitoring-extension/).
 
 ### Version
 |          Name            |  Version   |
 |--------------------------|------------|
 |Extension Version         |1.2.0       |
 |Controller Compatibility  |3.7 or Later|
-|Product Tested On         |3.2.0+      |
-|Last Update               |05/21/2018 |
+|Product Tested On         |7.2.1       |
+|Last Update               |05/21/2018  |
