@@ -45,7 +45,7 @@ public class SolrMonitor extends ABaseMonitor {
     public void doRun(TasksExecutionServiceProvider taskExecutor) {
         List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
         AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialised");
-        AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
+        AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics-v7.xml has been not been created.");
         for (Map<String, String> server : servers) {
             logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
             AssertUtils.assertNotNull(server.get("host"), "The host field can not be empty in the config.yml");

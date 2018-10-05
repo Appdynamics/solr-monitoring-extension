@@ -1,0 +1,122 @@
+{
+  "responseHeader":{
+    "status":0,
+    "QTime":17
+  },
+  "core":{
+    "schema":"example-data-driven-schema",
+    "host":"10.0.0.104",
+    "now":"2018-10-05T20:22:03.08Z",
+    "start":"2018-10-05T20:21:30.777Z",
+    "directory":{
+      "cwd":"/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server",
+      "instance":"/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/example/cloud/node1/solr/techproducts_shard2_replica1",
+      "data":"/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/example/cloud/node1/solr/techproducts_shard2_replica1/data",
+      "dirimpl":"org.apache.solr.core.NRTCachingDirectoryFactory",
+      "index":"/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/example/cloud/node1/solr/techproducts_shard2_replica1/data/index"
+    }
+  },
+  "mode":"solrcloud",
+  "zkHost":"localhost:9983",
+  "lucene":{
+    "solr-spec-version":"5.5.0",
+    "solr-impl-version":"5.5.0 2a228b3920a07f930f7afb6a42d0d20e184a943c - mike - 2016-02-16 15:22:52",
+    "lucene-spec-version":"5.5.0",
+    "lucene-impl-version":"5.5.0 2a228b3920a07f930f7afb6a42d0d20e184a943c - mike - 2016-02-16 15:18:34"
+  },
+  "jvm":{
+    "version":"1.8.0_131 25.131-b11",
+    "name":"Oracle Corporation Java HotSpot(TM) 64-Bit Server VM",
+    "spec":{
+      "vendor":"Oracle Corporation",
+      "name":"Java Platform API Specification",
+      "version":"1.8"
+    },
+    "jre":{
+      "vendor":"Oracle Corporation",
+      "version":"1.8.0_131"
+    },
+    "vm":{
+      "vendor":"Oracle Corporation",
+      "name":"Java HotSpot(TM) 64-Bit Server VM",
+      "version":"25.131-b11"
+    },
+    "processors":8,
+    "memory":{
+      "free":"419.2 MB",
+      "total":"490.7 MB",
+      "max":"490.7 MB",
+      "used":"71.5 MB (%14.6)",
+      "raw":{
+        "free":439586008,
+        "total":514523136,
+        "max":514523136,
+        "used":74937128,
+        "used%":14.564384525558049
+      }
+    },
+    "jmx":{
+      "bootclasspath":"/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home/jre/classes",
+      "classpath":"/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/javax.servlet-api-3.1.0.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-continuation-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-deploy-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-http-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-io-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-jmx-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-rewrite-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-security-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-server-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-servlet-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-servlets-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-util-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-webapp-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/jetty-xml-9.2.13.v20150730.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/ext/jcl-over-slf4j-1.7.7.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/ext/jul-to-slf4j-1.7.7.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/ext/log4j-1.2.17.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/ext/slf4j-api-1.7.7.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/lib/ext/slf4j-log4j12-1.7.7.jar:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server/resources",
+      "commandLineArgs":[
+        "-Xms512m",
+        "-Xmx512m",
+        "-XX:NewRatio=3",
+        "-XX:SurvivorRatio=4",
+        "-XX:TargetSurvivorRatio=90",
+        "-XX:MaxTenuringThreshold=8",
+        "-XX:+UseConcMarkSweepGC",
+        "-XX:+UseParNewGC",
+        "-XX:ConcGCThreads=4",
+        "-XX:ParallelGCThreads=4",
+        "-XX:+CMSScavengeBeforeRemark",
+        "-XX:PretenureSizeThreshold=64m",
+        "-XX:+UseCMSInitiatingOccupancyOnly",
+        "-XX:CMSInitiatingOccupancyFraction=50",
+        "-XX:CMSMaxAbortablePrecleanTime=6000",
+        "-XX:+CMSParallelRemarkEnabled",
+        "-XX:+ParallelRefProcEnabled",
+        "-verbose:gc",
+        "-XX:+PrintHeapAtGC",
+        "-XX:+PrintGCDetails",
+        "-XX:+PrintGCDateStamps",
+        "-XX:+PrintGCTimeStamps",
+        "-XX:+PrintTenuringDistribution",
+        "-XX:+PrintGCApplicationStoppedTime",
+        "-Xloggc:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/example/cloud/node1/solr/../logs/solr_gc.log",
+        "-DzkClientTimeout=15000",
+        "-DzkRun",
+        "-Djetty.port=8983",
+        "-DSTOP.PORT=7983",
+        "-DSTOP.KEY=solrrocks",
+        "-Duser.timezone=UTC",
+        "-Djetty.home=/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/server",
+        "-Dsolr.solr.home=/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/example/cloud/node1/solr",
+        "-Dsolr.install.dir=/Users/bhuvnesh.kumar/Downloads/solr-5.5.0",
+        "-Dlog4j.configuration=file:/Users/bhuvnesh.kumar/Downloads/solr-5.5.0/example/resources/log4j.properties",
+        "-Xss256k"
+      ],
+      "startTime":"2018-10-05T20:21:05.004Z",
+      "upTimeMS":58123
+    }
+  },
+  "system":{
+    "name":"Mac OS X",
+    "arch":"x86_64",
+    "availableProcessors":8,
+    "systemLoadAverage":3.0107421875,
+    "version":"10.14",
+    "committedVirtualMemorySize":6549372928,
+    "freePhysicalMemorySize":33775616,
+    "freeSwapSpaceSize":1110704128,
+    "processCpuLoad":0.03691216820091777,
+    "processCpuTime":20361469000,
+    "systemCpuLoad":0.18831392544615172,
+    "totalPhysicalMemorySize":17179869184,
+    "totalSwapSpaceSize":2147483648,
+    "maxFileDescriptorCount":10240,
+    "openFileDescriptorCount":239,
+    "uname":"Darwin bkumar-mac.local 18.0.0 Darwin Kernel Version 18.0.0: Wed Aug 22 20:13:40 PDT 2018; root:xnu-4903.201.2~1/RELEASE_X86_64 x86_64\n",
+    "uptime":"13:22  up  2:50, 7 users, load averages: 3.01 2.51 2.25\n"
+  }
+}

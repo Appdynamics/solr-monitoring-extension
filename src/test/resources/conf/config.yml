@@ -6,10 +6,15 @@ metricPrefix: "Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|"
 
 servers:
     # mandatory parameters
+#   - host: "localhost"
+#     port: 8983
+#     name: "Server 1"
+#     collectionName : "techproducts"
+
    - host: "localhost"
      port: 8983
-     name: "Server 1"
-     collectionName : "techproducts"
+     name: "sr-solr-sit-d-ip-10-44-196-110.ec2.internal"
+     collectionName : "similarity"
 
 # Optional Parameters. Configure if any required
 
@@ -27,10 +32,10 @@ servers:
 #     proxyPassword: ""
 
 
-   - host: "localhost"
-     port: 7574
-     name: "Server 2"
-     collectionName : "techproducts"
+#   - host: "localhost"
+#     port: 7574
+#     name: "Server 2"
+#     collectionName : "techproducts"
 
 connection:
   socketTimeout: 5000

@@ -24,7 +24,7 @@ public class SolrMonitorTaskTest {
         SolrMonitor monitor = new SolrMonitor();
         Map<String, String> taskArgs = Maps.newHashMap();
         taskArgs.put("config-file", "src/test/resources/conf/config.yml");
-        taskArgs.put("metric-file", "src/test/resources/conf/metrics.xml");
+        taskArgs.put("metric-file", "src/test/resources/conf/metrics-v7.xml");
         monitor.execute(taskArgs, null);
     }
 }
