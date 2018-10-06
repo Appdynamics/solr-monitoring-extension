@@ -10,12 +10,16 @@ package com.appdynamics.extensions.solr;
 
 import com.appdynamics.extensions.ABaseMonitor;
 import com.appdynamics.extensions.TasksExecutionServiceProvider;
+import com.appdynamics.extensions.http.HttpClientUtils;
+import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.util.AssertUtils;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.PatternLayout;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,8 +77,25 @@ public class SolrMonitor extends ABaseMonitor {
 
         getContextConfiguration().setMetricXml(args.get("metric-file"), Stat.Stats.class);
 
+
+
+        JsonNode jsonNode = HttpClientUtils.getResponseAsJson(getContextConfiguration().getContext().getHttpClient(), buildUrl(), JsonNode.class);
+        Map<String, ?> jsonMap = new HashMap<String, Object>();
+        ObjectMapper objectMapper = new ObjectMapper();
+        jsonMap = objectMapper.convertValue(jsonNode, Map.class);
+
+        double version = (Double) ((Map)jsonMap.get("lucene")).get("version");
+
+        boolean isVersion7orMore = version > 7 ? true : false;
+
     }
 
+    private String buildUrl( ) {
+        List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
+        Map server = servers.get(0);
+        // checking only the first server assuming all servers are on the same version of solr
+        return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + "/admin/system?stats=true&amp;wt=json";
+    }
 
 }
 

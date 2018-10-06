@@ -11,16 +11,24 @@ package com.appdynamics.extensions.solr;
 import com.appdynamics.extensions.AMonitorTaskRunnable;
 import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
+import com.appdynamics.extensions.http.HttpClientUtils;
+import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.metrics.MetricCollector;
+import com.appdynamics.extensions.solr.utils.MetricUtils;
 import com.appdynamics.extensions.util.AssertUtils;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Phaser;
 
+import static com.appdynamics.extensions.solr.utils.Constants.COLLECTIONNAME;
 import static com.appdynamics.extensions.solr.utils.Constants.NAME;
+import static com.appdynamics.extensions.solr.utils.Constants.SOLR_WITH_SLASH;
 
 public class SolrMonitorTask implements AMonitorTaskRunnable {
     private static final Logger logger = LoggerFactory.getLogger(SolrMonitorTask.class);
@@ -38,7 +46,6 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
     public void onTaskComplete() {
         logger.info("Completed the Solr Monitoring Task for server {}", server.get(NAME));
     }
-
 
     public void run() {
         try {
