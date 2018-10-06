@@ -66,6 +66,11 @@ public class SolrMonitor extends ABaseMonitor {
 
     @Override
     protected void initializeMoreStuff(Map<String, String> args) {
+
+        //TODO make a system call and get the value for lucene-> version
+        // select the metrics xml file to the one that works
+        // for versions 6 and below, give metrics-v5, for more, give metrics-v7
+
         getContextConfiguration().setMetricXml(args.get("metric-file"), Stat.Stats.class);
 
     }
