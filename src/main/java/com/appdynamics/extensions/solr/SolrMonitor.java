@@ -75,18 +75,21 @@ public class SolrMonitor extends ABaseMonitor {
         // select the metrics xml file to the one that works
         // for versions 6 and below, give metrics-v5, for more, give metrics-v7
 
-        getContextConfiguration().setMetricXml(args.get("metric-file"), Stat.Stats.class);
-
-
-
-        JsonNode jsonNode = HttpClientUtils.getResponseAsJson(getContextConfiguration().getContext().getHttpClient(), buildUrl(), JsonNode.class);
-        Map<String, ?> jsonMap = new HashMap<String, Object>();
+        String url =buildUrl();
+        JsonNode jsonNode = HttpClientUtils.getResponseAsJson(getContextConfiguration().getContext().getHttpClient(), url, JsonNode.class);
         ObjectMapper objectMapper = new ObjectMapper();
-        jsonMap = objectMapper.convertValue(jsonNode, Map.class);
-
-        double version = (Double) ((Map)jsonMap.get("lucene")).get("version");
-
+        Map<String, ?> jsonMap = objectMapper.convertValue(jsonNode, Map.class);
+        Map<String, ?> luceneMap = (Map)jsonMap.get("lucene");
+        String versionValue = luceneMap.get("solr-spec-version").toString();
+        String[] charArray = versionValue.split("\\.");
+        int version = Integer.valueOf(charArray[0]);
         boolean isVersion7orMore = version > 7 ? true : false;
+        if(isVersion7orMore){
+            getContextConfiguration().setMetricXml(args.get("metric-file-v7"), Stat.Stats.class);
+        } else {
+            getContextConfiguration().setMetricXml(args.get("metric-file-v5"), Stat.Stats.class);
+
+        }
 
     }
 
@@ -94,7 +97,28 @@ public class SolrMonitor extends ABaseMonitor {
         List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
         Map server = servers.get(0);
         // checking only the first server assuming all servers are on the same version of solr
-        return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + "/admin/system?stats=true&amp;wt=json";
+        return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + "/admin/system?stats=true&wt=json";
+    }
+
+    public static void main(String[] args) throws TaskExecutionException, IOException {
+
+        ConsoleAppender ca = new ConsoleAppender();
+        ca.setWriter(new OutputStreamWriter(System.out));
+        ca.setLayout(new PatternLayout("%-5p [%t]: %m%n"));
+        ca.setThreshold(Level
+                .DEBUG);
+        org.apache.log4j.Logger.getRootLogger().addAppender(ca);
+
+        SolrMonitor solrMonitor = new SolrMonitor();
+        Map<String, String> argsMap = new HashMap<String, String>();
+        argsMap.put("config-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/config.yml");
+//        argsMap.put("metric-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/SystemMetricsForProps.xml");
+        argsMap.put("metric-file-v5", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/metrics-v5.xml");
+        argsMap.put("metric-file-v7", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/metrics-v7.xml");
+
+        //        argsMap.put("metric-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/test/resources/xml/SystemMetrics.xml");
+
+        solrMonitor.execute(argsMap, null);
     }
 
 }

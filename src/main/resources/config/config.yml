@@ -17,11 +17,11 @@ servers:
      collectionName : "techproducts"
 
 metricCharacterReplacer:
-   - replace: "%"
-     replaceWith: ""
-   - replace: ","
-     replaceWith: "-"
-   - replace: "."
-     replaceWith: "-"
+   - replace: "\\%"
+     replaceWith: "\\-"
+   - replace: "\\,"
+     replaceWith: "\\-"
+   - replace: "\\."
+     replaceWith: "\\-"
 
 numberOfThreads: 5
