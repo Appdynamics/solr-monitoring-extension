@@ -8,11 +8,13 @@
 
 package com.appdynamics.extensions.solr.utils;
 
+import com.appdynamics.extensions.http.HttpClientUtils;
+import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.MetricConfig;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -21,12 +23,9 @@ import org.slf4j.LoggerFactory;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.*;
-import static com.appdynamics.extensions.solr.utils.Constants.REPLACE;
-import static com.appdynamics.extensions.solr.utils.Constants.REPLACE_WITH;
-import static com.appdynamics.extensions.solr.utils.Constants.BYTES_CONVERSION_FACTOR;
-import static com.appdynamics.extensions.solr.utils.Constants.KB;
-import static com.appdynamics.extensions.solr.utils.Constants.MB;
-import static com.appdynamics.extensions.solr.utils.Constants.GB;
+
+import static com.appdynamics.extensions.solr.utils.Constants.*;
+
 /**
  * Created by bhuvnesh.kumar on 4/25/18.
  */
@@ -36,17 +35,17 @@ public class MetricUtils {
     public static JsonNode getJsonNode(Stat stat, JsonNode nodes) {
         JsonNode newNode = nodes;
 
-        if(stat.getRootElement() != null){
-            if(nodes.get(stat.getRootElement()) != null) {
+        if (stat.getRootElement() != null) {
+            if (nodes.get(stat.getRootElement()) != null) {
                 newNode = nodes.get(stat.getRootElement());
             }
         }
         return newNode;
     }
 
-    public static JsonNode getMetricSectionMetrics(Stat stat, JsonNode jsonNode){
+    public static JsonNode getMetricSectionMetrics(Stat stat, JsonNode jsonNode) {
         JsonNode node = jsonNode;
-        if(stat.getMetricSection() != null){
+        if (stat.getMetricSection() != null) {
             if (jsonNode.get(stat.getMetricSection()) != null) {
                 node = jsonNode.get(stat.getMetricSection().toString());
             }
@@ -104,13 +103,26 @@ public class MetricUtils {
     }
 
 
-    public static Boolean checkForEmptyAttribute(MetricConfig metricConfig){
+    public static Boolean checkForEmptyAttribute(MetricConfig metricConfig) {
         Boolean result = false;
-        if( metricConfig.getAttr() == null ){
+        if (metricConfig.getAttr() == null) {
             logger.debug("No Metric Attribute defined");
             result = true;
         }
         return result;
+    }
+
+
+    public static Boolean isVersion7orMore(Map server, CloseableHttpClient httpClient) {
+        String url = UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + "/admin/system?stats=true&wt=json";
+        JsonNode jsonNode = HttpClientUtils.getResponseAsJson(httpClient, url, JsonNode.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, ?> jsonMap = objectMapper.convertValue(jsonNode, Map.class);
+        Map<String, ?> luceneMap = (Map) jsonMap.get("lucene");
+        String versionValue = luceneMap.get("solr-spec-version").toString();
+        String[] charArray = versionValue.split("\\.");
+        int version = Integer.valueOf(charArray[0]);
+        return version >= 7 ? true : false;
     }
 
 
@@ -155,9 +167,9 @@ public class MetricUtils {
 
     }
 
-    public static boolean isJsonArray(Stat stat){
-        if(stat.getStructure() != null){
-            if(stat.getStructure().toString().equals("array")){
+    public static boolean isJsonArray(Stat stat) {
+        if (stat.getStructure() != null) {
+            if (stat.getStructure().toString().equals("array")) {
                 return true;
             }
         }
