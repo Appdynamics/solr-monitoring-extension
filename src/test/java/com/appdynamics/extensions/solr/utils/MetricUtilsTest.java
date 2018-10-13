@@ -31,7 +31,7 @@ import static org.mockito.Matchers.anyString;
 public class MetricUtilsTest {
 
     @Test
-    public void isVersion7orMoreTestTrue() throws Exception {
+    public void isVersion7orMoreTestTrue() throws Exception { //todo: this test does not throw any exception
         PowerMockito.mockStatic(HttpClientUtils.class);
         PowerMockito.when(HttpClientUtils.getResponseAsJson(any(CloseableHttpClient.class), anyString(), any(Class.class))).thenAnswer(
                 new Answer() {
@@ -41,9 +41,7 @@ public class MetricUtilsTest {
                         return mapper.readValue(getClass().getResourceAsStream(file), JsonNode.class);
                     }
                 });
-
-
-        ObjectMapper mapper = new ObjectMapper();
+        //todo: lines 45-50 for both tests can be moved to a @Before method
         CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
         Map server = new HashMap();
         server.put("name", "Server 1");
@@ -55,7 +53,7 @@ public class MetricUtilsTest {
     }
 
     @Test
-    public void isVersion7orMoreTestFalse() throws Exception {
+    public void isVersion7orMoreTestFalse() throws Exception { //todo: this test does not throw any exception
         PowerMockito.mockStatic(HttpClientUtils.class);
         PowerMockito.when(HttpClientUtils.getResponseAsJson(any(CloseableHttpClient.class), anyString(), any(Class.class))).thenAnswer(
                 new Answer() {
@@ -65,9 +63,6 @@ public class MetricUtilsTest {
                         return mapper.readValue(getClass().getResourceAsStream(file), JsonNode.class);
                     }
                 });
-
-
-        ObjectMapper mapper = new ObjectMapper();
         CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
         Map server = new HashMap();
         server.put("name", "Server 1");
@@ -77,5 +72,4 @@ public class MetricUtilsTest {
         boolean value = MetricUtils.isVersion7orMore(server, httpClient);
         Assert.assertFalse(value);
     }
-
 }

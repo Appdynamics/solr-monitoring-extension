@@ -41,6 +41,7 @@ public class MetricDataParserTest {
 
     private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|", Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
 
+    //todo: Please make sure your test method names start with a lowercase letter
     @Test
     public void TestSystemMetricsWithoutAlias() throws Exception {
         monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
@@ -51,14 +52,11 @@ public class MetricDataParserTest {
         String serverName = "Server 1";
         Map<String, Metric> result = metricDataParser.parseNodeData(getStat(), node, serverName, getPropertiesMap());
         Map<String, String> expectedValueMap = initExpectedSystemMetricsWithoutAlias();
-
         validateMetricsList(result, expectedValueMap);
-
     }
 
     @Test
     public void TestSystemMetrics() throws Exception {
-
         monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
         monitorContextConfiguration.setMetricXml("src/test/resources/xml/system-exact.xml", Stat.Stats.class);
         ObjectMapper mapper = new ObjectMapper();
@@ -67,14 +65,11 @@ public class MetricDataParserTest {
         String serverName = "Server 1";
         Map<String, Metric> result = metricDataParser.parseNodeData(getStat(), node, serverName, getPropertiesMap());
         Map<String, String> expectedValueMap = initExpectedSystemMetrics();
-
         validateMetricsList(result, expectedValueMap);
     }
 
     private void validateMetricsList(Map<String, Metric> mapOfMetrics, Map<String, String> expectedValueMap) {
-
         for (String prefix : mapOfMetrics.keySet()) {
-
             String actualValue = mapOfMetrics.get(prefix).getMetricValue();
             String metricPath = mapOfMetrics.get(prefix).getMetricPath();
             if (expectedValueMap.containsKey(metricPath)) {
@@ -95,7 +90,7 @@ public class MetricDataParserTest {
 
     private Stat getStat() {
         Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
-        Stat stat = metricConfiguration.getStats()[0];
+        Stat stat = metricConfiguration.getStats()[0]; //todo: please combine 93 & 94
         return stat;
     }
 
@@ -117,7 +112,6 @@ public class MetricDataParserTest {
 
     private Map<String, String> initExpectedSystemMetricsWithoutAlias() {
         Map<String, String> expectedValueMap = new HashMap<String, String>();
-
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|openFileDescriptorCount", "205.0");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|totalPhysicalMemorySize", "1.7179869184E10");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|availableProcessors", "8.0");
@@ -131,5 +125,4 @@ public class MetricDataParserTest {
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|processCpuTime", "4.52325456E11");
         return expectedValueMap;
     }
-
 }

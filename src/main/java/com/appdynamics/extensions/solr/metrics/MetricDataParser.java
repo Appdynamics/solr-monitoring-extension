@@ -29,7 +29,7 @@ import static com.appdynamics.extensions.solr.utils.MetricUtils.convertMemoryStr
  */
 
 public class MetricDataParser {
-
+    // todo: the logger for this class is coming from MetricCollector.class. Please change it to MetricDataParser.class
     private static final Logger logger = LoggerFactory.getLogger(MetricCollector.class);
     private MonitorContextConfiguration monitorContextConfiguration;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
@@ -37,7 +37,6 @@ public class MetricDataParser {
     public MetricDataParser(MonitorContextConfiguration monitorContextConfiguration) {
         this.monitorContextConfiguration = monitorContextConfiguration;
     }
-
 
     public Map<String, Metric> parseNodeData(Stat stat, JsonNode nodes, String serverName, Map<String, String> properties) {
         if (nodes != null) {
@@ -61,26 +60,26 @@ public class MetricDataParser {
         }
         for (String prop : properties.keySet()) {
             if (properties.get(prop) != null) {
-                metricPrefix += properties.get(prop).toString() + "|";
+                metricPrefix += properties.get(prop).toString() + "|"; //todo: .toString() is redundant
             } else
-                metricPrefix += prop + "|";
+                metricPrefix += prop + "|"; //todo: please move "|" to Constants
         }
         if (metricConfig.getAlias() != null) {
             metricPrefix += metricConfig.getAlias();
         } else {
             metricPrefix += metricConfig.getAttr();
         }
-
         metricPrefix = MetricUtils.replaceCharacter(metricPrefix, getMetricReplacer());
-
         return metricPrefix;
     }
 
+    // todo: please combine 81 & 82
     private List<Map<String, String>> getMetricReplacer() {
         List<Map<String, String>> metricReplacers = (List<Map<String, String>>) monitorContextConfiguration.getConfigYml().get("metricCharacterReplacer");
         return metricReplacers;
     }
 
+    // todo: this method does not return anything and hence should never be named getXYZ(..)
     private void getMetricValueFromJson(MetricConfig metricConfig, JsonNode currentNode, String serverName, Map<String, String> properties) {
         Metric metric = null;
         String metricValue;
@@ -101,6 +100,8 @@ public class MetricDataParser {
                 logger.info("Adding metric {} to the queue for publishing", metric.getMetricPath());
             }
         }
+
+        // todo: this line will throw a NPE if the 'if' condition on 90 doesn't hold true. Please handle this
         allMetrics.put(metric.getMetricPath(), metric);
     }
 

@@ -43,7 +43,7 @@ public class MetricCollector implements Runnable {
     private String endpoint;
     private String serverName;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
-    MetricDataParser metricDataParser;
+    MetricDataParser metricDataParser; //todo: this object should be private
 
 
     public MetricCollector(Stat stat, MonitorContextConfiguration monitorContextConfiguration, Map<String, String> server,
@@ -62,6 +62,7 @@ public class MetricCollector implements Runnable {
         return allMetrics;
     }
 
+    //todo: please add support for multiple collections (cores) per Solr instance. The current verison does not support this and it is an important use case.
     private String buildUrl(Map<String, String> server, String statEndpoint) {
         return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + statEndpoint;
     }
@@ -118,13 +119,10 @@ public class MetricCollector implements Runnable {
 
         if (stats.getStats() != null) {
             for (Stat childStat : stats.getStats()) {
-
                 childNode = MetricUtils.getJsonNodeFromMap(childNode, jsonMap, childStat);
-
                 if (childStat.getMetricSection() != null) {
                     childNode = childNode.get(childStat.getMetricSection());
                 }
-
                 properties.put(childStat.getRootElement(), childStat.getAlias());
                 processStats(childStat, childNode, properties);
                 properties.remove(childStat.getRootElement());
@@ -134,6 +132,7 @@ public class MetricCollector implements Runnable {
 
     private void processStats(Stat stat, JsonNode jsonNode, Map<String, String> properties) {
         JsonNode node = jsonNode;
+        // todo: not a to-do per se, but you don't need a separate method for something as trivial as a single null check :)
         if (!isChildStatNull(stat.getStats())) {
             node = MetricUtils.getJsonNode(stat, node);
             node = MetricUtils.getMetricSectionMetrics(stat, node);
@@ -143,37 +142,28 @@ public class MetricCollector implements Runnable {
         }
     }
 
-
     private void collectStats(Stat stat, JsonNode jsonNode, Map<String, String> properties) {
         if (stat.getMetricConfig() != null) {
             allMetrics.putAll(metricDataParser.parseNodeData(stat, jsonNode, serverName, properties));
         }
     }
 
-
     private boolean isChildStatNull(Stat[] stat) {
         return stat == null;
     }
 
     private void collectChildStats(Stat stat, JsonNode node, Map<String, String> properties) {
-
         JsonNode jsonNode = node;
         for (Stat childStat : stat.getStats()) {
             if (childStat != null) {
                 properties.put(childStat.getRootElement(), childStat.getAlias());
-
                 jsonNode = MetricUtils.getJsonNode(childStat, node);
                 jsonNode = MetricUtils.getMetricSectionMetrics(childStat, jsonNode);
                 processStats(childStat, jsonNode, properties);
-
             } else {
                 collectStats(stat, jsonNode, properties);
             }
-
-            properties.remove(childStat.getRootElement());
+            properties.remove(childStat.getRootElement()); //todo: childStat.getRootElement() can throw a NPE. Please handle it.
         }
-
     }
-
-
 }

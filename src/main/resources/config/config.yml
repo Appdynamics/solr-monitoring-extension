@@ -4,6 +4,8 @@
 #This will create it in specific Tier. Replace <TIER_ID>
 metricPrefix: "Server|Component:<TIER_ID>|Custom Metrics|Solr Monitor"
 
+# todo: please make sure you're clearing the host/port values before publishing
+# todo: This version does not support multiple collectionNames per instance. This must be added
 servers:
     # mandatory parameters
    - host: "localhost"

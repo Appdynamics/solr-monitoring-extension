@@ -55,7 +55,7 @@ public class SolrMonitor extends ABaseMonitor {
             logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
 
             setMetricsXmlBasedOnVersion(server);
-            AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics-v7.xml has been not been created.");
+            AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics-v7.xml has been not been created."); // todo: there should be a similar statement for metrics-v5.xml
             SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server);
             taskExecutor.submit(server.get(NAME), task);
         }
@@ -74,7 +74,6 @@ public class SolrMonitor extends ABaseMonitor {
     }
 
     private void setMetricsXmlBasedOnVersion(Map<String, ?> server) {
-
         if (MetricUtils.isVersion7orMore(server, getContextConfiguration().getContext().getHttpClient())) {
             logger.debug("The Solr Version is greater than V7 for server: {}", server.get("name").toString());
             getContextConfiguration().setMetricXml(args.get("metric-file-v7"), Stat.Stats.class);
@@ -84,6 +83,7 @@ public class SolrMonitor extends ABaseMonitor {
         }
     }
 
+    // todo: don't forget to remove the main method before merging to Master
     public static void main(String[] args) throws TaskExecutionException, IOException {
 
         ConsoleAppender ca = new ConsoleAppender();
@@ -100,7 +100,4 @@ public class SolrMonitor extends ABaseMonitor {
         argsMap.put("metric-file-v7", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/metrics-v7.xml");
         solrMonitor.execute(argsMap, null);
     }
-
 }
-
-

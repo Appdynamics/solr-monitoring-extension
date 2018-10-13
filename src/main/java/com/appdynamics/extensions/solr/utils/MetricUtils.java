@@ -47,7 +47,7 @@ public class MetricUtils {
         JsonNode node = jsonNode;
         if (stat.getMetricSection() != null) {
             if (jsonNode.get(stat.getMetricSection()) != null) {
-                node = jsonNode.get(stat.getMetricSection().toString());
+                node = jsonNode.get(stat.getMetricSection().toString()); // todo: '.toString()' is redundant
             }
         }
         return node;
@@ -63,6 +63,7 @@ public class MetricUtils {
         return childNode;
     }
 
+    // todo: rename to getMetricPathAfterCharacterReplacement
     public static String replaceCharacter(String metricPath, List<Map<String, String>> metricReplacer) {
 
         for (Map chars : metricReplacer) {
@@ -76,6 +77,7 @@ public class MetricUtils {
         return metricPath;
     }
 
+    // todo: rename to getMapOfArrayNodes
     public static Map<String, Object> mapOfArrayNodes(JsonNode arrayOfNodes) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = new HashMap<String, Object>();
@@ -90,6 +92,7 @@ public class MetricUtils {
         return map;
     }
 
+    // todo: this method is not used at all. Please remove it
     public static Map mapOfArrayList(ArrayList<?> arrayOfNodes) {
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -102,7 +105,8 @@ public class MetricUtils {
         return map;
     }
 
-
+    // todo: rename to hasEmptyAttribute
+    // todo: this method is not used at all. Please remove it. If there is a need for it, please rename it to hasEmptyAttribute(MetricConfig metricConfig)
     public static Boolean checkForEmptyAttribute(MetricConfig metricConfig) {
         Boolean result = false;
         if (metricConfig.getAttr() == null) {
@@ -112,7 +116,8 @@ public class MetricUtils {
         return result;
     }
 
-
+    // todo: rename to 'isVersion7OrHigher'
+    // todo: move "/admin/system...", "solr-spec-version" etc to Constants
     public static Boolean isVersion7orMore(Map server, CloseableHttpClient httpClient) {
         String url = UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + "/admin/system?stats=true&wt=json";
         JsonNode jsonNode = HttpClientUtils.getResponseAsJson(httpClient, url, JsonNode.class);
@@ -123,12 +128,12 @@ public class MetricUtils {
         String[] charArray = versionValue.split("\\.");
         int version = Integer.valueOf(charArray[0]);
         return version >= 7 ? true : false;
+        //todo: return (version >= 7);
     }
-
 
     public static Double convertMemoryStringToDouble(String valueStr) {
         if (!Strings.isNullOrEmpty(valueStr)) {
-            String strippedValueStr = null;
+            String strippedValueStr = null; // todo: '= null' not needed
             try {
                 if (valueStr.contains(KB)) {
                     strippedValueStr = valueStr.split(KB)[0].trim();
@@ -141,13 +146,15 @@ public class MetricUtils {
                     return unLocalizeStrValue(strippedValueStr) * BYTES_CONVERSION_FACTOR;
                 }
             } catch (Exception e) {
-                logger.error("Unrecognized string format: " + valueStr);
+                logger.error("Unrecognized string format: " + valueStr); //todo: The exception hasn't been logged.
             }
         }
         return unLocalizeStrValue(valueStr);
     }
 
 
+    // todo: Double.valueOf is redundant. You're using .doubleValue() for a cast.
+    // todo: Your return statement on 160 can throw a NPE. Please handle it
     private static Double unLocalizeStrValue(String valueStr) {
         try {
             Locale loc = Locale.getDefault();
@@ -164,9 +171,10 @@ public class MetricUtils {
             metricList.add(metricMap.get(path));
         }
         return metricList;
-
     }
 
+    // todo: toString() is not needed
+    // todo: return stat.getStructure() != null && stat.getStructure().equals("array");
     public static boolean isJsonArray(Stat stat) {
         if (stat.getStructure() != null) {
             if (stat.getStructure().toString().equals("array")) {
@@ -175,5 +183,4 @@ public class MetricUtils {
         }
         return false;
     }
-
 }

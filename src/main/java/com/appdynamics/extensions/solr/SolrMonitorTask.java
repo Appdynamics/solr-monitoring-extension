@@ -8,6 +8,7 @@
 
 package com.appdynamics.extensions.solr;
 
+//todo: please remove the unnecessary imports (Cmd + Shift + o in IntelliJ)
 import com.appdynamics.extensions.AMonitorTaskRunnable;
 import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
@@ -49,7 +50,7 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
 
     public void run() {
         try {
-            logger.debug("Created Task and starting work for Server: {}", server.get(NAME));
+            logger.debug("Created Task and starting work for Server: {}", server.get(NAME)); //todo: this line should be have a logging level of INFO
             Phaser phaser = new Phaser();
             Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
             AssertUtils.assertNotNull(metricConfiguration.getStats(), "The stat inside of stats are empty.");
@@ -59,9 +60,9 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
                 logger.debug("Registering MetricCollectorTask phaser for {}", server.get(NAME));
             }
             phaser.arriveAndAwaitAdvance();
-            logger.info("Completed the Solr Metric Monitoring task");
+            logger.info("Completed the Solr Metric Monitoring task"); //todo: please change this to "Completed the Solr Monitoring Task for Server {}.."
         } catch (Exception e) {
-            logger.error("An error was encountered during the Solr Monitoring Task for server : " + server.get(NAME), e.getMessage());
+            logger.error("An error was encountered during the Solr Monitoring Task for server : " + server.get(NAME), e.getMessage()); //todo: please replace e.getMessage() with e
         }
     }
 
