@@ -8,28 +8,19 @@
 
 package com.appdynamics.extensions.solr;
 
-//todo: please remove the unnecessary imports (Cmd + Shift + o in IntelliJ)
 import com.appdynamics.extensions.AMonitorTaskRunnable;
 import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
-import com.appdynamics.extensions.http.HttpClientUtils;
-import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.metrics.MetricCollector;
-import com.appdynamics.extensions.solr.utils.MetricUtils;
 import com.appdynamics.extensions.util.AssertUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Phaser;
 
-import static com.appdynamics.extensions.solr.utils.Constants.COLLECTIONNAME;
 import static com.appdynamics.extensions.solr.utils.Constants.NAME;
-import static com.appdynamics.extensions.solr.utils.Constants.SOLR_WITH_SLASH;
 
 public class SolrMonitorTask implements AMonitorTaskRunnable {
     private static final Logger logger = LoggerFactory.getLogger(SolrMonitorTask.class);
@@ -50,19 +41,19 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
 
     public void run() {
         try {
-            logger.debug("Created Task and starting work for Server: {}", server.get(NAME)); //todo: this line should be have a logging level of INFO
+            logger.info("Created Task and starting work for Server: {}", server.get(NAME));
             Phaser phaser = new Phaser();
             Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
             AssertUtils.assertNotNull(metricConfiguration.getStats(), "The stat inside of stats are empty.");
             for (Stat stat : metricConfiguration.getStats()) {
                 MetricCollector metricCollector = new MetricCollector(stat, monitorContextConfiguration, server, phaser, metricWriteHelper);
-                monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask-"+stat.getAlias(), metricCollector);
+                monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask-" + stat.getAlias(), metricCollector);
                 logger.debug("Registering MetricCollectorTask phaser for {}", server.get(NAME));
             }
             phaser.arriveAndAwaitAdvance();
-            logger.info("Completed the Solr Metric Monitoring task"); //todo: please change this to "Completed the Solr Monitoring Task for Server {}.."
+            logger.info("Completed the Solr Metric Monitoring task for {}", server.get(NAME));
         } catch (Exception e) {
-            logger.error("An error was encountered during the Solr Monitoring Task for server : " + server.get(NAME), e.getMessage()); //todo: please replace e.getMessage() with e
+            logger.error("An error was encountered during the Solr Monitoring Task for server : " + server.get(NAME), e);
         }
     }
 

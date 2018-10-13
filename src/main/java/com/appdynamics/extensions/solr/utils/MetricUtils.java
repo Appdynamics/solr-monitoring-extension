@@ -11,7 +11,6 @@ package com.appdynamics.extensions.solr.utils;
 import com.appdynamics.extensions.http.HttpClientUtils;
 import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.metrics.Metric;
-import com.appdynamics.extensions.solr.input.MetricConfig;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.google.common.base.Strings;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -47,7 +46,7 @@ public class MetricUtils {
         JsonNode node = jsonNode;
         if (stat.getMetricSection() != null) {
             if (jsonNode.get(stat.getMetricSection()) != null) {
-                node = jsonNode.get(stat.getMetricSection().toString()); // todo: '.toString()' is redundant
+                node = jsonNode.get(stat.getMetricSection());
             }
         }
         return node;
@@ -63,8 +62,7 @@ public class MetricUtils {
         return childNode;
     }
 
-    // todo: rename to getMetricPathAfterCharacterReplacement
-    public static String replaceCharacter(String metricPath, List<Map<String, String>> metricReplacer) {
+    public static String getMetricPathAfterCharacterReplacement(String metricPath, List<Map<String, String>> metricReplacer) {
 
         for (Map chars : metricReplacer) {
             String replace = (String) chars.get(REPLACE);
@@ -77,8 +75,7 @@ public class MetricUtils {
         return metricPath;
     }
 
-    // todo: rename to getMapOfArrayNodes
-    public static Map<String, Object> mapOfArrayNodes(JsonNode arrayOfNodes) {
+    public static Map<String, Object> getMapOfArrayNodes(JsonNode arrayOfNodes) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -92,48 +89,21 @@ public class MetricUtils {
         return map;
     }
 
-    // todo: this method is not used at all. Please remove it
-    public static Map mapOfArrayList(ArrayList<?> arrayOfNodes) {
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        for (int i = 0; i < arrayOfNodes.size(); i = i + 2) {
-            String name = (String) arrayOfNodes.get(i);
-            if (arrayOfNodes.get(i + 1) != null) {
-                map.put(name, arrayOfNodes.get(i + 1));
-            }
-        }
-        return map;
-    }
-
-    // todo: rename to hasEmptyAttribute
-    // todo: this method is not used at all. Please remove it. If there is a need for it, please rename it to hasEmptyAttribute(MetricConfig metricConfig)
-    public static Boolean checkForEmptyAttribute(MetricConfig metricConfig) {
-        Boolean result = false;
-        if (metricConfig.getAttr() == null) {
-            logger.debug("No Metric Attribute defined");
-            result = true;
-        }
-        return result;
-    }
-
-    // todo: rename to 'isVersion7OrHigher'
-    // todo: move "/admin/system...", "solr-spec-version" etc to Constants
-    public static Boolean isVersion7orMore(Map server, CloseableHttpClient httpClient) {
+    public static Boolean isVersion7OrHigher(Map server, CloseableHttpClient httpClient) {
         String url = UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + "/admin/system?stats=true&wt=json";
         JsonNode jsonNode = HttpClientUtils.getResponseAsJson(httpClient, url, JsonNode.class);
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, ?> jsonMap = objectMapper.convertValue(jsonNode, Map.class);
-        Map<String, ?> luceneMap = (Map) jsonMap.get("lucene");
-        String versionValue = luceneMap.get("solr-spec-version").toString();
+        Map<String, ?> luceneMap = (Map) jsonMap.get(LUCENE);
+        String versionValue = luceneMap.get(SOLR_SPEC_VERSION).toString();
         String[] charArray = versionValue.split("\\.");
         int version = Integer.valueOf(charArray[0]);
-        return version >= 7 ? true : false;
-        //todo: return (version >= 7);
+        return version >= 7;
     }
 
     public static Double convertMemoryStringToDouble(String valueStr) {
         if (!Strings.isNullOrEmpty(valueStr)) {
-            String strippedValueStr = null; // todo: '= null' not needed
+            String strippedValueStr;
             try {
                 if (valueStr.contains(KB)) {
                     strippedValueStr = valueStr.split(KB)[0].trim();
@@ -146,19 +116,22 @@ public class MetricUtils {
                     return unLocalizeStrValue(strippedValueStr) * BYTES_CONVERSION_FACTOR;
                 }
             } catch (Exception e) {
-                logger.error("Unrecognized string format: " + valueStr); //todo: The exception hasn't been logged.
+                logger.error("Unrecognized string format: " + valueStr, e);
             }
         }
         return unLocalizeStrValue(valueStr);
     }
 
 
-    // todo: Double.valueOf is redundant. You're using .doubleValue() for a cast.
-    // todo: Your return statement on 160 can throw a NPE. Please handle it
     private static Double unLocalizeStrValue(String valueStr) {
         try {
             Locale loc = Locale.getDefault();
-            return Double.valueOf(NumberFormat.getInstance(loc).parse(valueStr).doubleValue());
+            if (loc != null) {
+                return NumberFormat.getInstance(loc).parse(valueStr).doubleValue();
+            } else {
+                logger.debug("Locale Object's default value = null, returning null");
+                return null;
+            }
         } catch (ParseException e) {
             logger.error("Exception while unlocalizing number string " + valueStr, e);
         }
@@ -173,14 +146,7 @@ public class MetricUtils {
         return metricList;
     }
 
-    // todo: toString() is not needed
-    // todo: return stat.getStructure() != null && stat.getStructure().equals("array");
     public static boolean isJsonArray(Stat stat) {
-        if (stat.getStructure() != null) {
-            if (stat.getStructure().toString().equals("array")) {
-                return true;
-            }
-        }
-        return false;
+        return stat.getStructure() != null && stat.getStructure().equals("array");
     }
 }

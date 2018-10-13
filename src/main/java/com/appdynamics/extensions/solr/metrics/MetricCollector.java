@@ -43,7 +43,7 @@ public class MetricCollector implements Runnable {
     private String endpoint;
     private String serverName;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
-    MetricDataParser metricDataParser; //todo: this object should be private
+    private MetricDataParser metricDataParser;
 
 
     public MetricCollector(Stat stat, MonitorContextConfiguration monitorContextConfiguration, Map<String, String> server,
@@ -107,7 +107,7 @@ public class MetricCollector implements Runnable {
         Map<String, ?> jsonMap = new HashMap<String, Object>();
 
         if (isJsonMap) {
-            jsonMap = MetricUtils.mapOfArrayNodes(jsonNode.get(stat.getRootElement()));
+            jsonMap = MetricUtils.getMapOfArrayNodes(jsonNode.get(stat.getRootElement()));
         }
         return jsonMap;
     }
@@ -132,7 +132,6 @@ public class MetricCollector implements Runnable {
 
     private void processStats(Stat stat, JsonNode jsonNode, Map<String, String> properties) {
         JsonNode node = jsonNode;
-        // todo: not a to-do per se, but you don't need a separate method for something as trivial as a single null check :)
         if (!isChildStatNull(stat.getStats())) {
             node = MetricUtils.getJsonNode(stat, node);
             node = MetricUtils.getMetricSectionMetrics(stat, node);

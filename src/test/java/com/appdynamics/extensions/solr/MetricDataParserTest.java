@@ -41,9 +41,8 @@ public class MetricDataParserTest {
 
     private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|", Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
 
-    //todo: Please make sure your test method names start with a lowercase letter
     @Test
-    public void TestSystemMetricsWithoutAlias() throws Exception {
+    public void testSystemMetricsWithoutAlias() throws Exception {
         monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
         monitorContextConfiguration.setMetricXml("src/test/resources/xml/system-no-alias.xml", Stat.Stats.class);
         ObjectMapper mapper = new ObjectMapper();
@@ -56,7 +55,7 @@ public class MetricDataParserTest {
     }
 
     @Test
-    public void TestSystemMetrics() throws Exception {
+    public void testSystemMetrics() throws Exception {
         monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
         monitorContextConfiguration.setMetricXml("src/test/resources/xml/system-exact.xml", Stat.Stats.class);
         ObjectMapper mapper = new ObjectMapper();
@@ -89,9 +88,7 @@ public class MetricDataParserTest {
     }
 
     private Stat getStat() {
-        Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
-        Stat stat = metricConfiguration.getStats()[0]; //todo: please combine 93 & 94
-        return stat;
+        return ((Stat.Stats) monitorContextConfiguration.getMetricsXml()).getStats()[0];
     }
 
     private Map<String, String> initExpectedSystemMetrics() {

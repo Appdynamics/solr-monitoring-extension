@@ -12,6 +12,7 @@ import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.MetricConfig;
 import com.appdynamics.extensions.solr.input.Stat;
+import com.appdynamics.extensions.solr.utils.Constants;
 import com.appdynamics.extensions.solr.utils.MetricUtils;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -29,8 +30,7 @@ import static com.appdynamics.extensions.solr.utils.MetricUtils.convertMemoryStr
  */
 
 public class MetricDataParser {
-    // todo: the logger for this class is coming from MetricCollector.class. Please change it to MetricDataParser.class
-    private static final Logger logger = LoggerFactory.getLogger(MetricCollector.class);
+    private static final Logger logger = LoggerFactory.getLogger(MetricDataParser.class);
     private MonitorContextConfiguration monitorContextConfiguration;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
 
@@ -53,30 +53,28 @@ public class MetricDataParser {
     private String getMetricPrefixUsingProperties(MetricConfig metricConfig, String serverName, Map<String, String> properties) {
         String metricPrefix = "";
         if (monitorContextConfiguration.getMetricPrefix() != null) {
-            metricPrefix += monitorContextConfiguration.getMetricPrefix() + "|";
+            metricPrefix += monitorContextConfiguration.getMetricPrefix() + Constants.METRIC_SEPARATOR;
         }
         if (serverName != null) {
-            metricPrefix += serverName + "|";
+            metricPrefix += serverName + Constants.METRIC_SEPARATOR;
         }
         for (String prop : properties.keySet()) {
             if (properties.get(prop) != null) {
-                metricPrefix += properties.get(prop).toString() + "|"; //todo: .toString() is redundant
+                metricPrefix += properties.get(prop) + Constants.METRIC_SEPARATOR;
             } else
-                metricPrefix += prop + "|"; //todo: please move "|" to Constants
+                metricPrefix += prop + Constants.METRIC_SEPARATOR;
         }
         if (metricConfig.getAlias() != null) {
             metricPrefix += metricConfig.getAlias();
         } else {
             metricPrefix += metricConfig.getAttr();
         }
-        metricPrefix = MetricUtils.replaceCharacter(metricPrefix, getMetricReplacer());
+        metricPrefix = MetricUtils.getMetricPathAfterCharacterReplacement(metricPrefix, getMetricReplacer());
         return metricPrefix;
     }
 
-    // todo: please combine 81 & 82
     private List<Map<String, String>> getMetricReplacer() {
-        List<Map<String, String>> metricReplacers = (List<Map<String, String>>) monitorContextConfiguration.getConfigYml().get("metricCharacterReplacer");
-        return metricReplacers;
+        return (List<Map<String, String>>) monitorContextConfiguration.getConfigYml().get("metricCharacterReplacer");
     }
 
     // todo: this method does not return anything and hence should never be named getXYZ(..)

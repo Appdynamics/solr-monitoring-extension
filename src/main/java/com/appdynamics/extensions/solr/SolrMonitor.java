@@ -55,7 +55,7 @@ public class SolrMonitor extends ABaseMonitor {
             logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
 
             setMetricsXmlBasedOnVersion(server);
-            AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics-v7.xml has been not been created."); // todo: there should be a similar statement for metrics-v5.xml
+            AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
             SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server);
             taskExecutor.submit(server.get(NAME), task);
         }
@@ -74,7 +74,7 @@ public class SolrMonitor extends ABaseMonitor {
     }
 
     private void setMetricsXmlBasedOnVersion(Map<String, ?> server) {
-        if (MetricUtils.isVersion7orMore(server, getContextConfiguration().getContext().getHttpClient())) {
+        if (MetricUtils.isVersion7OrHigher(server, getContextConfiguration().getContext().getHttpClient())) {
             logger.debug("The Solr Version is greater than V7 for server: {}", server.get("name").toString());
             getContextConfiguration().setMetricXml(args.get("metric-file-v7"), Stat.Stats.class);
         } else {

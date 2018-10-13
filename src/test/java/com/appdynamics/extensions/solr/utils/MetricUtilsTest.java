@@ -5,6 +5,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -29,9 +30,20 @@ import static org.mockito.Matchers.anyString;
 @PowerMockIgnore("javax.net.ssl.*")
 
 public class MetricUtilsTest {
+    private CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
+    private Map server = new HashMap();
+
+    @Before
+    public void before() {
+        server.put("name", "Server 1");
+        server.put("host", "localhost");
+        server.put("port", 9999);
+        server.put("collectionName", "testCollection");
+
+    }
 
     @Test
-    public void isVersion7orMoreTestTrue() throws Exception { //todo: this test does not throw any exception
+    public void isVersion7orMoreTestTrue() throws Exception {
         PowerMockito.mockStatic(HttpClientUtils.class);
         PowerMockito.when(HttpClientUtils.getResponseAsJson(any(CloseableHttpClient.class), anyString(), any(Class.class))).thenAnswer(
                 new Answer() {
@@ -41,19 +53,12 @@ public class MetricUtilsTest {
                         return mapper.readValue(getClass().getResourceAsStream(file), JsonNode.class);
                     }
                 });
-        //todo: lines 45-50 for both tests can be moved to a @Before method
-        CloseableHttpClient httpClient = Mockito.mock(CloseableHttpClient.class);
-        Map server = new HashMap();
-        server.put("name", "Server 1");
-        server.put("host", "localhost");
-        server.put("port", 9999);
-        server.put("collectionName", "testCollection");
-        boolean value = MetricUtils.isVersion7orMore(server, httpClient);
+        boolean value = MetricUtils.isVersion7OrHigher(server, httpClient);
         Assert.assertTrue(value);
     }
 
     @Test
-    public void isVersion7orMoreTestFalse() throws Exception { //todo: this test does not throw any exception
+    public void isVersion7orMoreTestFalse() throws Exception {
         PowerMockito.mockStatic(HttpClientUtils.class);
         PowerMockito.when(HttpClientUtils.getResponseAsJson(any(CloseableHttpClient.class), anyString(), any(Class.class))).thenAnswer(
                 new Answer() {
@@ -69,7 +74,7 @@ public class MetricUtilsTest {
         server.put("host", "localhost");
         server.put("port", 9999);
         server.put("collectionName", "testCollection");
-        boolean value = MetricUtils.isVersion7orMore(server, httpClient);
+        boolean value = MetricUtils.isVersion7OrHigher(server, httpClient);
         Assert.assertFalse(value);
     }
 }
