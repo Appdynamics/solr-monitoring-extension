@@ -46,6 +46,8 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
         try {
             logger.info("Created Task and starting work for Server: {}", server.get(NAME));
             Phaser phaser = new Phaser();
+            phaser.register();
+
             Stat.Stats metricConfiguration = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
             AssertUtils.assertNotNull(metricConfiguration.getStats(), "The stat inside of stats are empty.");
             for (Stat stat : metricConfiguration.getStats()) {

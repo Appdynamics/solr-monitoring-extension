@@ -51,11 +51,11 @@ public class MetricCollector implements Runnable {
         this.monitorContextConfiguration = monitorContextConfiguration;
         this.server = server;
         this.phaser = phaser;
+        this.phaser.register();
         this.metricWriteHelper = metricWriteHelper;
         this.endpoint = endpoint;
         this.collectionName = collectionName;
         metricDataParser = new MetricDataParser(monitorContextConfiguration, collectionName);
-        phaser.register();
     }
 
     public Map<String, Metric> getMetricsMap() {
