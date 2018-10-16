@@ -24,7 +24,6 @@ import static com.appdynamics.extensions.solr.utils.Constants.*;
 
 public class SolrMonitor extends ABaseMonitor {
     private static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
-    private Map<String, String> args;
 
     @Override
     public String getDefaultMetricPrefix() {
@@ -47,7 +46,6 @@ public class SolrMonitor extends ABaseMonitor {
             AssertUtils.assertNotNull(server.get("collectionName"), "The collectionName field can not be empty in the config.yml");
             logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
 
-            setMetricsXmlBasedOnVersion(server);
             AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
             SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server);
             taskExecutor.submit(server.get(NAME), task);
@@ -63,10 +61,16 @@ public class SolrMonitor extends ABaseMonitor {
 
     @Override
     protected void initializeMoreStuff(Map<String, String> args) {
-        this.args = args;
+        List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
+        if (servers.get(0) != null) {
+            Map<String, String> firstServer = servers.get(0);
+            setMetricsXmlBasedOnVersion(firstServer, args);
+        } else {
+            logger.error("Servers section is empty. Please add servers to monitor.");
+        }
     }
 
-    private void setMetricsXmlBasedOnVersion(Map<String, ?> server) {
+    private void setMetricsXmlBasedOnVersion(Map<String, ?> server, Map<String, String> args) {
         if (MetricUtils.isVersion7OrHigher(server, getContextConfiguration().getContext().getHttpClient())) {
             logger.debug("The Solr Version is greater than V7 for server: {}", server.get("name").toString());
             getContextConfiguration().setMetricXml(args.get("metric-file-v7"), Stat.Stats.class);
