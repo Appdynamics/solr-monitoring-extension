@@ -6,13 +6,13 @@ metricPrefix: "Server|Component:<TIER_ID>|Custom Metrics|Solr Monitor"
 
 servers:
     # mandatory parameters
-   - host: ""
-     port: 9999
+   - host: "localhost"
+     port: 8983
      name: "Server 1"
      collectionName : ["techproducts","gettingstarted"]
 
-   - host: ""
-     port: 9998
+   - host: "localhost"
+     port: 7574
      name: "Server 2"
      collectionName : ["techproducts","gettingstarted"]
 

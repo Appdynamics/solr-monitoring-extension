@@ -35,7 +35,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
 
@@ -73,7 +75,11 @@ public class MetricCollectorSystemMetricsTest {
 
     private Map<String, String> expectedValueMap = new HashMap<String, String>();
 
-    private Map<String, String> server = new HashMap<String, String>();
+    private Map server = new HashMap();
+
+    private String endpoint = "testEndpoint";
+
+    private String collectionName = "techproducts";
 
     @Before
     public void before() {
@@ -85,14 +91,16 @@ public class MetricCollectorSystemMetricsTest {
 
         stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
 
-        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration));
+        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration, collectionName));
 
         server.put("host", "localhost");
         server.put("port", "8983");
         server.put("name", "Server 1");
-        server.put("collectionName", "techproducts");
+        List<String> collections = new ArrayList<String>();
+        collections.add(collectionName);
+        server.put("collectionName", collections);
 
-        metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter));
+        metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter, endpoint, collectionName));
 
         PowerMockito.mockStatic(HttpClientUtils.class);
 
@@ -134,33 +142,28 @@ public class MetricCollectorSystemMetricsTest {
 
 
     private void initExpectedSystemAndSystemMetrics() {
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Available Processors", "8.0");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|System Load Average", "2.455078125");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Committed Virtual Memory Size", "6.57563648E9");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Free Physical Memory Size", "2.1737472E7");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Free Swap Space Size", "1.200881664E9");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Process CPU Time", "4.52325456E11");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Total Physical Memory Size", "1.7179869184E10");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Total Swap Space Size", "5.36870912E9");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Max File Descriptor Count", "10240.0");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Open File Descriptor Count", "205.0");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|System|Process CPU Load", "0.4583333333333333");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Available Processors", "8.0");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|System Load Average", "2.455078125");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Committed Virtual Memory Size", "6.57563648E9");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Free Physical Memory Size", "2.1737472E7");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Free Swap Space Size", "1.200881664E9");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Process CPU Time", "4.52325456E11");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Total Physical Memory Size", "1.7179869184E10");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Total Swap Space Size", "5.36870912E9");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Max File Descriptor Count", "10240.0");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Open File Descriptor Count", "205.0");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Process CPU Load", "0.4583333333333333");
     }
 
     private void initExpectedSystemandMemoryMetrics() {
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|Free MB", "430.6");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|Total MB", "490.7");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|Max MB", "490.7");
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|Used MB", "60.1");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|Free MB", "430.6");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|Total MB", "490.7");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|Max MB", "490.7");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|Used MB", "60.1");
 
     }
 
     private void addHeartBeatMetricOne() {
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|HeartBeat", "1");
+        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat", "1");
     }
-
-    private void addHeartBeatMetricZero() {
-        expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|HeartBeat", "0");
-    }
-
 }

@@ -37,6 +37,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,10 @@ public class CheckSystemProperties {
 
     private Map<String, String> expectedValueMap = new HashMap<String, String>();
 
-    private Map<String, String> server = new HashMap<String, String>();
+    private Map server = new HashMap();
+    private String endpoint = "testEndpoint";
+    private String collectionName = "techproducts";
+
 
     @Before
     public void before() {
@@ -89,14 +93,15 @@ public class CheckSystemProperties {
 
         stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
 
-        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration));
+        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration, collectionName));
 
         server.put("host", "localhost");
         server.put("port", "8983");
         server.put("name", "Server 1");
-        server.put("collectionName", "techproducts");
-
-        metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter));
+        List<String> collections = new ArrayList<String>();
+        collections.add(collectionName);
+        server.put("collectionName", collections);
+        metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter, endpoint, collectionName));
 
         PowerMockito.mockStatic(HttpClientUtils.class);
 
@@ -123,18 +128,15 @@ public class CheckSystemProperties {
 
         verify(metricWriter).transformAndPrintMetrics(pathCaptor.capture());
         List<String> metricPathsList = Lists.newArrayList();
-        metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|Free Normal");
-        metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|RAW|Free RAW");
-        metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|RAW|Free Multiplied");
-        metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|HeartBeat");
-
-        List<Metric> listOfMetrics = (List<Metric>) pathCaptor.getValue();
-
+        metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|Free Normal");
+        metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|RAW|Free RAW");
+        metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|RAW|Free Multiplied");
+        metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat");
         boolean check1 = false;
         boolean check2 = false;
         for (Metric metric : (List<Metric>) pathCaptor.getValue()) {
             if (metric.getMetricName().equals("Free Multiplied")) {
-                Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|JVM|Memory|RAW|Free Multiplied"));
+                Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|RAW|Free Multiplied"));
                 Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().toString().equals("COLLECTIVE"));
                 Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().toString().equals("SUM"));
                 Assert.assertTrue(metric.getMetricProperties().getAggregationType().toString().equals("AVERAGE"));
@@ -144,7 +146,7 @@ public class CheckSystemProperties {
             }
 
             if (metric.getMetricName().equals("HeartBeat")) {
-                Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|HeartBeat"));
+                Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat"));
                 Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().toString().equals("INDIVIDUAL"));
                 Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().toString().equals("AVERAGE"));
                 Assert.assertTrue(metric.getMetricProperties().getAggregationType().toString().equals("AVERAGE"));

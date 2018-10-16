@@ -14,6 +14,7 @@ import com.appdynamics.extensions.solr.input.MetricConfig;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.utils.Constants;
 import com.appdynamics.extensions.solr.utils.MetricUtils;
+import com.google.common.base.Strings;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -33,9 +34,11 @@ public class MetricDataParser {
     private static final Logger logger = LoggerFactory.getLogger(MetricDataParser.class);
     private MonitorContextConfiguration monitorContextConfiguration;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
+    private String collectionName;
 
-    public MetricDataParser(MonitorContextConfiguration monitorContextConfiguration) {
+    public MetricDataParser(MonitorContextConfiguration monitorContextConfiguration, String collectionName) {
         this.monitorContextConfiguration = monitorContextConfiguration;
+        this.collectionName = collectionName;
     }
 
     public Map<String, Metric> parseNodeData(Stat stat, JsonNode nodes, String serverName, Map<String, String> properties) {
@@ -52,12 +55,16 @@ public class MetricDataParser {
 
     private String getMetricPrefixUsingProperties(MetricConfig metricConfig, String serverName, Map<String, String> properties) {
         String metricPrefix = "";
-        if (monitorContextConfiguration.getMetricPrefix() != null) {
+        if (!Strings.isNullOrEmpty(monitorContextConfiguration.getMetricPrefix())) {
             metricPrefix += monitorContextConfiguration.getMetricPrefix() + Constants.METRIC_SEPARATOR;
         }
-        if (serverName != null) {
+        if (!Strings.isNullOrEmpty(serverName)) {
             metricPrefix += serverName + Constants.METRIC_SEPARATOR;
         }
+        if (!Strings.isNullOrEmpty(collectionName)) {
+            metricPrefix += collectionName + Constants.METRIC_SEPARATOR;
+        }
+
         for (String prop : properties.keySet()) {
             if (properties.get(prop) != null) {
                 metricPrefix += properties.get(prop) + Constants.METRIC_SEPARATOR;
@@ -77,7 +84,6 @@ public class MetricDataParser {
         return (List<Map<String, String>>) monitorContextConfiguration.getConfigYml().get("metricCharacterReplacer");
     }
 
-    // todo: this method does not return anything and hence should never be named getXYZ(..)
     private void getMetricValueFromJson(MetricConfig metricConfig, JsonNode currentNode, String serverName, Map<String, String> properties) {
         Metric metric = null;
         String metricValue;
@@ -98,9 +104,9 @@ public class MetricDataParser {
                 logger.info("Adding metric {} to the queue for publishing", metric.getMetricPath());
             }
         }
-
-        // todo: this line will throw a NPE if the 'if' condition on 90 doesn't hold true. Please handle this
-        allMetrics.put(metric.getMetricPath(), metric);
+        if (metric.getMetricPath() != null) {
+            allMetrics.put(metric.getMetricPath(), metric);
+        }
     }
 
 }

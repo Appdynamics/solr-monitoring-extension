@@ -14,7 +14,6 @@ package com.appdynamics.extensions.solr.metrics;
 import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.http.HttpClientUtils;
-import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.utils.MetricUtils;
@@ -44,17 +43,18 @@ public class MetricCollector implements Runnable {
     private String serverName;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
     private MetricDataParser metricDataParser;
-
+    private String collectionName;
 
     public MetricCollector(Stat stat, MonitorContextConfiguration monitorContextConfiguration, Map<String, String> server,
-                           Phaser phaser, MetricWriteHelper metricWriteHelper) {
+                           Phaser phaser, MetricWriteHelper metricWriteHelper, String endpoint, String collectionName) {
         this.stat = stat;
         this.monitorContextConfiguration = monitorContextConfiguration;
         this.server = server;
         this.phaser = phaser;
         this.metricWriteHelper = metricWriteHelper;
-        this.endpoint = buildUrl(server, stat.getUrl());
-        metricDataParser = new MetricDataParser(monitorContextConfiguration);
+        this.endpoint = endpoint;
+        this.collectionName = collectionName;
+        metricDataParser = new MetricDataParser(monitorContextConfiguration, collectionName);
         phaser.register();
     }
 
@@ -62,17 +62,12 @@ public class MetricCollector implements Runnable {
         return allMetrics;
     }
 
-    //todo: please add support for multiple collections (cores) per Solr instance. The current verison does not support this and it is an important use case.
-    private String buildUrl(Map<String, String> server, String statEndpoint) {
-        return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + statEndpoint;
-    }
-
     public void run() {
         try {
             serverName = server.get(NAME).toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
             JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
-            AssertUtils.assertNotNull(jsonNode,"The output returned from \""+endpoint+"\" is NULL");
+            AssertUtils.assertNotNull(jsonNode, "The output returned from \"" + endpoint + "\" is NULL");
             logger.debug("Received Json Node and starting processing.");
             addMetricsFromJson(jsonNode, stat);
 
@@ -80,7 +75,7 @@ public class MetricCollector implements Runnable {
 
         } catch (Exception e) {
             logger.error("Error encountered while collecting metrics from endpoint: " + endpoint, e.getMessage());
-            String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
+            String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + collectionName + METRIC_SEPARATOR + HEART_BEAT;
             Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO), prefix);
             allMetrics.put(prefix, heartBeat);
 
@@ -92,7 +87,7 @@ public class MetricCollector implements Runnable {
     }
 
     private void printMetrics() {
-        String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
+        String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + collectionName + METRIC_SEPARATOR + HEART_BEAT;
         Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), prefix);
         allMetrics.put(prefix, heartBeat);
 
@@ -162,7 +157,9 @@ public class MetricCollector implements Runnable {
             } else {
                 collectStats(stat, jsonNode, properties);
             }
-            properties.remove(childStat.getRootElement()); //todo: childStat.getRootElement() can throw a NPE. Please handle it.
+            if (childStat.getRootElement() != null) {
+                properties.remove(childStat.getRootElement());
+            }
         }
     }
 }

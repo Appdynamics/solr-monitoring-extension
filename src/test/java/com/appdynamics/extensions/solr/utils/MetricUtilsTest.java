@@ -16,7 +16,9 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.Matchers.any;
@@ -38,7 +40,9 @@ public class MetricUtilsTest {
         server.put("name", "Server 1");
         server.put("host", "localhost");
         server.put("port", 9999);
-        server.put("collectionName", "testCollection");
+        List<String> collections = new ArrayList<String>();
+        collections.add("techproducts");
+        server.put("collectionName", collections);
 
     }
 
@@ -73,7 +77,9 @@ public class MetricUtilsTest {
         server.put("name", "Server 1");
         server.put("host", "localhost");
         server.put("port", 9999);
-        server.put("collectionName", "testCollection");
+        List<String> collections = new ArrayList<String>();
+        collections.add("techproducts");
+        server.put("collectionName", collections);
         boolean value = MetricUtils.isVersion7OrHigher(server, httpClient);
         Assert.assertFalse(value);
     }

@@ -13,16 +13,9 @@ import com.appdynamics.extensions.TasksExecutionServiceProvider;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.utils.MetricUtils;
 import com.appdynamics.extensions.util.AssertUtils;
-import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,23 +74,5 @@ public class SolrMonitor extends ABaseMonitor {
             logger.debug("The Solr Version is less than V7 for server: {}", server.get("name").toString());
             getContextConfiguration().setMetricXml(args.get("metric-file-v5"), Stat.Stats.class);
         }
-    }
-
-    // todo: don't forget to remove the main method before merging to Master
-    public static void main(String[] args) throws TaskExecutionException, IOException {
-
-        ConsoleAppender ca = new ConsoleAppender();
-        ca.setWriter(new OutputStreamWriter(System.out));
-        ca.setLayout(new PatternLayout("%-5p [%t]: %m%n"));
-        ca.setThreshold(Level
-                .DEBUG);
-        org.apache.log4j.Logger.getRootLogger().addAppender(ca);
-
-        SolrMonitor solrMonitor = new SolrMonitor();
-        Map<String, String> argsMap = new HashMap<String, String>();
-        argsMap.put("config-file", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/config.yml");
-        argsMap.put("metric-file-v5", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/metrics-v5.xml");
-        argsMap.put("metric-file-v7", "/Users/bhuvnesh.kumar/repos/appdynamics/extensions/solr-monitoring-extension/src/main/resources/config/metrics-v7.xml");
-        solrMonitor.execute(argsMap, null);
     }
 }

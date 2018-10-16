@@ -12,10 +12,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
-/**
- * Created by aditya.jagtiani on 3/29/18.
- */
-
 @XmlAccessorType(XmlAccessType.FIELD)
 public class MetricConverter {
     @XmlAttribute(name = "str")
