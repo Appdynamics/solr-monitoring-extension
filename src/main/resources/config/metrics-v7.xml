@@ -112,7 +112,7 @@ Set delta = true for metric to report per-min data
                 <metric alias="Timeout" attr="QUERY./sql.timeouts.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Server Errors" attr="QUERY./sql.serverErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Request Times Mean" attr="QUERY./sql.requestTimes.meanRate" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Handlet Start" attr="QUERY./sql.handlerStart" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Handler Start" attr="QUERY./sql.handlerStart" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Error Count" attr="QUERY./sql.errors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Requests" attr="QUERY./sql.requests" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             </stat>
