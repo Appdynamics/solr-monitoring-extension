@@ -55,15 +55,15 @@ import static org.mockito.Mockito.verify;
 @PrepareForTest(HttpClientUtils.class)
 @PowerMockIgnore("javax.net.ssl.*")
 
+//TODO - rename this test class to something more meaningful
 public class CheckSystemProperties {
-
-
     @Mock
     private TasksExecutionServiceProvider serviceProvider;
 
     @Mock
     private MetricWriteHelper metricWriter;
 
+    //TODO: should be local to before()
     @Mock
     private MetricDataParser dataParser;
 
@@ -76,9 +76,12 @@ public class CheckSystemProperties {
 
     private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|", Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
 
+    //TODO: should be local to testWithSystemMetrics()
     private Map<String, String> expectedValueMap = new HashMap<String, String>();
 
     private Map server = new HashMap();
+
+    //TODO: These two strings need not be global
     private String endpoint = "testEndpoint";
     private String collectionName = "techproducts";
 
@@ -116,8 +119,8 @@ public class CheckSystemProperties {
     }
 
     @Test
+    //TODO: remove the exception as it is never thrown
     public void testWithSystemMetrics() throws TaskExecutionException {
-
         expectedValueMap = new HashMap<String, String>();
         metricCollector.run();
         validateProperties();
@@ -136,6 +139,9 @@ public class CheckSystemProperties {
         boolean check2 = false;
         for (Metric metric : (List<Metric>) pathCaptor.getValue()) {
             if (metric.getMetricName().equals("Free Multiplied")) {
+                //TODO : toString() is not required
+                /* TODO: it is a better practice to use assertEquals instead of assertTrue, as the former will provide the JUnit framework with better information about the components being tested. This will also give you a more sensible error message in case of a failure. Something to keep in mind moving forward.
+                */
                 Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|RAW|Free Multiplied"));
                 Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().toString().equals("COLLECTIVE"));
                 Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().toString().equals("SUM"));
@@ -146,6 +152,7 @@ public class CheckSystemProperties {
             }
 
             if (metric.getMetricName().equals("HeartBeat")) {
+                //TODO: toString not needed again
                 Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat"));
                 Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().toString().equals("INDIVIDUAL"));
                 Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().toString().equals("AVERAGE"));
@@ -156,13 +163,11 @@ public class CheckSystemProperties {
             }
         }
 
+        //TODO: this block is meaningless. Please remove it
         if (check1 == true && check2 == true) {
             Assert.assertTrue(1 == 1);
         } else {
             Assert.assertFalse(1 == 1);
         }
-
     }
-
-
 }

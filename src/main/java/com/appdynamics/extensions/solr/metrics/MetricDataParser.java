@@ -54,6 +54,8 @@ public class MetricDataParser {
     }
 
     private String getMetricPrefixUsingProperties(MetricConfig metricConfig, String serverName, Map<String, String> properties) {
+
+        // TODO: Use a StringBuilder for metricPrefix rather than String concatenation. Strings are immutable and will get recreated in your loop. StringBuilder does not do that and has much better performance.
         String metricPrefix = "";
         if (!Strings.isNullOrEmpty(monitorContextConfiguration.getMetricPrefix())) {
             metricPrefix += monitorContextConfiguration.getMetricPrefix() + Constants.METRIC_SEPARATOR;
@@ -104,9 +106,9 @@ public class MetricDataParser {
                 logger.info("Adding metric {} to the queue for publishing", metric.getMetricPath());
             }
         }
+        //TODO - possible NPE. Refactor
         if (metric.getMetricPath() != null) {
             allMetrics.put(metric.getMetricPath(), metric);
         }
     }
-
 }

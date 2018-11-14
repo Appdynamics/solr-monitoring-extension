@@ -62,6 +62,7 @@ public class MetricCollectorMBeanMetricsTest {
     @Mock
     private MetricWriteHelper metricWriter;
 
+    //todo - make this local to before()
     @Mock
     private MetricDataParser dataParser;
 
@@ -78,8 +79,8 @@ public class MetricCollectorMBeanMetricsTest {
 
     private Map server = new HashMap();
 
+    //TODO - make these Strings local to before
     private String endpoint = "testEndpoint";
-
     private String collectionName = "techproducts";
 
     @Before
@@ -113,12 +114,10 @@ public class MetricCollectorMBeanMetricsTest {
                         return mapper.readValue(getClass().getResourceAsStream(file), JsonNode.class);
                     }
                 });
-
     }
 
     @Test
     public void testWithMbeanMetrics() throws TaskExecutionException {
-
         expectedValueMap = new HashMap<String, String>();
         initExpectedMBeanCACHEdocumentCacheMetrics();
         initExpectedMBeanCACHEfieldCacheMetrics();
@@ -131,7 +130,6 @@ public class MetricCollectorMBeanMetricsTest {
         addHeartBeatMetricOne();
         metricCollector.run();
         validateMetricsList();
-
     }
 
     private void validateMetricsList() {

@@ -70,9 +70,7 @@ public class MetricCollector implements Runnable {
             AssertUtils.assertNotNull(jsonNode, "The output returned from \"" + endpoint + "\" is NULL");
             logger.debug("Received Json Node and starting processing.");
             addMetricsFromJson(jsonNode, stat);
-
             printMetrics();
-
         } catch (Exception e) {
             logger.error("Error encountered while collecting metrics from endpoint: " + endpoint, e.getMessage());
             String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + collectionName + METRIC_SEPARATOR + HEART_BEAT;
@@ -83,7 +81,6 @@ public class MetricCollector implements Runnable {
             logger.debug("Completing metric collection from endpoint: " + endpoint);
             phaser.arriveAndDeregister();
         }
-
     }
 
     private void printMetrics() {
@@ -157,6 +154,7 @@ public class MetricCollector implements Runnable {
             } else {
                 collectStats(stat, jsonNode, properties);
             }
+            //TODO: this block might throw a NPE. Please refactor
             if (childStat.getRootElement() != null) {
                 properties.remove(childStat.getRootElement());
             }

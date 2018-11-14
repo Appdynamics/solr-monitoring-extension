@@ -68,6 +68,4 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
     private String buildUrl(Map<String, String> server, String statEndpoint, String collectionName) {
         return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + collectionName + statEndpoint;
     }
-
-
 }
