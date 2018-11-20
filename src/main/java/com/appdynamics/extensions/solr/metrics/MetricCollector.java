@@ -155,8 +155,10 @@ public class MetricCollector implements Runnable {
                 collectStats(stat, jsonNode, properties);
             }
             //TODO: this block might throw a NPE. Please refactor
-            if (childStat.getRootElement() != null) {
-                properties.remove(childStat.getRootElement());
+            if (childStat != null) {
+                if (childStat.getRootElement() != null) {
+                    properties.remove(childStat.getRootElement());
+                }
             }
         }
     }

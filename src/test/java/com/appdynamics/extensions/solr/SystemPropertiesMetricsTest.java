@@ -18,7 +18,6 @@ import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.metrics.MetricCollector;
 import com.appdynamics.extensions.solr.metrics.MetricDataParser;
 import com.google.common.collect.Lists;
-import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -56,16 +55,12 @@ import static org.mockito.Mockito.verify;
 @PowerMockIgnore("javax.net.ssl.*")
 
 //TODO - rename this test class to something more meaningful
-public class CheckSystemProperties {
+public class SystemPropertiesMetricsTest {
     @Mock
     private TasksExecutionServiceProvider serviceProvider;
 
     @Mock
     private MetricWriteHelper metricWriter;
-
-    //TODO: should be local to before()
-    @Mock
-    private MetricDataParser dataParser;
 
     @Mock
     private Phaser phaser;
@@ -76,18 +71,14 @@ public class CheckSystemProperties {
 
     private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|", Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
 
-    //TODO: should be local to testWithSystemMetrics()
-    private Map<String, String> expectedValueMap = new HashMap<String, String>();
-
     private Map server = new HashMap();
-
-    //TODO: These two strings need not be global
-    private String endpoint = "testEndpoint";
-    private String collectionName = "techproducts";
 
 
     @Before
     public void before() {
+        //TODO: These two strings need not be global
+        String endpoint = "testEndpoint";
+        String collectionName = "techproducts";
 
         monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
         monitorContextConfiguration.setMetricXml("src/test/resources/xml/SystemMetricsForProps.xml", Stat.Stats.class);
@@ -95,7 +86,8 @@ public class CheckSystemProperties {
         Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
 
         stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
-
+        //TODO: should be local to before()
+        MetricDataParser dataParser = Mockito.mock(MetricDataParser.class);
         dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration, collectionName));
 
         server.put("host", "localhost");
@@ -120,8 +112,7 @@ public class CheckSystemProperties {
 
     @Test
     //TODO: remove the exception as it is never thrown
-    public void testWithSystemMetrics() throws TaskExecutionException {
-        expectedValueMap = new HashMap<String, String>();
+    public void testWithSystemMetrics() {
         metricCollector.run();
         validateProperties();
     }
@@ -135,39 +126,29 @@ public class CheckSystemProperties {
         metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|RAW|Free RAW");
         metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|RAW|Free Multiplied");
         metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat");
-        boolean check1 = false;
-        boolean check2 = false;
         for (Metric metric : (List<Metric>) pathCaptor.getValue()) {
             if (metric.getMetricName().equals("Free Multiplied")) {
                 //TODO : toString() is not required
                 /* TODO: it is a better practice to use assertEquals instead of assertTrue, as the former will provide the JUnit framework with better information about the components being tested. This will also give you a more sensible error message in case of a failure. Something to keep in mind moving forward.
                 */
                 Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|RAW|Free Multiplied"));
-                Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().toString().equals("COLLECTIVE"));
-                Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().toString().equals("SUM"));
-                Assert.assertTrue(metric.getMetricProperties().getAggregationType().toString().equals("AVERAGE"));
+                Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().equals("COLLECTIVE"));
+                Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().equals("SUM"));
+                Assert.assertTrue(metric.getMetricProperties().getAggregationType().equals("AVERAGE"));
+               // TODO NOTE : using toString here as getMultiplier method returns BigDecimal
                 Assert.assertTrue(metric.getMetricProperties().getMultiplier().toString().equals("0.001"));
                 Assert.assertTrue(metric.getMetricValue().equals("4.51509616E8"));
-                check1 = true;
             }
 
             if (metric.getMetricName().equals("HeartBeat")) {
                 //TODO: toString not needed again
                 Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat"));
-                Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().toString().equals("INDIVIDUAL"));
-                Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().toString().equals("AVERAGE"));
-                Assert.assertTrue(metric.getMetricProperties().getAggregationType().toString().equals("AVERAGE"));
+                Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().equals("INDIVIDUAL"));
+                Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().equals("AVERAGE"));
+                Assert.assertTrue(metric.getMetricProperties().getAggregationType().equals("AVERAGE"));
                 Assert.assertTrue(metric.getMetricProperties().getMultiplier().toString().equals("1"));
                 Assert.assertTrue(metric.getMetricValue().equals("1"));
-                check2 = true;
             }
-        }
-
-        //TODO: this block is meaningless. Please remove it
-        if (check1 == true && check2 == true) {
-            Assert.assertTrue(1 == 1);
-        } else {
-            Assert.assertFalse(1 == 1);
         }
     }
 }

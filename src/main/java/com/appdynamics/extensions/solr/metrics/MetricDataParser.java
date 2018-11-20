@@ -56,30 +56,29 @@ public class MetricDataParser {
     private String getMetricPrefixUsingProperties(MetricConfig metricConfig, String serverName, Map<String, String> properties) {
 
         // TODO: Use a StringBuilder for metricPrefix rather than String concatenation. Strings are immutable and will get recreated in your loop. StringBuilder does not do that and has much better performance.
-        String metricPrefix = "";
+        StringBuilder prefix = new StringBuilder();
         if (!Strings.isNullOrEmpty(monitorContextConfiguration.getMetricPrefix())) {
-            metricPrefix += monitorContextConfiguration.getMetricPrefix() + Constants.METRIC_SEPARATOR;
+            prefix.append(monitorContextConfiguration.getMetricPrefix()).append(Constants.METRIC_SEPARATOR);
         }
         if (!Strings.isNullOrEmpty(serverName)) {
-            metricPrefix += serverName + Constants.METRIC_SEPARATOR;
+            prefix.append(serverName).append(Constants.METRIC_SEPARATOR);
         }
         if (!Strings.isNullOrEmpty(collectionName)) {
-            metricPrefix += collectionName + Constants.METRIC_SEPARATOR;
+            prefix.append(collectionName).append(Constants.METRIC_SEPARATOR);
         }
-
         for (String prop : properties.keySet()) {
             if (properties.get(prop) != null) {
-                metricPrefix += properties.get(prop) + Constants.METRIC_SEPARATOR;
+                prefix.append(properties.get(prop)).append(Constants.METRIC_SEPARATOR);
+
             } else
-                metricPrefix += prop + Constants.METRIC_SEPARATOR;
+                prefix.append(prop).append(Constants.METRIC_SEPARATOR);
         }
         if (metricConfig.getAlias() != null) {
-            metricPrefix += metricConfig.getAlias();
+            prefix.append(metricConfig.getAlias());
         } else {
-            metricPrefix += metricConfig.getAttr();
+            prefix.append(metricConfig.getAttr());
         }
-        metricPrefix = MetricUtils.getMetricPathAfterCharacterReplacement(metricPrefix, getMetricReplacer());
-        return metricPrefix;
+        return MetricUtils.getMetricPathAfterCharacterReplacement(prefix.toString(), getMetricReplacer());
     }
 
     private List<Map<String, String>> getMetricReplacer() {
@@ -107,7 +106,7 @@ public class MetricDataParser {
             }
         }
         //TODO - possible NPE. Refactor
-        if (metric.getMetricPath() != null) {
+        if (metric.getMetricPath() != null && metric != null) {
             allMetrics.put(metric.getMetricPath(), metric);
         }
     }

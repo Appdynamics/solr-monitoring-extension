@@ -62,10 +62,6 @@ public class MetricCollectorMBeanMetricsTest {
     @Mock
     private MetricWriteHelper metricWriter;
 
-    //todo - make this local to before()
-    @Mock
-    private MetricDataParser dataParser;
-
     @Mock
     private Phaser phaser;
 
@@ -79,19 +75,20 @@ public class MetricCollectorMBeanMetricsTest {
 
     private Map server = new HashMap();
 
-    //TODO - make these Strings local to before
-    private String endpoint = "testEndpoint";
-    private String collectionName = "techproducts";
 
     @Before
     public void before() {
+        //TODO - make these Strings local to before
+        String endpoint = "testEndpoint";
+        String collectionName = "techproducts";
 
         monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
         monitorContextConfiguration.setMetricXml("src/test/resources/xml/MbeansMetricsTest.xml", Stat.Stats.class);
         Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
 
         stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
-
+        //todo - make this local to before()
+        MetricDataParser dataParser = Mockito.mock(MetricDataParser.class);
         dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration, collectionName));
 
         server.put("host", "localhost");

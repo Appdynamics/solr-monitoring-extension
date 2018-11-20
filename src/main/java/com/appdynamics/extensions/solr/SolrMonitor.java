@@ -73,10 +73,10 @@ public class SolrMonitor extends ABaseMonitor {
     //TODO: I think these logger statements should be INFO
     private void setMetricsXmlBasedOnVersion(Map<String, ?> server, Map<String, String> args) {
         if (MetricUtils.isVersion7OrHigher(server, getContextConfiguration().getContext().getHttpClient())) {
-            logger.debug("The Solr Version is greater than V7 for server: {}", server.get("name").toString());
+            logger.info("The Solr Version is greater than V7 for server: {}", server.get("name").toString());
             getContextConfiguration().setMetricXml(args.get("metric-file-v7"), Stat.Stats.class);
         } else {
-            logger.debug("The Solr Version is less than V7 for server: {}", server.get("name").toString());
+            logger.info("The Solr Version is less than V7 for server: {}", server.get("name").toString());
             getContextConfiguration().setMetricXml(args.get("metric-file-v5"), Stat.Stats.class);
         }
     }
