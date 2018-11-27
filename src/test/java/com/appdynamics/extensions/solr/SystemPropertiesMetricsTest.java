@@ -94,9 +94,7 @@ public class SystemPropertiesMetricsTest {
     }
 
     @Test
-    //TODO: rename this test to something more meaningful
-    //TODO: add a test for a failure case (throwing an exception)
-    public void testWithSystemMetrics() {
+    public void testSystemMetricsWithValidValues() {
         metricCollector.run();
         validateProperties();
     }
@@ -112,23 +110,20 @@ public class SystemPropertiesMetricsTest {
         metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat");
         for (Metric metric : (List<Metric>) pathCaptor.getValue()) {
             if (metric.getMetricName().equals("Free Multiplied")) {
-                /* TODO: it is a better practice to use assertEquals instead of assertTrue, as the former will provide the JUnit framework with better information about the components being tested. This will also give you a more sensible error message in case of a failure. Something to keep in mind moving forward.
-                 */
-                Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|RAW|Free Multiplied"));
-                Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().equals("COLLECTIVE"));
-                Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().equals("SUM"));
-                Assert.assertTrue(metric.getMetricProperties().getAggregationType().equals("AVERAGE"));
-                Assert.assertTrue(metric.getMetricProperties().getMultiplier().toString().equals("0.001"));
-                Assert.assertTrue(metric.getMetricValue().equals("4.51509616E8"));
+                Assert.assertEquals(metric.getMetricPath(), "Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|RAW|Free Multiplied");
+                Assert.assertEquals(metric.getMetricProperties().getClusterRollUpType(), "COLLECTIVE");
+                Assert.assertEquals(metric.getMetricProperties().getTimeRollUpType(), "SUM");
+                Assert.assertEquals(metric.getMetricProperties().getAggregationType(), "AVERAGE");
+                Assert.assertEquals(metric.getMetricProperties().getMultiplier().toString(), "0.001");
+                Assert.assertEquals(metric.getMetricValue(), "4.51509616E8");
             }
-
             if (metric.getMetricName().equals("HeartBeat")) {
-                Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat"));
-                Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().equals("INDIVIDUAL"));
-                Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().equals("AVERAGE"));
-                Assert.assertTrue(metric.getMetricProperties().getAggregationType().equals("AVERAGE"));
-                Assert.assertTrue(metric.getMetricProperties().getMultiplier().toString().equals("1"));
-                Assert.assertTrue(metric.getMetricValue().equals("1"));
+                Assert.assertEquals(metric.getMetricPath(), "Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat");
+                Assert.assertEquals(metric.getMetricProperties().getClusterRollUpType(), "INDIVIDUAL");
+                Assert.assertEquals(metric.getMetricProperties().getTimeRollUpType(), "AVERAGE");
+                Assert.assertEquals(metric.getMetricProperties().getAggregationType(), "AVERAGE");
+                Assert.assertEquals(metric.getMetricProperties().getMultiplier().toString(), "1");
+                Assert.assertEquals(metric.getMetricValue(), "1");
             }
         }
     }

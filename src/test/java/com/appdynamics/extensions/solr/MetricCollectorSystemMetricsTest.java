@@ -16,8 +16,6 @@ import com.appdynamics.extensions.http.HttpClientUtils;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.metrics.MetricCollector;
-import com.appdynamics.extensions.solr.metrics.MetricDataParser;
-import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -65,10 +63,6 @@ public class MetricCollectorSystemMetricsTest {
     private Map<String, String> expectedValueMap = new HashMap<String, String>();
     private Map server = new HashMap();
 
-    //TODO: make these local to the concerned method
-    private String endpoint = "testEndpoint";
-    private String collectionName = "techproducts";
-
     @Before
     public void before() {
         monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
@@ -78,6 +72,9 @@ public class MetricCollectorSystemMetricsTest {
         server.put("host", "localhost");
         server.put("port", "8983");
         server.put("name", "Server 1");
+
+        String endpoint = "testEndpoint";
+        String collectionName = "techproducts";
         List<String> collections = new ArrayList<String>();
         collections.add(collectionName);
         server.put("collectionName", collections);
@@ -93,8 +90,6 @@ public class MetricCollectorSystemMetricsTest {
                 });
     }
 
-    //TODO: rename this test to something more meaningful
-    //TODO: add a test for a failure case (throwing an exception)
     @Test
     public void testWithSystemMetrics() {
         expectedValueMap = new HashMap<String, String>();

@@ -94,10 +94,8 @@ public class MetricCollectorMBeanMetricsTest {
                 });
     }
 
-    //TODO: rename this test to something more meaningful
-    //TODO: add a test for a failure case (throwing an exception)
     @Test
-    public void testWithMbeanMetrics() {
+    public void testWithMbeanMetricsWithValidValues() {
         expectedValueMap = new HashMap<String, String>();
         initExpectedMBeanCACHEdocumentCacheMetrics();
         initExpectedMBeanCACHEfieldCacheMetrics();
@@ -218,7 +216,6 @@ public class MetricCollectorMBeanMetricsTest {
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|Query|SQL|Total Time", "0.0");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|Query|SQL|Request Times Mean", "0.0");
     }
-
 
     private void addHeartBeatMetricOne() {
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat", "1");
