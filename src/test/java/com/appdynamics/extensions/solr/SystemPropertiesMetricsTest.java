@@ -16,7 +16,6 @@ import com.appdynamics.extensions.http.HttpClientUtils;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.metrics.MetricCollector;
-import com.appdynamics.extensions.solr.metrics.MetricDataParser;
 import com.google.common.collect.Lists;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.codehaus.jackson.JsonNode;
@@ -53,53 +52,37 @@ import static org.mockito.Mockito.verify;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(HttpClientUtils.class)
 @PowerMockIgnore("javax.net.ssl.*")
-
-//TODO - rename this test class to something more meaningful
 public class SystemPropertiesMetricsTest {
     @Mock
     private TasksExecutionServiceProvider serviceProvider;
-
     @Mock
     private MetricWriteHelper metricWriter;
-
     @Mock
     private Phaser phaser;
-
     private Stat.Stats stat;
-
     private MetricCollector metricCollector;
-
-    private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|", Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
-
+    private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor",
+            "Custom Metrics|Solr|", Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
     private Map server = new HashMap();
 
 
     @Before
     public void before() {
-        //TODO: These two strings need not be global
         String endpoint = "testEndpoint";
         String collectionName = "techproducts";
-
         monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
         monitorContextConfiguration.setMetricXml("src/test/resources/xml/SystemMetricsForProps.xml", Stat.Stats.class);
-
         Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
-
         stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
-        //TODO: should be local to before()
-        MetricDataParser dataParser = Mockito.mock(MetricDataParser.class);
-        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration, collectionName));
-
         server.put("host", "localhost");
         server.put("port", "8983");
         server.put("name", "Server 1");
         List<String> collections = new ArrayList<String>();
         collections.add(collectionName);
         server.put("collectionName", collections);
-        metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter, endpoint, collectionName));
-
+        metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser,
+                metricWriter, endpoint, collectionName));
         PowerMockito.mockStatic(HttpClientUtils.class);
-
         PowerMockito.when(HttpClientUtils.getResponseAsJson(any(CloseableHttpClient.class), anyString(), any(Class.class))).thenAnswer(
                 new Answer() {
                     public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -111,7 +94,8 @@ public class SystemPropertiesMetricsTest {
     }
 
     @Test
-    //TODO: remove the exception as it is never thrown
+    //TODO: rename this test to something more meaningful
+    //TODO: add a test for a failure case (throwing an exception)
     public void testWithSystemMetrics() {
         metricCollector.run();
         validateProperties();
@@ -128,20 +112,17 @@ public class SystemPropertiesMetricsTest {
         metricPathsList.add("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat");
         for (Metric metric : (List<Metric>) pathCaptor.getValue()) {
             if (metric.getMetricName().equals("Free Multiplied")) {
-                //TODO : toString() is not required
                 /* TODO: it is a better practice to use assertEquals instead of assertTrue, as the former will provide the JUnit framework with better information about the components being tested. This will also give you a more sensible error message in case of a failure. Something to keep in mind moving forward.
-                */
+                 */
                 Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|RAW|Free Multiplied"));
                 Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().equals("COLLECTIVE"));
                 Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().equals("SUM"));
                 Assert.assertTrue(metric.getMetricProperties().getAggregationType().equals("AVERAGE"));
-               // TODO NOTE : using toString here as getMultiplier method returns BigDecimal
                 Assert.assertTrue(metric.getMetricProperties().getMultiplier().toString().equals("0.001"));
                 Assert.assertTrue(metric.getMetricValue().equals("4.51509616E8"));
             }
 
             if (metric.getMetricName().equals("HeartBeat")) {
-                //TODO: toString not needed again
                 Assert.assertTrue(metric.getMetricPath().equals("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|HeartBeat"));
                 Assert.assertTrue(metric.getMetricProperties().getClusterRollUpType().equals("INDIVIDUAL"));
                 Assert.assertTrue(metric.getMetricProperties().getTimeRollUpType().equals("AVERAGE"));

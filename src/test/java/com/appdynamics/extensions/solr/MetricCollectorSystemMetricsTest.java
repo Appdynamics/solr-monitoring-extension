@@ -51,59 +51,38 @@ import static org.mockito.Matchers.anyString;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(HttpClientUtils.class)
 @PowerMockIgnore("javax.net.ssl.*")
-
 public class MetricCollectorSystemMetricsTest {
-
-
     @Mock
     private TasksExecutionServiceProvider serviceProvider;
-
     @Mock
     private MetricWriteHelper metricWriter;
-
-    @Mock
-    private MetricDataParser dataParser;
-
     @Mock
     private Phaser phaser;
-
     private Stat.Stats stat;
-
     private MetricCollector metricCollector;
-
-    private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor", "Custom Metrics|Solr|", Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
-
+    private MonitorContextConfiguration monitorContextConfiguration = new MonitorContextConfiguration("SolrMonitor",
+            "Custom Metrics|Solr|", Mockito.mock(File.class), Mockito.mock(AMonitorJob.class));
     private Map<String, String> expectedValueMap = new HashMap<String, String>();
-
     private Map server = new HashMap();
 
+    //TODO: make these local to the concerned method
     private String endpoint = "testEndpoint";
-
     private String collectionName = "techproducts";
 
     @Before
     public void before() {
-
         monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
         monitorContextConfiguration.setMetricXml("src/test/resources/xml/SystemMetrics.xml", Stat.Stats.class);
-
         Mockito.when(serviceProvider.getMetricWriteHelper()).thenReturn(metricWriter);
-
         stat = (Stat.Stats) monitorContextConfiguration.getMetricsXml();
-
-        dataParser = Mockito.spy(new MetricDataParser(monitorContextConfiguration, collectionName));
-
         server.put("host", "localhost");
         server.put("port", "8983");
         server.put("name", "Server 1");
         List<String> collections = new ArrayList<String>();
         collections.add(collectionName);
         server.put("collectionName", collections);
-
-        metricCollector = Mockito.spy(new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter, endpoint, collectionName));
-
+        metricCollector = new MetricCollector(stat.getStats()[0], monitorContextConfiguration, server, phaser, metricWriter, endpoint, collectionName);
         PowerMockito.mockStatic(HttpClientUtils.class);
-
         PowerMockito.when(HttpClientUtils.getResponseAsJson(any(CloseableHttpClient.class), anyString(), any(Class.class))).thenAnswer(
                 new Answer() {
                     public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -114,9 +93,10 @@ public class MetricCollectorSystemMetricsTest {
                 });
     }
 
+    //TODO: rename this test to something more meaningful
+    //TODO: add a test for a failure case (throwing an exception)
     @Test
-    public void testWithSystemMetrics() throws TaskExecutionException {
-
+    public void testWithSystemMetrics() {
         expectedValueMap = new HashMap<String, String>();
         initExpectedSystemandMemoryMetrics();
         initExpectedSystemAndSystemMetrics();
@@ -140,7 +120,6 @@ public class MetricCollectorSystemMetricsTest {
         }
     }
 
-
     private void initExpectedSystemAndSystemMetrics() {
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|Available Processors", "8.0");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|System|System Load Average", "2.455078125");
@@ -160,7 +139,6 @@ public class MetricCollectorSystemMetricsTest {
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|Total MB", "490.7");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|Max MB", "490.7");
         expectedValueMap.put("Server|Component:awsReportingTier|Custom Metrics|Solr Monitor|Server 1|techproducts|JVM|Memory|Used MB", "60.1");
-
     }
 
     private void addHeartBeatMetricOne() {

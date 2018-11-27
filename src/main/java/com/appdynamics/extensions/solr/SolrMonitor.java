@@ -70,7 +70,6 @@ public class SolrMonitor extends ABaseMonitor {
         }
     }
 
-    //TODO: I think these logger statements should be INFO
     private void setMetricsXmlBasedOnVersion(Map<String, ?> server, Map<String, String> args) {
         if (MetricUtils.isVersion7OrHigher(server, getContextConfiguration().getContext().getHttpClient())) {
             logger.info("The Solr Version is greater than V7 for server: {}", server.get("name").toString());

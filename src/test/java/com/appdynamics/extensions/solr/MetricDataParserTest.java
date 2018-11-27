@@ -56,7 +56,7 @@ public class MetricDataParserTest {
     }
 
     @Test
-    public void testSystemMetrics() throws Exception {
+    public void testSystemMetricsWithAlias() throws Exception {
         monitorContextConfiguration.setConfigYml("src/test/resources/conf/config.yml");
         monitorContextConfiguration.setMetricXml("src/test/resources/xml/system-exact.xml", Stat.Stats.class);
         ObjectMapper mapper = new ObjectMapper();
