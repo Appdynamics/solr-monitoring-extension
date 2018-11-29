@@ -36,6 +36,11 @@ public class SolrMonitor extends ABaseMonitor {
     }
 
     @Override
+    protected List<Map<String, ?>> getServers() {
+        return (List<Map<String, ?>>) getContextConfiguration().getConfigYml().get("servers");
+    }
+
+    @Override
     public void doRun(TasksExecutionServiceProvider taskExecutor) {
         List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
         AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialised");
@@ -50,13 +55,6 @@ public class SolrMonitor extends ABaseMonitor {
             SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server);
             taskExecutor.submit(server.get(NAME), task);
         }
-    }
-
-    @Override
-    protected int getTaskCount() {
-        List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
-        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialised");
-        return servers.size();
     }
 
     @Override

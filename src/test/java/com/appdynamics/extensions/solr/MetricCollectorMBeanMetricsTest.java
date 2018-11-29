@@ -95,7 +95,7 @@ public class MetricCollectorMBeanMetricsTest {
     }
 
     @Test
-    public void testWithMbeanMetricsWithValidValues() {
+    public void testMetricCollectorForMbeanMetrics() {
         expectedValueMap = new HashMap<String, String>();
         initExpectedMBeanCACHEdocumentCacheMetrics();
         initExpectedMBeanCACHEfieldCacheMetrics();

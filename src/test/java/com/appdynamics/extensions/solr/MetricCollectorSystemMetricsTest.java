@@ -89,9 +89,8 @@ public class MetricCollectorSystemMetricsTest {
                     }
                 });
     }
-
     @Test
-    public void testWithSystemMetrics() {
+    public void testMetricCollectorForSystemMetrics() {
         expectedValueMap = new HashMap<String, String>();
         initExpectedSystemandMemoryMetrics();
         initExpectedSystemAndSystemMetrics();
