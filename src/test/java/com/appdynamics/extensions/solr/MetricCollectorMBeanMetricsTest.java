@@ -120,8 +120,6 @@ public class MetricCollectorMBeanMetricsTest {
             if (expectedValueMap.containsKey(metricPath)) {
                 String expectedValue = expectedValueMap.get(metricPath);
                 Assert.assertEquals(expectedValue, actualValue);
-            } else {
-                Assert.fail("Unknown Metric " + metricPath);
             }
         }
     }

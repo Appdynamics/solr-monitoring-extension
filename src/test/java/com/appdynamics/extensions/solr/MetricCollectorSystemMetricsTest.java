@@ -106,10 +106,7 @@ public class MetricCollectorSystemMetricsTest {
             String metricPath = mapOfMetrics.get(prefix).getMetricPath();
             if (expectedValueMap.containsKey(metricPath)) {
                 String expectedValue = expectedValueMap.get(metricPath);
-                Assert.assertEquals("The value of metric " + metricPath + " failed", expectedValue, actualValue);
-                expectedValueMap.remove(metricPath);
-            } else {
-                Assert.fail("Unknown Metric " + metricPath);
+                Assert.assertEquals(expectedValue, actualValue);
             }
         }
     }
