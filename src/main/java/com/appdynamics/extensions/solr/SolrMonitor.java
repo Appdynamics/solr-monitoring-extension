@@ -38,15 +38,14 @@ public class SolrMonitor extends ABaseMonitor {
     @Override
     public void doRun(TasksExecutionServiceProvider taskExecutor) {
         List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
-        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialised");
+        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialized");
         for (Map<String, String> server : servers) {
             AssertUtils.assertNotNull(server.get("host"), "The host field can not be empty in the config.yml");
             AssertUtils.assertNotNull(server.get("port"), "The port field can not be empty in the config.yml");
             AssertUtils.assertNotNull(server.get("name"), "The name field can not be empty in the config.yml");
             AssertUtils.assertNotNull(server.get("collectionName"), "The collectionName field can not be empty in the config.yml");
-            logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
-
             AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
+            logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
             SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server);
             taskExecutor.submit(server.get(NAME), task);
         }
@@ -55,7 +54,7 @@ public class SolrMonitor extends ABaseMonitor {
     @Override
     protected int getTaskCount() {
         List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
-        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialised");
+        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialized");
         return servers.size();
     }
 
@@ -66,7 +65,7 @@ public class SolrMonitor extends ABaseMonitor {
             Map<String, String> firstServer = servers.get(0);
             setMetricsXmlBasedOnVersion(firstServer, args);
         } else {
-            logger.error("Servers section is empty. Please add servers to monitor.");
+            logger.error("The 'Servers' section cannot be empty. Please add servers to monitor.");
         }
     }
 

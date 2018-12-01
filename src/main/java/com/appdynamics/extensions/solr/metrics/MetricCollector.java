@@ -66,14 +66,16 @@ public class MetricCollector implements Runnable {
         try {
             serverName = server.get(NAME).toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
-            JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
+            JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(),
+                    endpoint, JsonNode.class);
             AssertUtils.assertNotNull(jsonNode, "The output returned from \"" + endpoint + "\" is NULL");
             logger.debug("Received Json Node and starting processing.");
             addMetricsFromJson(jsonNode, stat);
             printMetrics();
         } catch (Exception e) {
             logger.error("Error encountered while collecting metrics from endpoint: " + endpoint, e.getMessage());
-            String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + collectionName + METRIC_SEPARATOR + HEART_BEAT;
+            String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName +
+                    METRIC_SEPARATOR + collectionName + METRIC_SEPARATOR + HEART_BEAT;
             Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO), prefix);
             allMetrics.put(prefix, heartBeat);
 
@@ -84,10 +86,10 @@ public class MetricCollector implements Runnable {
     }
 
     private void printMetrics() {
-        String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + collectionName + METRIC_SEPARATOR + HEART_BEAT;
+        String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR
+                + collectionName + METRIC_SEPARATOR + HEART_BEAT;
         Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), prefix);
         allMetrics.put(prefix, heartBeat);
-
         List<Metric> metricList = MetricUtils.getListMetrics(allMetrics);
         if (metricList.size() > 0) {
             logger.debug("Printing {} metrics for stat: {}", metricList.size(), stat.getAlias());
@@ -97,7 +99,6 @@ public class MetricCollector implements Runnable {
 
     private Map<String, ?> getMapOfJson(boolean isJsonMap, JsonNode jsonNode) {
         Map<String, ?> jsonMap = new HashMap<String, Object>();
-
         if (isJsonMap) {
             jsonMap = MetricUtils.getMapOfArrayNodes(jsonNode.get(stat.getRootElement()));
         }

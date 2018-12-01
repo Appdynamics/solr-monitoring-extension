@@ -44,7 +44,7 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
 
     public void run() {
         try {
-            logger.info("Created Task and starting work for Server: {}", server.get(NAME));
+            logger.info("Starting the Solr Monitoring Task for Server: {}", server.get(NAME));
             Phaser phaser = new Phaser();
             phaser.register();
 
@@ -54,9 +54,12 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
                 List<String> collectionNames = (List<String>) server.get("collectionName");
                 for (String collection : collectionNames) {
                     String endpoint = buildUrl(server, stat.getUrl(), collection);
-                    MetricCollector metricCollector = new MetricCollector(stat, monitorContextConfiguration, server, phaser, metricWriteHelper, endpoint, collection);
-                    monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask-" + stat.getAlias(), metricCollector);
-                    logger.debug("Registering MetricCollectorTask phaser for {} & collection: {}", server.get(NAME), collection);
+                    MetricCollector metricCollector = new MetricCollector(stat, monitorContextConfiguration, server,
+                            phaser, metricWriteHelper, endpoint, collection);
+                    monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask-" +
+                            stat.getAlias(), metricCollector);
+                    logger.debug("Registering MetricCollectorTask phaser for {} & collection: {}", server.get(NAME),
+                            collection);
                 }
             }
             phaser.arriveAndAwaitAdvance();
