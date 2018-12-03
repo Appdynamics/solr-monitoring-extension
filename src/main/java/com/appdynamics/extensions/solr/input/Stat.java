@@ -8,7 +8,6 @@
 
 package com.appdynamics.extensions.solr.input;
 
-
 import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 

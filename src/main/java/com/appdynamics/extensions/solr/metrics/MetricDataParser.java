@@ -12,7 +12,9 @@ import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.MetricConfig;
 import com.appdynamics.extensions.solr.input.Stat;
+import com.appdynamics.extensions.solr.utils.Constants;
 import com.appdynamics.extensions.solr.utils.MetricUtils;
+import com.google.common.base.Strings;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -29,15 +31,15 @@ import static com.appdynamics.extensions.solr.utils.MetricUtils.convertMemoryStr
  */
 
 public class MetricDataParser {
-
-    private static final Logger logger = LoggerFactory.getLogger(MetricCollector.class);
+    private static final Logger logger = LoggerFactory.getLogger(MetricDataParser.class);
     private MonitorContextConfiguration monitorContextConfiguration;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
+    private String collectionName;
 
-    public MetricDataParser(MonitorContextConfiguration monitorContextConfiguration) {
+    public MetricDataParser(MonitorContextConfiguration monitorContextConfiguration, String collectionName) {
         this.monitorContextConfiguration = monitorContextConfiguration;
+        this.collectionName = collectionName;
     }
-
 
     public Map<String, Metric> parseNodeData(Stat stat, JsonNode nodes, String serverName, Map<String, String> properties) {
         if (nodes != null) {
@@ -52,33 +54,33 @@ public class MetricDataParser {
     }
 
     private String getMetricPrefixUsingProperties(MetricConfig metricConfig, String serverName, Map<String, String> properties) {
-        String metricPrefix = "";
-        if (monitorContextConfiguration.getMetricPrefix() != null) {
-            metricPrefix += monitorContextConfiguration.getMetricPrefix() + "|";
+        StringBuilder prefix = new StringBuilder();
+        if (!Strings.isNullOrEmpty(monitorContextConfiguration.getMetricPrefix())) {
+            prefix.append(monitorContextConfiguration.getMetricPrefix()).append(Constants.METRIC_SEPARATOR);
         }
-        if (serverName != null) {
-            metricPrefix += serverName + "|";
+        if (!Strings.isNullOrEmpty(serverName)) {
+            prefix.append(serverName).append(Constants.METRIC_SEPARATOR);
+        }
+        if (!Strings.isNullOrEmpty(collectionName)) {
+            prefix.append(collectionName).append(Constants.METRIC_SEPARATOR);
         }
         for (String prop : properties.keySet()) {
             if (properties.get(prop) != null) {
-                metricPrefix += properties.get(prop).toString() + "|";
+                prefix.append(properties.get(prop)).append(Constants.METRIC_SEPARATOR);
+
             } else
-                metricPrefix += prop + "|";
+                prefix.append(prop).append(Constants.METRIC_SEPARATOR);
         }
         if (metricConfig.getAlias() != null) {
-            metricPrefix += metricConfig.getAlias();
+            prefix.append(metricConfig.getAlias());
         } else {
-            metricPrefix += metricConfig.getAttr();
+            prefix.append(metricConfig.getAttr());
         }
-
-        metricPrefix = MetricUtils.replaceCharacter(metricPrefix, getMetricReplacer());
-
-        return metricPrefix;
+        return MetricUtils.getMetricPathAfterCharacterReplacement(prefix.toString(), getMetricReplacer());
     }
 
     private List<Map<String, String>> getMetricReplacer() {
-        List<Map<String, String>> metricReplacers = (List<Map<String, String>>) monitorContextConfiguration.getConfigYml().get("metricCharacterReplacer");
-        return metricReplacers;
+        return (List<Map<String, String>>) monitorContextConfiguration.getConfigYml().get("metricCharacterReplacer");
     }
 
     private void getMetricValueFromJson(MetricConfig metricConfig, JsonNode currentNode, String serverName, Map<String, String> properties) {
@@ -101,7 +103,8 @@ public class MetricDataParser {
                 logger.info("Adding metric {} to the queue for publishing", metric.getMetricPath());
             }
         }
-        allMetrics.put(metric.getMetricPath(), metric);
+        if (metric != null && metric.getMetricPath() != null) {
+            allMetrics.put(metric.getMetricPath(), metric);
+        }
     }
-
 }

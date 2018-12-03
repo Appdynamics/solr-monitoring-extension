@@ -14,7 +14,6 @@ package com.appdynamics.extensions.solr.metrics;
 import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.http.HttpClientUtils;
-import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.utils.MetricUtils;
@@ -43,43 +42,40 @@ public class MetricCollector implements Runnable {
     private String endpoint;
     private String serverName;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
-    MetricDataParser metricDataParser;
-
+    private MetricDataParser metricDataParser;
+    private String collectionName;
 
     public MetricCollector(Stat stat, MonitorContextConfiguration monitorContextConfiguration, Map<String, String> server,
-                           Phaser phaser, MetricWriteHelper metricWriteHelper) {
+                           Phaser phaser, MetricWriteHelper metricWriteHelper, String endpoint, String collectionName) {
         this.stat = stat;
         this.monitorContextConfiguration = monitorContextConfiguration;
         this.server = server;
         this.phaser = phaser;
+        this.phaser.register();
         this.metricWriteHelper = metricWriteHelper;
-        this.endpoint = buildUrl(server, stat.getUrl());
-        metricDataParser = new MetricDataParser(monitorContextConfiguration);
-        phaser.register();
+        this.endpoint = endpoint;
+        this.collectionName = collectionName;
+        metricDataParser = new MetricDataParser(monitorContextConfiguration, collectionName);
     }
 
     public Map<String, Metric> getMetricsMap() {
         return allMetrics;
     }
 
-    private String buildUrl(Map<String, String> server, String statEndpoint) {
-        return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + server.get(COLLECTIONNAME) + statEndpoint;
-    }
-
     public void run() {
         try {
             serverName = server.get(NAME).toString();
             logger.info("Currently fetching metrics from endpoint: {}", endpoint);
-            JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(), endpoint, JsonNode.class);
-            AssertUtils.assertNotNull(jsonNode,"The output returned from \""+endpoint+"\" is NULL");
+            JsonNode jsonNode = HttpClientUtils.getResponseAsJson(monitorContextConfiguration.getContext().getHttpClient(),
+                    endpoint, JsonNode.class);
+            AssertUtils.assertNotNull(jsonNode, "The output returned from \"" + endpoint + "\" is NULL");
             logger.debug("Received Json Node and starting processing.");
             addMetricsFromJson(jsonNode, stat);
-
             printMetrics();
-
         } catch (Exception e) {
             logger.error("Error encountered while collecting metrics from endpoint: " + endpoint, e.getMessage());
-            String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
+            String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName +
+                    METRIC_SEPARATOR + collectionName + METRIC_SEPARATOR + HEART_BEAT;
             Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ZERO), prefix);
             allMetrics.put(prefix, heartBeat);
 
@@ -87,14 +83,13 @@ public class MetricCollector implements Runnable {
             logger.debug("Completing metric collection from endpoint: " + endpoint);
             phaser.arriveAndDeregister();
         }
-
     }
 
     private void printMetrics() {
-        String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR + HEART_BEAT;
+        String prefix = monitorContextConfiguration.getMetricPrefix() + METRIC_SEPARATOR + serverName + METRIC_SEPARATOR
+                + collectionName + METRIC_SEPARATOR + HEART_BEAT;
         Metric heartBeat = new Metric(HEART_BEAT, String.valueOf(BigInteger.ONE), prefix);
         allMetrics.put(prefix, heartBeat);
-
         List<Metric> metricList = MetricUtils.getListMetrics(allMetrics);
         if (metricList.size() > 0) {
             logger.debug("Printing {} metrics for stat: {}", metricList.size(), stat.getAlias());
@@ -104,9 +99,8 @@ public class MetricCollector implements Runnable {
 
     private Map<String, ?> getMapOfJson(boolean isJsonMap, JsonNode jsonNode) {
         Map<String, ?> jsonMap = new HashMap<String, Object>();
-
         if (isJsonMap) {
-            jsonMap = MetricUtils.mapOfArrayNodes(jsonNode.get(stat.getRootElement()));
+            jsonMap = MetricUtils.getMapOfArrayNodes(jsonNode.get(stat.getRootElement()));
         }
         return jsonMap;
     }
@@ -118,13 +112,10 @@ public class MetricCollector implements Runnable {
 
         if (stats.getStats() != null) {
             for (Stat childStat : stats.getStats()) {
-
                 childNode = MetricUtils.getJsonNodeFromMap(childNode, jsonMap, childStat);
-
                 if (childStat.getMetricSection() != null) {
                     childNode = childNode.get(childStat.getMetricSection());
                 }
-
                 properties.put(childStat.getRootElement(), childStat.getAlias());
                 processStats(childStat, childNode, properties);
                 properties.remove(childStat.getRootElement());
@@ -143,37 +134,32 @@ public class MetricCollector implements Runnable {
         }
     }
 
-
     private void collectStats(Stat stat, JsonNode jsonNode, Map<String, String> properties) {
         if (stat.getMetricConfig() != null) {
             allMetrics.putAll(metricDataParser.parseNodeData(stat, jsonNode, serverName, properties));
         }
     }
 
-
     private boolean isChildStatNull(Stat[] stat) {
         return stat == null;
     }
 
     private void collectChildStats(Stat stat, JsonNode node, Map<String, String> properties) {
-
         JsonNode jsonNode = node;
         for (Stat childStat : stat.getStats()) {
             if (childStat != null) {
                 properties.put(childStat.getRootElement(), childStat.getAlias());
-
                 jsonNode = MetricUtils.getJsonNode(childStat, node);
                 jsonNode = MetricUtils.getMetricSectionMetrics(childStat, jsonNode);
                 processStats(childStat, jsonNode, properties);
-
             } else {
                 collectStats(stat, jsonNode, properties);
             }
-
-            properties.remove(childStat.getRootElement());
+            if (childStat != null) {
+                if (childStat.getRootElement() != null) {
+                    properties.remove(childStat.getRootElement());
+                }
+            }
         }
-
     }
-
-
 }

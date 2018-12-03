@@ -8,11 +8,12 @@
 
 package com.appdynamics.extensions.solr.utils;
 
+import com.appdynamics.extensions.http.HttpClientUtils;
+import com.appdynamics.extensions.http.UrlBuilder;
 import com.appdynamics.extensions.metrics.Metric;
-import com.appdynamics.extensions.solr.input.MetricConfig;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.google.common.base.Strings;
-import com.google.common.collect.Maps;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -21,12 +22,9 @@ import org.slf4j.LoggerFactory;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.*;
-import static com.appdynamics.extensions.solr.utils.Constants.REPLACE;
-import static com.appdynamics.extensions.solr.utils.Constants.REPLACE_WITH;
-import static com.appdynamics.extensions.solr.utils.Constants.BYTES_CONVERSION_FACTOR;
-import static com.appdynamics.extensions.solr.utils.Constants.KB;
-import static com.appdynamics.extensions.solr.utils.Constants.MB;
-import static com.appdynamics.extensions.solr.utils.Constants.GB;
+
+import static com.appdynamics.extensions.solr.utils.Constants.*;
+
 /**
  * Created by bhuvnesh.kumar on 4/25/18.
  */
@@ -36,19 +34,19 @@ public class MetricUtils {
     public static JsonNode getJsonNode(Stat stat, JsonNode nodes) {
         JsonNode newNode = nodes;
 
-        if(stat.getRootElement() != null){
-            if(nodes.get(stat.getRootElement()) != null) {
+        if (stat.getRootElement() != null) {
+            if (nodes.get(stat.getRootElement()) != null) {
                 newNode = nodes.get(stat.getRootElement());
             }
         }
         return newNode;
     }
 
-    public static JsonNode getMetricSectionMetrics(Stat stat, JsonNode jsonNode){
+    public static JsonNode getMetricSectionMetrics(Stat stat, JsonNode jsonNode) {
         JsonNode node = jsonNode;
-        if(stat.getMetricSection() != null){
+        if (stat.getMetricSection() != null) {
             if (jsonNode.get(stat.getMetricSection()) != null) {
-                node = jsonNode.get(stat.getMetricSection().toString());
+                node = jsonNode.get(stat.getMetricSection());
             }
         }
         return node;
@@ -64,7 +62,7 @@ public class MetricUtils {
         return childNode;
     }
 
-    public static String replaceCharacter(String metricPath, List<Map<String, String>> metricReplacer) {
+    public static String getMetricPathAfterCharacterReplacement(String metricPath, List<Map<String, String>> metricReplacer) {
 
         for (Map chars : metricReplacer) {
             String replace = (String) chars.get(REPLACE);
@@ -77,7 +75,7 @@ public class MetricUtils {
         return metricPath;
     }
 
-    public static Map<String, Object> mapOfArrayNodes(JsonNode arrayOfNodes) {
+    public static Map<String, Object> getMapOfArrayNodes(JsonNode arrayOfNodes) {
         ObjectMapper mapper = new ObjectMapper();
         Map<String, Object> map = new HashMap<String, Object>();
 
@@ -91,32 +89,22 @@ public class MetricUtils {
         return map;
     }
 
-    public static Map mapOfArrayList(ArrayList<?> arrayOfNodes) {
-        Map<String, Object> map = new HashMap<String, Object>();
-
-        for (int i = 0; i < arrayOfNodes.size(); i = i + 2) {
-            String name = (String) arrayOfNodes.get(i);
-            if (arrayOfNodes.get(i + 1) != null) {
-                map.put(name, arrayOfNodes.get(i + 1));
-            }
-        }
-        return map;
+    public static Boolean isVersion7OrHigher(Map server, CloseableHttpClient httpClient) {
+        String firstCollectionNameFromList = ((List) server.get(COLLECTIONNAME)).get(0).toString();
+        String url = UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + firstCollectionNameFromList + "/admin/system?stats=true&wt=json";
+        JsonNode jsonNode = HttpClientUtils.getResponseAsJson(httpClient, url, JsonNode.class);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, ?> jsonMap = objectMapper.convertValue(jsonNode, Map.class);
+        Map<String, ?> luceneMap = (Map) jsonMap.get(LUCENE);
+        String versionValue = luceneMap.get(SOLR_SPEC_VERSION).toString();
+        String[] charArray = versionValue.split("\\.");
+        int version = Integer.valueOf(charArray[0]);
+        return version >= 7;
     }
-
-
-    public static Boolean checkForEmptyAttribute(MetricConfig metricConfig){
-        Boolean result = false;
-        if( metricConfig.getAttr() == null ){
-            logger.debug("No Metric Attribute defined");
-            result = true;
-        }
-        return result;
-    }
-
 
     public static Double convertMemoryStringToDouble(String valueStr) {
         if (!Strings.isNullOrEmpty(valueStr)) {
-            String strippedValueStr = null;
+            String strippedValueStr;
             try {
                 if (valueStr.contains(KB)) {
                     strippedValueStr = valueStr.split(KB)[0].trim();
@@ -129,7 +117,7 @@ public class MetricUtils {
                     return unLocalizeStrValue(strippedValueStr) * BYTES_CONVERSION_FACTOR;
                 }
             } catch (Exception e) {
-                logger.error("Unrecognized string format: " + valueStr);
+                logger.error("Unrecognized string format: " + valueStr, e);
             }
         }
         return unLocalizeStrValue(valueStr);
@@ -139,7 +127,12 @@ public class MetricUtils {
     private static Double unLocalizeStrValue(String valueStr) {
         try {
             Locale loc = Locale.getDefault();
-            return Double.valueOf(NumberFormat.getInstance(loc).parse(valueStr).doubleValue());
+            if (loc != null) {
+                return NumberFormat.getInstance(loc).parse(valueStr).doubleValue();
+            } else {
+                logger.debug("Locale Object's default value = null, returning null");
+                return null;
+            }
         } catch (ParseException e) {
             logger.error("Exception while unlocalizing number string " + valueStr, e);
         }
@@ -152,16 +145,9 @@ public class MetricUtils {
             metricList.add(metricMap.get(path));
         }
         return metricList;
-
     }
 
-    public static boolean isJsonArray(Stat stat){
-        if(stat.getStructure() != null){
-            if(stat.getStructure().toString().equals("array")){
-                return true;
-            }
-        }
-        return false;
+    public static boolean isJsonArray(Stat stat) {
+        return stat.getStructure() != null && stat.getStructure().equals("array");
     }
-
 }

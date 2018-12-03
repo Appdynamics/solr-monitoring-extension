@@ -49,13 +49,13 @@ Note : Please make sure to not use tab (\t) while editing yaml files. You may wa
        - host: "localhost"
          port: 8983
          name: "Server 1"
-         collectionName : "gettingStarted"
+         collectionName : ["gettingStarted","techproducts"]
     
     
        - host: "localhost"
          port: 7574
          name: "Server 2"
-         collectionName : "techproducts"
+         collectionName : ["gettingStarted","techproducts"]
 
      ```
      3. Configure the encyptionKey for encryptionPasswords(only if password encryption required).
@@ -76,19 +76,26 @@ Note : Please make sure to not use tab (\t) while editing yaml files. You may wa
 Specify as many cores as you want to monitor and corresponding comma separated request handlers. If none of the cores are specified, default core with empty request handlers is monitored. 
 The Solr extension now includes support for multiple instances. You can specify as many servers as you want.
 
-2. Configure the path to the config.yml file by editing the <task-arguments> in the monitor.xml file in the `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/` directory. Below is the sample
+2. Configure the path to the config.yml and metrics-vX.xml files by editing the <task-arguments> in the monitor.xml file in the `<MACHINE_AGENT_HOME>/monitors/SolrMonitor/` directory. Below is the sample
 
      ```
      <task-arguments>
          <!-- config file-->
          <argument name="config-file" is-required="true" default-value="monitors/SolrMonitor/config.yml" />
-          ....
+         <argument name="metric-file-v5" is-required="true" default-value="monitors/SolrMonitor/metrics-v5.xml"/>
+         <argument name="metric-file-v7" is-required="true" default-value="monitors/SolrMonitor/metrics-v7.xml"/>
      </task-arguments>
     ```
-
+*Note:* Solr has had a change of API's over the past few versions due to which this extension ships with two files, 
+metrics-v5.xml and metrics-v7.xml which contain the names of metrics to retrieve from Solr's APIs.
+The extension automatically checks for what version of Solr you are on and based on that selects a metrics.xml file
+to pull the metrics. If you have multiple Solr servers where some are greater than v7 whereas some are less than v7, 
+we suggest you use two copies of the extension, with one version having servers greater than v7 and one with less
+than v7 as the APIs changed at v7.
+ 
 ## Metrics
 By default, the metrics will be reported under the following metric tree:
-```Application Infrastructure Performance|Custom Metrics|$SERVERNAME|Solr Monitor```
+```Application Infrastructure Performance|Custom Metrics|Solr Monitor|$SERVERNAME```
 
 This will register metrics to all tiers within the application. We strongly recommend using the tier specific metric prefix so that metrics are reported only to a specified tier. Please change the metric prefix in your config.yaml
 

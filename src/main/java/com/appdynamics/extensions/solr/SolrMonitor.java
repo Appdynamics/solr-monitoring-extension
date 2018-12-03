@@ -11,17 +11,11 @@ package com.appdynamics.extensions.solr;
 import com.appdynamics.extensions.ABaseMonitor;
 import com.appdynamics.extensions.TasksExecutionServiceProvider;
 import com.appdynamics.extensions.solr.input.Stat;
+import com.appdynamics.extensions.solr.utils.MetricUtils;
 import com.appdynamics.extensions.util.AssertUtils;
-import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.PatternLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,14 +38,14 @@ public class SolrMonitor extends ABaseMonitor {
     @Override
     public void doRun(TasksExecutionServiceProvider taskExecutor) {
         List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
-        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialised");
-        AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
+        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialized");
         for (Map<String, String> server : servers) {
-            logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
             AssertUtils.assertNotNull(server.get("host"), "The host field can not be empty in the config.yml");
             AssertUtils.assertNotNull(server.get("port"), "The port field can not be empty in the config.yml");
             AssertUtils.assertNotNull(server.get("name"), "The name field can not be empty in the config.yml");
             AssertUtils.assertNotNull(server.get("collectionName"), "The collectionName field can not be empty in the config.yml");
+            AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
+            logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
             SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server);
             taskExecutor.submit(server.get(NAME), task);
         }
@@ -60,17 +54,28 @@ public class SolrMonitor extends ABaseMonitor {
     @Override
     protected int getTaskCount() {
         List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
-        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialised");
+        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialized");
         return servers.size();
     }
 
     @Override
     protected void initializeMoreStuff(Map<String, String> args) {
-        getContextConfiguration().setMetricXml(args.get("metric-file"), Stat.Stats.class);
-
+        List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
+        if (servers.get(0) != null) {
+            Map<String, String> firstServer = servers.get(0);
+            setMetricsXmlBasedOnVersion(firstServer, args);
+        } else {
+            logger.error("The 'Servers' section cannot be empty. Please add servers to monitor.");
+        }
     }
 
-
+    private void setMetricsXmlBasedOnVersion(Map<String, ?> server, Map<String, String> args) {
+        if (MetricUtils.isVersion7OrHigher(server, getContextConfiguration().getContext().getHttpClient())) {
+            logger.info("The Solr Version is greater than V7 for server: {}", server.get("name").toString());
+            getContextConfiguration().setMetricXml(args.get("metric-file-v7"), Stat.Stats.class);
+        } else {
+            logger.info("The Solr Version is less than V7 for server: {}", server.get("name").toString());
+            getContextConfiguration().setMetricXml(args.get("metric-file-v5"), Stat.Stats.class);
+        }
+    }
 }
-
-
