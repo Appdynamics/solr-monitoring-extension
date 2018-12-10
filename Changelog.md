@@ -1,6 +1,9 @@
 Changes
 =======
 
+## 1.2.2
+
+Support for multiple version APIs provided by Solr. Ability to monitor multiple collections on same server.
 
 ## 1.2.0
 
