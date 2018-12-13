@@ -25,3 +25,25 @@ metricCharacterReplacer:
      replaceWith: "\\-"
 
 numberOfThreads: 5
+
+customDashboard:
+    enabled: true
+    dashboardName: "Solr Dashboard"
+    sslCertCheckEnabled: true
+    # Update the path to the dashboard file.
+    pathToSIMDashboard: "monitors/SolrMonitor/simDashboard.json"
+    pathToNormalDashboard: "monitors/SolrMonitor/normalDashboard.json"
+    periodicDashboardCheckInSeconds: 300
+
+# To upload the dashboard, please create a user from Controller UI or
+# add the credentials of an existing user.
+
+controllerInfo:
+    host: ""
+    port:
+    account: ""
+    username: ""
+    password: ""
+    # OPTIONAL Items
+    encryptedPassword: ""
+    encryptionKey: ""

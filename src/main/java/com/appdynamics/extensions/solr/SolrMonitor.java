@@ -52,11 +52,16 @@ public class SolrMonitor extends ABaseMonitor {
     }
 
     @Override
-    protected int getTaskCount() {
-        List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
-        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialized");
-        return servers.size();
+    protected List<Map<String, ?>> getServers() {
+        return (List<Map<String, ?>>) getContextConfiguration().getConfigYml().get("servers");
     }
+
+//    @Override
+//    protected int getTaskCount() {
+//        List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
+//        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialized");
+//        return servers.size();
+//    }
 
     @Override
     protected void initializeMoreStuff(Map<String, String> args) {
