@@ -90,8 +90,9 @@ public class MetricUtils {
     }
 
     public static Boolean isVersion7OrHigher(Map server, CloseableHttpClient httpClient) {
+        String applicationName = server.get("applicationName").toString();
         String firstCollectionNameFromList = ((List) server.get(COLLECTIONNAME)).get(0).toString();
-        String url = UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + firstCollectionNameFromList + "/admin/system?stats=true&wt=json";
+        String url = UrlBuilder.fromYmlServerConfig(server).build() + FORWARD_SLASH + applicationName + FORWARD_SLASH + firstCollectionNameFromList + "/admin/system?stats=true&wt=json";
         JsonNode jsonNode = HttpClientUtils.getResponseAsJson(httpClient, url, JsonNode.class);
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, ?> jsonMap = objectMapper.convertValue(jsonNode, Map.class);
