@@ -10,11 +10,13 @@ servers:
      port: 8983
      name: "Server 1"
      collectionName : ["techproducts","gettingstarted"]
+     applicationName: "solr"
 
    - host: "localhost"
      port: 7574
      name: "Server 2"
      collectionName : ["techproducts","gettingstarted"]
+     applicationName: "solr"
 
 metricCharacterReplacer:
    - replace: "\\%"

@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
 
+import static com.appdynamics.extensions.solr.utils.Constants.FORWARD_SLASH;
 import static com.appdynamics.extensions.solr.utils.Constants.NAME;
-import static com.appdynamics.extensions.solr.utils.Constants.SOLR_WITH_SLASH;
 
 public class SolrMonitorTask implements AMonitorTaskRunnable {
     private static final Logger logger = LoggerFactory.getLogger(SolrMonitorTask.class);
@@ -52,8 +52,9 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
             AssertUtils.assertNotNull(metricConfiguration.getStats(), "The stat inside of stats are empty.");
             for (Stat stat : metricConfiguration.getStats()) {
                 List<String> collectionNames = (List<String>) server.get("collectionName");
+                String applicationName = server.get("applicationName").toString();
                 for (String collection : collectionNames) {
-                    String endpoint = buildUrl(server, stat.getUrl(), collection);
+                    String endpoint = buildUrl(server, stat.getUrl(), collection, applicationName);
                     MetricCollector metricCollector = new MetricCollector(stat, monitorContextConfiguration, server,
                             phaser, metricWriteHelper, endpoint, collection);
                     monitorContextConfiguration.getContext().getExecutorService().execute("MetricCollectorTask-" +
@@ -68,7 +69,7 @@ public class SolrMonitorTask implements AMonitorTaskRunnable {
         }
     }
 
-    private String buildUrl(Map<String, String> server, String statEndpoint, String collectionName) {
-        return UrlBuilder.fromYmlServerConfig(server).build() + SOLR_WITH_SLASH + collectionName + statEndpoint;
+    private String buildUrl(Map<String, String> server, String statEndpoint, String collectionName, String applicationName) {
+        return UrlBuilder.fromYmlServerConfig(server).build() + FORWARD_SLASH + applicationName + FORWARD_SLASH + collectionName + statEndpoint;
     }
 }

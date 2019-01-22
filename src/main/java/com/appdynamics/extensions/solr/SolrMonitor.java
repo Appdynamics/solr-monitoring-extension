@@ -44,6 +44,8 @@ public class SolrMonitor extends ABaseMonitor {
             AssertUtils.assertNotNull(server.get("port"), "The port field can not be empty in the config.yml");
             AssertUtils.assertNotNull(server.get("name"), "The name field can not be empty in the config.yml");
             AssertUtils.assertNotNull(server.get("collectionName"), "The collectionName field can not be empty in the config.yml");
+            AssertUtils.assertNotNull(server.get("applicationName"), "The applicationName field can not be empty in the config.yml");
+
             AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
             logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
             SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server);
@@ -52,16 +54,11 @@ public class SolrMonitor extends ABaseMonitor {
     }
 
     @Override
-    protected List<Map<String, ?>> getServers() {
-        return (List<Map<String, ?>>) getContextConfiguration().getConfigYml().get("servers");
+    protected int getTaskCount() {
+        List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
+        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialized");
+        return servers.size();
     }
-
-//    @Override
-//    protected int getTaskCount() {
-//        List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
-//        AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialized");
-//        return servers.size();
-//    }
 
     @Override
     protected void initializeMoreStuff(Map<String, String> args) {

@@ -25,6 +25,7 @@ public class Constants {
     public static final String REPLACE_WITH = "replaceWith";
     public static final String SOLR_SPEC_VERSION = "solr-spec-version";
     public static final String LUCENE = "lucene";
+    public static final String FORWARD_SLASH = "/";
 
     public static final String KB = "KB";
     public static final String MB = "MB";

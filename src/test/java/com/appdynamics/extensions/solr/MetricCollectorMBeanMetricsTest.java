@@ -79,6 +79,7 @@ public class MetricCollectorMBeanMetricsTest {
         server.put("host", "localhost");
         server.put("port", "8983");
         server.put("name", "Server 1");
+        server.put("applicationName", "solr");
         List<String> collections = new ArrayList<String>();
         collections.add(collectionName);
         server.put("collectionName", collections);
