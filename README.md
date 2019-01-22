@@ -40,7 +40,7 @@ Note : Please make sure to not use tab (\t) while editing yaml files. You may wa
      metricPrefix: "Server|Component:438|Custom Metrics|Solr"
      ```
   2. Configure the Solr instances by specifying the name(required), host(required), port(required) and collectionName(required) of the Solr instance, and rest of the fields (only if authentication enabled),
-     encryptedPassword(only if password encryption required). You can configure multiple instances as follows to report metrics
+     encryptedPassword(only if password encryption required). Make sure to check if you have an application name that is other than the default "solr". If that is so, please update that name for the "applicationName" field. You can configure multiple instances as follows to report metrics
      For example,
      
      ```
@@ -50,12 +50,14 @@ Note : Please make sure to not use tab (\t) while editing yaml files. You may wa
          port: 8983
          name: "Server 1"
          collectionName : ["gettingStarted","techproducts"]
-    
+         applicationName: "solr"
+
     
        - host: "localhost"
          port: 7574
          name: "Server 2"
          collectionName : ["gettingStarted","techproducts"]
+         applicationName: "solr"
 
      ```
      3. Configure the encyptionKey for encryptionPasswords(only if password encryption required).
@@ -225,7 +227,7 @@ Always feel free to fork and contribute any changes directly here on [GitHub](ht
 ### Version
 |          Name            |  Version   |
 |--------------------------|------------|
-|Extension Version         |1.2.2       |
+|Extension Version         |1.2.3       |
 |Controller Compatibility  |3.7 or Later|
-|Product Tested On         |7.2.1, 5.5  |
-|Last Update               |11/07/2018  |
+|Product Tested On         |7.2.1, 5.5, 4.1|
+|Last Update               |01/22/2019|
