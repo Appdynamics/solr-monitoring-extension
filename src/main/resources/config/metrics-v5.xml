@@ -18,112 +18,280 @@ Set delta = true for metric to report per-min data
 
 <stats>
 
-    <stat url="/admin/mbeans?stats=true&amp;wt=json" alias="solr-mbeans" element="solr-mbeans" elementType="array" >
+    <stat url="/admin/mbeans?stats=true&amp;wt=json" alias="solr-mbeans" element="solr-mbeans" elementType="array">
 
-        <stat element="CACHE" alias="Cache" >
-            <stat element="perSegFilter" alias="Per Seg Filter" metricSection="stats"  >
-                <metric alias="Lookups" attr="lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Hits" attr="hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Hit Ratio" attr="hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
-                <metric alias="Evictions" attr="evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Inserts" attr="inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Size" attr="size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Warmup Time" attr="warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Lookups" attr="cumulative_lookups" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Inserts" attr="cumulative_inserts" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Hits" attr="cumulative_hits" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Hit Ratio" attr="cumulative_hitratio" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" multiplier="100" />
-                <metric alias="Cumulative Evictions" attr="cumulative_evictions" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
+        <stat element="CACHE" alias="Cache">
+            <stat element="perSegFilter" alias="Per Seg Filter" metricSection="stats">
+                <metric alias="Lookups" attr="lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Hits" attr="hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Hit Ratio" attr="hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL" multiplier="100"/>
+                <metric alias="Evictions" attr="evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Inserts" attr="inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Size" attr="size" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Warmup Time" attr="warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Lookups" attr="cumulative_lookups" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Inserts" attr="cumulative_inserts" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Hits" attr="cumulative_hits" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Hit Ratio" attr="cumulative_hitratio" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" multiplier="100"/>
+                <metric alias="Cumulative Evictions" attr="cumulative_evictions" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
             </stat>
 
             <stat element="queryResultCache" alias="Query Result Cache" metricSection="stats">
-                <metric alias="Lookups" attr="lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Hits" attr="hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Hit Ratio" attr="hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
-                <metric alias="Evictions" attr="evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Inserts" attr="inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Size" attr="size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Warmup Time" attr="warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Lookups" attr="cumulative_lookups" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Inserts" attr="cumulative_inserts" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Hits" attr="cumulative_hits" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Hit Ratio" attr="cumulative_hitratio" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" multiplier="100" />
-                <metric alias="Cumulative Evictions" attr="cumulative_evictions" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Lookups" attr="lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Hits" attr="hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Hit Ratio" attr="hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL" multiplier="100"/>
+                <metric alias="Evictions" attr="evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Inserts" attr="inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Size" attr="size" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Warmup Time" attr="warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Lookups" attr="cumulative_lookups" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Inserts" attr="cumulative_inserts" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Hits" attr="cumulative_hits" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Hit Ratio" attr="cumulative_hitratio" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" multiplier="100"/>
+                <metric alias="Cumulative Evictions" attr="cumulative_evictions" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
             </stat>
 
-            <stat  element="documentCache" alias="Document Cache" metricSection="stats" >
-                <metric alias="Lookups" attr="lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Hits" attr="hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Hit Ratio" attr="hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
-                <metric alias="Evictions" attr="evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Inserts" attr="inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Size" attr="size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Warmup Time" attr="warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Lookups" attr="cumulative_lookups" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Inserts" attr="cumulative_inserts" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Hits" attr="cumulative_hits" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Hit Ratio" attr="cumulative_hitratio" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" multiplier="100" />
-                <metric alias="Cumulative Evictions" attr="cumulative_evictions" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
+            <stat element="documentCache" alias="Document Cache" metricSection="stats">
+                <metric alias="Lookups" attr="lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Hits" attr="hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Hit Ratio" attr="hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL" multiplier="100"/>
+                <metric alias="Evictions" attr="evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Inserts" attr="inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Size" attr="size" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Warmup Time" attr="warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Lookups" attr="cumulative_lookups" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Inserts" attr="cumulative_inserts" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Hits" attr="cumulative_hits" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Hit Ratio" attr="cumulative_hitratio" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" multiplier="100"/>
+                <metric alias="Cumulative Evictions" attr="cumulative_evictions" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
             </stat>
 
-            <stat  element="filterCache" alias="Filter Cache" metricSection="stats" >
-                <metric alias="Lookups" attr="lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Hits" attr="hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Hit Ratio" attr="hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100"/>
-                <metric alias="Evictions" attr="evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Inserts" attr="inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Size" attr="size" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Warmup Time" attr="warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Lookups" attr="cumulative_lookups" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Hits" attr="cumulative_hits" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Hit Ratio" attr="cumulative_hitratio" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"  multiplier="100"/>
-                <metric alias="Cumulative Evictions" attr="cumulative_evictions" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Cumulative Inserts" attr="cumulative_inserts" aggregationType="OBSERVATION" timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" />
+            <stat element="filterCache" alias="Filter Cache" metricSection="stats">
+                <metric alias="Lookups" attr="lookups" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Hits" attr="hits" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Hit Ratio" attr="hitratio" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL" multiplier="100"/>
+                <metric alias="Evictions" attr="evictions" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Inserts" attr="inserts" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Size" attr="size" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Warmup Time" attr="warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Lookups" attr="cumulative_lookups" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Hits" attr="cumulative_hits" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Hit Ratio" attr="cumulative_hitratio" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL" multiplier="100"/>
+                <metric alias="Cumulative Evictions" attr="cumulative_evictions" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Cumulative Inserts" attr="cumulative_inserts" aggregationType="OBSERVATION"
+                        timeRollUpType="OBSERVATION" clusterRollUpType="INDIVIDUAL"/>
             </stat>
 
-            <stat  element="fieldCache" alias="Field Cache" metricSection="stats" >
-                <metric alias="Entries Count" attr="entries_count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <stat element="fieldCache" alias="Field Cache" metricSection="stats">
+                <metric alias="Entries Count" attr="entries_count" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
             </stat>
         </stat>
 
-        <stat  element="CORE" alias="Core"  >
-            <stat  element="core" alias="Core" metricSection="stats" >
-                <metric alias="Ref Count" attr="refCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+        <stat element="CORE" alias="Core">
+            <stat element="core" alias="Core" metricSection="stats">
+                <metric alias="Ref Count" attr="refCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
             </stat>
 
-            <stat  element="searcher" alias="Searcher" metricSection="stats" >
-                <metric alias="Max Docs" attr="maxDoc" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Deleted Docs" attr="deletedDocs" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Warmup Time" attr="warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Index Version" attr="indexVersion" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                <metric alias="Number Of Docs" attr="numDocs" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            <stat element="searcher" alias="Searcher" metricSection="stats">
+                <metric alias="Max Docs" attr="maxDoc" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Deleted Docs" attr="deletedDocs" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Warmup Time" attr="warmupTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Index Version" attr="indexVersion" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Number Of Docs" attr="numDocs" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
             </stat>
 
         </stat>
+
+        <stat element="QUERYHANDLER" alias="QueryHandler">
+            <stat element="/select" alias="Select" metricSection="stats">
+                <metric alias="Handler Start" attr="handlerStart" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Requests" attr="requests" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Errors" attr="errors" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Timeouts" attr="timeouts" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Total Time" attr="totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Avg Requests per Sec" attr="avgRequestsPerSecond" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="5min Rate Request per Sec" attr="5minRateReqsPerSecond" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="15min Rate Request per Second" attr="15minRateReqsPerSecond" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Average Time per Request" attr="avgTimePerRequest" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Median Request Time" attr="medianRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="75th Pc Request Time" attr="75thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="95th Pc Request Time" attr="95thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="99th Pc Request Time" attr="99thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="999th Pc Request Time" attr="999thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            </stat>
+
+            <stat element="/get" alias="Get" metricSection="stats">
+                <metric alias="Handler Start" attr="handlerStart" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Requests" attr="requests" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Errors" attr="errors" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Timeouts" attr="timeouts" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Total Time" attr="totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Avg Requests per Sec" attr="avgRequestsPerSecond" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="5min Rate Request per Sec" attr="5minRateReqsPerSecond" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="15min Rate Request per Second" attr="15minRateReqsPerSecond" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Average Time per Request" attr="avgTimePerRequest" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Median Request Time" attr="medianRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="75th Pc Request Time" attr="75thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="95th Pc Request Time" attr="95thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="99th Pc Request Time" attr="99thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="999th Pc Request Time" attr="999thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            </stat>
+
+            <stat element="/admin/ping" alias="Ping Handler" metricSection="stats">
+                <metric alias="Handler Start" attr="handlerStart" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Requests" attr="requests" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Errors" attr="errors" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Timeouts" attr="timeouts" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Total Time" attr="totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Avg Requests per Sec" attr="avgRequestsPerSecond" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="5min Rate Request per Sec" attr="5minRateReqsPerSecond" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="15min Rate Request per Second" attr="15minRateReqsPerSecond" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Average Time per Request" attr="avgTimePerRequest" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Median Request Time" attr="medianRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="75th Pc Request Time" attr="75thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="95th Pc Request Time" attr="95thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="99th Pc Request Time" attr="99thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="999th Pc Request Time" attr="999thPcRequestTime" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            </stat>
+
+        </stat>
+
     </stat>
 
+
     <stat url="/admin/system?stats=true&amp;wt=json" alias="System">
-        <stat alias="System" element="system" >
-            <metric alias="Available Processors" attr="availableProcessors" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="System Load Average" attr="systemLoadAverage" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Committed Virtual Memory Size" attr="committedVirtualMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Free Physical Memory Size" attr="freePhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Free Swap Space Size" attr="freeSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Process CPU Time" attr="processCpuTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Total Physical Memory Size" attr="totalPhysicalMemorySize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Total Swap Space Size" attr="totalSwapSpaceSize" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Max File Descriptor Count" attr="maxFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Open File Descriptor Count" attr="openFileDescriptorCount" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-            <metric alias="Process CPU Load x 100" attr="processCpuLoad" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100" />
+        <stat alias="System" element="system">
+            <metric alias="Available Processors" attr="availableProcessors" aggregationType="AVERAGE"
+                    timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            <metric alias="System Load Average" attr="systemLoadAverage" aggregationType="AVERAGE"
+                    timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            <metric alias="Committed Virtual Memory Size" attr="committedVirtualMemorySize" aggregationType="AVERAGE"
+                    timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            <metric alias="Free Physical Memory Size" attr="freePhysicalMemorySize" aggregationType="AVERAGE"
+                    timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            <metric alias="Free Swap Space Size" attr="freeSwapSpaceSize" aggregationType="AVERAGE"
+                    timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            <metric alias="Process CPU Time" attr="processCpuTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                    clusterRollUpType="INDIVIDUAL"/>
+            <metric alias="Total Physical Memory Size" attr="totalPhysicalMemorySize" aggregationType="AVERAGE"
+                    timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            <metric alias="Total Swap Space Size" attr="totalSwapSpaceSize" aggregationType="AVERAGE"
+                    timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            <metric alias="Max File Descriptor Count" attr="maxFileDescriptorCount" aggregationType="AVERAGE"
+                    timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            <metric alias="Open File Descriptor Count" attr="openFileDescriptorCount" aggregationType="AVERAGE"
+                    timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            <metric alias="Process CPU Load x 100" attr="processCpuLoad" aggregationType="AVERAGE"
+                    timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" multiplier="100"/>
         </stat>
 
-        <stat alias="JVM" element="jvm"  >
-            <stat alias="Memory" element="memory"  >
+        <stat alias="JVM" element="jvm">
+            <stat alias="Memory" element="memory">
                 <stat alias="In Bytes" element="raw">
-                    <metric alias="Free (Bytes)" attr="free" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                    <metric alias="Total (Bytes)" attr="total" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                    <metric alias="Max (Bytes)" attr="max" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
-                    <metric alias="Used (Bytes)" attr="used" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                    <metric alias="Free (Bytes)" attr="free" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                            clusterRollUpType="INDIVIDUAL"/>
+                    <metric alias="Total (Bytes)" attr="total" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                            clusterRollUpType="INDIVIDUAL"/>
+                    <metric alias="Max (Bytes)" attr="max" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                            clusterRollUpType="INDIVIDUAL"/>
+                    <metric alias="Used (Bytes)" attr="used" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                            clusterRollUpType="INDIVIDUAL"/>
                 </stat>
             </stat>
         </stat>

@@ -116,8 +116,50 @@ Set delta = true for metric to report per-min data
                 <metric alias="Error Count" attr="QUERY./sql.errors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
                 <metric alias="Requests" attr="QUERY./sql.requests" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
             </stat>
+            <stat  element="/get" alias="GET" metricSection="stats" >
+                <metric alias="Total Time" attr="QUERY./get.totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Client Error Count" attr="QUERY./get.clientErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Timeout" attr="QUERY./get.timeouts.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Server Errors" attr="QUERY./get.serverErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Request Times Mean" attr="QUERY./get.requestTimes.meanRate" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Handler Start" attr="QUERY./get.handlerStart" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Error Count" attr="QUERY./get.errors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Requests" attr="QUERY./get.requests" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            </stat>
+            <stat  element="/select" alias="Select" metricSection="stats" >
+                <metric alias="Total Time" attr="QUERY./select.totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Client Error Count" attr="QUERY./select.clientErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Timeout" attr="QUERY./select.timeouts.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Server Errors" attr="QUERY./select.serverErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Request Times Mean" attr="QUERY./select.requestTimes.meanRate" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Handler Start" attr="QUERY./select.handlerStart" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Error Count" attr="QUERY./select.errors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+                <metric alias="Requests" attr="QUERY./select.requests" aggregationType="AVERAGE" timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL" />
+            </stat>
+
         </stat>
 
+
+        <stat  element="ADMIN" alias="Admin"  >
+            <stat  element="/admin/ping" alias="Ping" metricSection="stats" >
+                <metric alias="Handler Start" attr="ADMIN./admin/ping.handlerStart" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Requests" attr="ADMIN./admin/ping.requests" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Errors" attr="ADMIN./admin/ping.errors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Client Errors" attr="ADMIN./admin/ping.clientErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Server Errors" attr="ADMIN./admin/ping.serverErrors.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Timeouts" attr="ADMIN./admin/ping.timeouts.count" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Total Time" attr="ADMIN./admin/ping.totalTime" aggregationType="AVERAGE" timeRollUpType="AVERAGE"
+                        clusterRollUpType="INDIVIDUAL"/>
+                <metric alias="Request Times Mean Rate" attr="ADMIN./admin/ping.requestTimes.meanRate" aggregationType="AVERAGE"
+                        timeRollUpType="AVERAGE" clusterRollUpType="INDIVIDUAL"/>
+            </stat>
+        </stat>
     </stat>
 
     <stat url="/admin/system?stats=true&amp;wt=json" alias="System">
