@@ -72,6 +72,7 @@ public class MetricCollectorSystemMetricsTest {
         server.put("host", "localhost");
         server.put("port", "8983");
         server.put("name", "Server 1");
+        server.put("applicationName", "solr");
 
         String endpoint = "testEndpoint";
         String collectionName = "techproducts";

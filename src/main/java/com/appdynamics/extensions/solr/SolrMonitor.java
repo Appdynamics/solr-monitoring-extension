@@ -44,6 +44,8 @@ public class SolrMonitor extends ABaseMonitor {
             AssertUtils.assertNotNull(server.get("port"), "The port field can not be empty in the config.yml");
             AssertUtils.assertNotNull(server.get("name"), "The name field can not be empty in the config.yml");
             AssertUtils.assertNotNull(server.get("collectionName"), "The collectionName field can not be empty in the config.yml");
+            AssertUtils.assertNotNull(server.get("applicationName"), "The applicationName field can not be empty in the config.yml");
+
             AssertUtils.assertNotNull(getContextConfiguration().getMetricsXml(), "The metrics.xml has been not been created.");
             logger.debug("Starting the Solr Monitoring Task for server : " + server.get(NAME));
             SolrMonitorTask task = new SolrMonitorTask(getContextConfiguration(), taskExecutor.getMetricWriteHelper(), server);

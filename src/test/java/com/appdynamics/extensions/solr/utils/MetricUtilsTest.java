@@ -40,6 +40,8 @@ public class MetricUtilsTest {
         server.put("name", "Server 1");
         server.put("host", "localhost");
         server.put("port", 9999);
+        server.put("applicationName", "solr");
+
         List<String> collections = new ArrayList<String>();
         collections.add("techproducts");
         server.put("collectionName", collections);
@@ -77,6 +79,7 @@ public class MetricUtilsTest {
         server.put("name", "Server 1");
         server.put("host", "localhost");
         server.put("port", 9999);
+        server.put("applicationName", "solr");
         List<String> collections = new ArrayList<String>();
         collections.add("techproducts");
         server.put("collectionName", collections);

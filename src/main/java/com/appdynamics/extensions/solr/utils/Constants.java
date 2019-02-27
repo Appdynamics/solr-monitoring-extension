@@ -17,7 +17,6 @@ public class Constants {
     public static final String JSONMAP = "jsonMap";
     public static final String JSONLIST = "jsonList";
     public static final String NAME = "name";
-    public static final String SOLR_WITH_SLASH = "/solr/";
     public static final String COLLECTIONNAME = "collectionName";
     public static final String METRIC_SEPARATOR = "|";
     public static final String HEART_BEAT = "HeartBeat";
@@ -25,6 +24,7 @@ public class Constants {
     public static final String REPLACE_WITH = "replaceWith";
     public static final String SOLR_SPEC_VERSION = "solr-spec-version";
     public static final String LUCENE = "lucene";
+    public static final String FORWARD_SLASH = "/";
 
     public static final String KB = "KB";
     public static final String MB = "MB";

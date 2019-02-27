@@ -15,6 +15,7 @@ servers:
      port: 8983
      name: "sr-solr-sit-d-ip-10-44-196-110.ec2.internal"
      collectionName : "similarity"
+     applicationName: "solr"
 
 # Optional Parameters. Configure if any required
 
