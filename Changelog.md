@@ -1,13 +1,17 @@
 Changes
 =======
 
+## 1.2.4
+
+* Updating commons to 2.2.3
+
 ## 1.2.2
 
-Support for multiple version APIs provided by Solr. Ability to monitor multiple collections on same server.
+* Support for multiple version APIs provided by Solr. Ability to monitor multiple collections on same server.
 
 ## 1.2.0
 
-Revamp of the complete extension to incorporate changes to the 2.0.0 framework.
+* Revamp of the complete extension to incorporate changes to the 2.0.0 framework.
 
 ## 1.1.4 
 * Updated Licenses

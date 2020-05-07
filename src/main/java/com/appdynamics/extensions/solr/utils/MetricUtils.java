@@ -10,26 +10,39 @@ package com.appdynamics.extensions.solr.utils;
 
 import com.appdynamics.extensions.http.HttpClientUtils;
 import com.appdynamics.extensions.http.UrlBuilder;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.Stat;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import static com.appdynamics.extensions.solr.utils.Constants.*;
+import static com.appdynamics.extensions.solr.utils.Constants.BYTES_CONVERSION_FACTOR;
+import static com.appdynamics.extensions.solr.utils.Constants.COLLECTIONNAME;
+import static com.appdynamics.extensions.solr.utils.Constants.FORWARD_SLASH;
+import static com.appdynamics.extensions.solr.utils.Constants.GB;
+import static com.appdynamics.extensions.solr.utils.Constants.KB;
+import static com.appdynamics.extensions.solr.utils.Constants.LUCENE;
+import static com.appdynamics.extensions.solr.utils.Constants.MB;
+import static com.appdynamics.extensions.solr.utils.Constants.REPLACE;
+import static com.appdynamics.extensions.solr.utils.Constants.REPLACE_WITH;
+import static com.appdynamics.extensions.solr.utils.Constants.SOLR_SPEC_VERSION;
 
 /**
  * Created by bhuvnesh.kumar on 4/25/18.
  */
 public class MetricUtils {
-    private static final Logger logger = LoggerFactory.getLogger(MetricUtils.class);
+    private static final Logger logger = ExtensionsLoggerFactory.getLogger(MetricUtils.class);
 
     public static JsonNode getJsonNode(Stat stat, JsonNode nodes) {
         JsonNode newNode = nodes;

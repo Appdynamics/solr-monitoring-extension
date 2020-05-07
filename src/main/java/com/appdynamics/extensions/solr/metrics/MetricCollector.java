@@ -14,13 +14,13 @@ package com.appdynamics.extensions.solr.metrics;
 import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.http.HttpClientUtils;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.utils.MetricUtils;
 import com.appdynamics.extensions.util.AssertUtils;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigInteger;
 import java.util.HashMap;
@@ -29,11 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Phaser;
 
-import static com.appdynamics.extensions.solr.utils.Constants.*;
+import static com.appdynamics.extensions.solr.utils.Constants.HEART_BEAT;
+import static com.appdynamics.extensions.solr.utils.Constants.METRIC_SEPARATOR;
+import static com.appdynamics.extensions.solr.utils.Constants.NAME;
 
 public class MetricCollector implements Runnable {
 
-    private static final Logger logger = LoggerFactory.getLogger(MetricCollector.class);
+    private static final Logger logger = ExtensionsLoggerFactory.getLogger(MetricCollector.class);
     private Stat stat;
     private Phaser phaser;
     private Map server;
