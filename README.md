@@ -227,7 +227,7 @@ Always feel free to fork and contribute any changes directly here on [GitHub](ht
 ### Version
 |          Name            |  Version   |
 |--------------------------|------------|
-|Extension Version         |1.2.3       |
+|Extension Version         |1.2.4       |
 |Controller Compatibility  |3.7 or Later|
 |Product Tested On         |7.2.1, 5.5, 4.1|
-|Last Update               |01/22/2019|
+|Last Update               |7 May 2020|
