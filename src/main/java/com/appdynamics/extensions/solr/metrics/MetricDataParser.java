@@ -9,16 +9,16 @@
 package com.appdynamics.extensions.solr.metrics;
 
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
 import com.appdynamics.extensions.metrics.Metric;
 import com.appdynamics.extensions.solr.input.MetricConfig;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.utils.Constants;
 import com.appdynamics.extensions.solr.utils.MetricUtils;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +31,7 @@ import static com.appdynamics.extensions.solr.utils.MetricUtils.convertMemoryStr
  */
 
 public class MetricDataParser {
-    private static final Logger logger = LoggerFactory.getLogger(MetricDataParser.class);
+    private static final Logger logger = ExtensionsLoggerFactory.getLogger(MetricDataParser.class);
     private MonitorContextConfiguration monitorContextConfiguration;
     private Map<String, Metric> allMetrics = new HashMap<String, Metric>();
     private String collectionName;

@@ -10,20 +10,22 @@ package com.appdynamics.extensions.solr;
 
 import com.appdynamics.extensions.ABaseMonitor;
 import com.appdynamics.extensions.TasksExecutionServiceProvider;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.utils.MetricUtils;
 import com.appdynamics.extensions.util.AssertUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
-import static com.appdynamics.extensions.solr.utils.Constants.*;
+import static com.appdynamics.extensions.solr.utils.Constants.DEFAULT_METRIC_PREFIX;
+import static com.appdynamics.extensions.solr.utils.Constants.MONITOR_NAME;
+import static com.appdynamics.extensions.solr.utils.Constants.NAME;
 
 
 public class SolrMonitor extends ABaseMonitor {
-    private static final Logger logger = LoggerFactory.getLogger(SolrMonitor.class);
+    private static final Logger logger = ExtensionsLoggerFactory.getLogger(SolrMonitor.class);
 
     @Override
     public String getDefaultMetricPrefix() {
@@ -54,10 +56,10 @@ public class SolrMonitor extends ABaseMonitor {
     }
 
     @Override
-    protected int getTaskCount() {
-        List<Map<String, String>> servers = (List<Map<String, String>>) getContextConfiguration().getConfigYml().get("servers");
+    protected List<Map<String, ?>> getServers() {
+        List<Map<String, ?>> servers = (List<Map<String, ?>>) getContextConfiguration().getConfigYml().get("servers");
         AssertUtils.assertNotNull(servers, "The 'servers' section in config.yml is not initialized");
-        return servers.size();
+        return servers;
     }
 
     @Override

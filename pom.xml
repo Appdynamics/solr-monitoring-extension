@@ -14,7 +14,7 @@
 
     <groupId>com.appdynamics.extensions</groupId>
     <artifactId>solr-monitoring-extension</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -25,35 +25,14 @@
     <dependencies>
         <dependency>
             <groupId>com.appdynamics</groupId>
-            <artifactId>machine-agent</artifactId>
-            <version>3.7.11</version>
+            <artifactId>machineagent-repackaged</artifactId>
+            <version>4.0.5.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.appdynamics</groupId>
             <artifactId>appd-exts-commons</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path</artifactId>
-            <version>2.3.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.9.8</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.4</version>
+            <version>2.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
@@ -92,8 +71,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>

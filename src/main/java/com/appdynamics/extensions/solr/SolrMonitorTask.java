@@ -12,11 +12,11 @@ import com.appdynamics.extensions.AMonitorTaskRunnable;
 import com.appdynamics.extensions.MetricWriteHelper;
 import com.appdynamics.extensions.conf.MonitorContextConfiguration;
 import com.appdynamics.extensions.http.UrlBuilder;
+import com.appdynamics.extensions.logging.ExtensionsLoggerFactory;
 import com.appdynamics.extensions.solr.input.Stat;
 import com.appdynamics.extensions.solr.metrics.MetricCollector;
 import com.appdynamics.extensions.util.AssertUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -26,7 +26,7 @@ import static com.appdynamics.extensions.solr.utils.Constants.FORWARD_SLASH;
 import static com.appdynamics.extensions.solr.utils.Constants.NAME;
 
 public class SolrMonitorTask implements AMonitorTaskRunnable {
-    private static final Logger logger = LoggerFactory.getLogger(SolrMonitorTask.class);
+    private static final Logger logger = ExtensionsLoggerFactory.getLogger(SolrMonitorTask.class);
     private Map server;
     private MetricWriteHelper metricWriteHelper;
     private MonitorContextConfiguration monitorContextConfiguration;
