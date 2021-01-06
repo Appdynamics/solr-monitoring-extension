@@ -1,12 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  ~   Copyright 2018 . AppDynamics LLC and its affiliates.
-  ~   All Rights Reserved.
-  ~   This is unpublished proprietary source code of AppDynamics LLC and its affiliates.
-  ~   The copyright notice above does not evidence any actual or intended publication of such source code.
-  ~
-  -->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -14,7 +6,7 @@
 
     <groupId>com.appdynamics.extensions</groupId>
     <artifactId>solr-monitoring-extension</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -32,7 +24,7 @@
         <dependency>
             <groupId>com.appdynamics</groupId>
             <artifactId>appd-exts-commons</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
         </dependency>
         <dependency>
             <groupId>org.powermock</groupId>
