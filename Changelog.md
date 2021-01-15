@@ -1,6 +1,9 @@
 Changes
 =======
 
+## 1.2.5
+* Updating commons to 2.2.4
+
 ## 1.2.4
 
 * Updating commons to 2.2.3
